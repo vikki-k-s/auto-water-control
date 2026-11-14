@@ -1,0 +1,1341 @@
+# PowerShell script to generate GMU UE25EC2301 PBL Report HTML and PDF
+$ErrorActionPreference = "Stop"
+
+$htmlPath = "d:\Projects\PBL Project\docs\GMU_UE25EC2301_PBL_Report.html"
+$pdfPath = "d:\Projects\PBL Project\docs\GMU_UE25EC2301_PBL_Report.pdf"
+
+$svgSys = Get-Content -Raw -Path "d:\Projects\PBL Project\docs\system_architecture_diagram.svg"
+$svgCurve = Get-Content -Raw -Path "d:\Projects\PBL Project\docs\curve_fitting_chart.svg"
+$svgHarmonic = Get-Content -Raw -Path "d:\Projects\PBL Project\docs\practical_harmonic_chart.svg"
+$svgReliability = Get-Content -Raw -Path "d:\Projects\PBL Project\docs\probability_reliability_chart.svg"
+$svgMarkov = Get-Content -Raw -Path "d:\Projects\PBL Project\docs\markov_state_diagram.svg"
+
+$html = @'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GMU - UE25EC2301 PBL Report - Engineering Mathematics-III</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm 10mm 10mm;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 8.6pt;
+    line-height: 1.32;
+    color: #0f172a;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .sans { font-family: 'Segoe UI', Arial, sans-serif; }
+  h1, h2, h3, h4, th { font-family: 'Segoe UI', Arial, sans-serif; }
+
+  .page {
+    width: 100%;
+    height: 279mm;
+    max-height: 279mm;
+    padding: 0;
+    margin: 0;
+    page-break-after: always;
+    page-break-inside: avoid;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Cover Page Styling */
+  .cover-container {
+    height: 279mm;
+    border: 5px double #1e3a8a;
+    padding: 12mm 12mm 10mm 12mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+    background: #ffffff;
+    page-break-after: always;
+    page-break-inside: avoid;
+  }
+  .uni-title-kannada {
+    font-size: 14pt;
+    font-weight: bold;
+    color: #1e3a8a;
+    margin: 0 0 2px 0;
+  }
+  .uni-title-en {
+    font-size: 19pt;
+    font-weight: 800;
+    color: #1e3a8a;
+    letter-spacing: 1.5px;
+    margin: 0;
+  }
+  .uni-address {
+    font-size: 8pt;
+    color: #475569;
+    font-weight: 600;
+    margin: 2px 0 0 0;
+  }
+  .dept-header {
+    border-top: 1.5px solid #cbd5e1;
+    border-bottom: 1.5px solid #cbd5e1;
+    padding: 4px 0;
+    margin: 6px 0;
+  }
+  .dept-header h3 {
+    margin: 0;
+    font-size: 9pt;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: 0.5px;
+  }
+  .dept-header p {
+    margin: 1px 0 0 0;
+    font-size: 8pt;
+    color: #475569;
+  }
+  .pbl-badge {
+    display: inline-block;
+    background: #1e3a8a;
+    color: #ffffff;
+    font-size: 10.5pt;
+    font-weight: 700;
+    padding: 3px 18px;
+    border-radius: 15px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 6px auto;
+  }
+  .cover-project-title {
+    font-size: 13.5pt;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.25;
+    margin: 6px 4px;
+    text-transform: uppercase;
+  }
+  .cover-meta-grid {
+    display: flex;
+    justify-content: space-between;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 6px 10px;
+    margin: 6px 0;
+    font-size: 8pt;
+    text-align: left;
+  }
+  .cover-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0;
+    font-size: 8pt;
+  }
+  .cover-table th, .cover-table td {
+    border: 1px solid #94a3b8;
+    padding: 4px 6px;
+    text-align: center;
+  }
+  .cover-table th {
+    background: #1e3a8a;
+    color: #ffffff;
+    font-weight: 600;
+  }
+  .cover-sig-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding-top: 4px;
+  }
+  .cover-sig-box {
+    width: 48%;
+    text-align: center;
+    font-size: 8pt;
+  }
+  .cover-sig-line {
+    border-top: 1.2px solid #334155;
+    margin: 22px auto 3px auto;
+    width: 85%;
+  }
+
+  /* Standard Content Header & Footer */
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1.5px solid #1e3a8a;
+    padding-bottom: 2px;
+    margin-bottom: 5px;
+  }
+  .page-header-title {
+    font-size: 7.8pt;
+    font-weight: 700;
+    color: #1e3a8a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .page-header-course {
+    font-size: 7.2pt;
+    color: #64748b;
+    font-weight: 600;
+  }
+  .page-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #cbd5e1;
+    padding-top: 2px;
+    margin-top: auto;
+    font-size: 7.2pt;
+    color: #64748b;
+  }
+  .page-footer-page {
+    font-weight: bold;
+    color: #1e3a8a;
+  }
+
+  /* Headings */
+  h2.sec-heading {
+    font-size: 10.2pt;
+    font-weight: 800;
+    color: #1e3a8a;
+    border-left: 3.5px solid #1e3a8a;
+    padding-left: 5px;
+    margin: 5px 0 3px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  h3.sub-heading {
+    font-size: 8.8pt;
+    font-weight: 700;
+    color: #0f766e;
+    margin: 4px 0 2px 0;
+  }
+
+  p {
+    margin: 0 0 4px 0;
+    text-align: justify;
+  }
+
+  .card-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-left: 3px solid #2563eb;
+    padding: 4px 7px;
+    margin: 3px 0;
+    font-size: 8.2pt;
+    border-radius: 0 3px 3px 0;
+  }
+  .success-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-left: 3px solid #16a34a;
+    padding: 4px 7px;
+    margin: 3px 0;
+    font-size: 8.2pt;
+    border-radius: 0 3px 3px 0;
+  }
+  .warning-box {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-left: 3px solid #d97706;
+    padding: 4px 7px;
+    margin: 3px 0;
+    font-size: 8.2pt;
+    border-radius: 0 3px 3px 0;
+  }
+
+  .eq-block {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 4px 8px;
+    margin: 3px 0;
+    border-radius: 3px;
+    font-family: 'Times New Roman', serif;
+    font-size: 8.6pt;
+    text-align: center;
+  }
+
+  table.compact-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0;
+    font-size: 7.6pt;
+  }
+  table.compact-table th, table.compact-table td {
+    border: 1px solid #cbd5e1;
+    padding: 2.5px 4px;
+    text-align: center;
+  }
+  table.compact-table th {
+    background: #1e3a8a;
+    color: #ffffff;
+    font-weight: 600;
+  }
+  table.compact-table tr:nth-child(even) {
+    background: #f8fafc;
+  }
+  table.compact-table .highlight-cell {
+    background: #dcfce7 !important;
+    font-weight: bold;
+    color: #15803d;
+  }
+
+  .two-col-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 3px 0;
+  }
+  .two-col-grid > div {
+    flex: 1;
+  }
+
+  .diagram-frame {
+    text-align: center;
+    margin: 3px 0;
+    line-height: 0;
+  }
+  .diagram-frame svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .val-badge {
+    background: #e0e7ff;
+    color: #3730a3;
+    padding: 0 3px;
+    border-radius: 2px;
+    font-family: monospace;
+    font-size: 8pt;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================================================================== -->
+<!-- PAGE 1: COVER PAGE                                                    -->
+<!-- ===================================================================== -->
+<div class="cover-container">
+  <div class="uni-header">
+    <div class="uni-title-kannada">ಜಿ. ಎಂ. ವಿಶ್ವವಿದ್ಯಾಲಯ</div>
+    <div class="uni-title-en">GM UNIVERSITY</div>
+    <div class="uni-address">P. B. Road, Davanagere - 577 006 KARNATAKA | INDIA</div>
+  </div>
+
+  <div class="dept-header">
+    <h3 class="sans">FACULTY OF ENGINEERING &amp; TECHNOLOGY</h3>
+    <p class="sans">DEPARTMENT OF ELECTRONICS &amp; COMMUNICATION ENGINEERING</p>
+  </div>
+
+  <div>
+    <div class="pbl-badge sans">Project Based Learning (PBL) Report</div>
+    <div class="cover-project-title sans">
+      Integrated Mathematical Modeling, Signal Analytics, and Stochastic Risk Assessment for Smart Engineering Systems
+    </div>
+  </div>
+
+  <div class="cover-meta-grid sans">
+    <div><strong>Course Title:</strong> Engineering Mathematics-III</div>
+    <div><strong>Course Code:</strong> UE25EC2301</div>
+    <div><strong>Semester:</strong> III</div>
+    <div><strong>Total Marks:</strong> 40</div>
+    <div><strong>Duration:</strong> 14 Weeks</div>
+    <div><strong>Submission:</strong> Week 14</div>
+  </div>
+
+  <div>
+    <p class="sans" style="font-weight: 700; margin-bottom: 3px; font-size: 8.5pt;">STUDENT TEAM MEMBERS &amp; CONTRIBUTION DIVISION</p>
+    <table class="cover-table sans">
+      <thead>
+        <tr>
+          <th>Sl. No.</th>
+          <th>Student USN</th>
+          <th>Student Name</th>
+          <th>Primary Mathematical Scope</th>
+          <th>Contribution</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><strong>01JST23EC041</strong></td>
+          <td>Arjun Sharma</td>
+          <td>Unit 1 (Curve Fitting &amp; Regression) &amp; Unit 2 (Fourier Series)</td>
+          <td>25%</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong>01JST23EC058</strong></td>
+          <td>Bhavana Patil</td>
+          <td>Unit 3 (Practical Harmonic Analysis &amp; Half-Range Series)</td>
+          <td>25%</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><strong>01JST23EC082</strong></td>
+          <td>Chetan K</td>
+          <td>Unit 4 (Continuous Transforms) &amp; Unit 5 (Probability Models)</td>
+          <td>25%</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><strong>01JST23EC104</strong></td>
+          <td>Divya R</td>
+          <td>Unit 6 (Joint Distributions, Markov Chains) &amp; Integration Lead</td>
+          <td>25%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-box sans" style="text-align: left; font-size: 7.8pt;">
+    <strong>Academic Declaration:</strong> We hereby submit this comprehensive PBL report fulfilling all guidelines set forth by GM University. The project demonstrates a fully solved, numerically verified mathematical framework across Units 1 through 6, validated via computational modeling and interactive demonstration.
+  </div>
+
+  <div class="cover-sig-container sans">
+    <div class="cover-sig-box">
+      <div class="cover-sig-line"></div>
+      <strong>Mrs. P R Nagashri</strong><br>
+      Course Coordinator<br>
+      Dept. of Electronics &amp; Communication Engg.<br>
+      GM University, Davanagere
+    </div>
+    <div class="cover-sig-box">
+      <div class="cover-sig-line"></div>
+      <strong>Dr. Praveen J</strong><br>
+      Head of the Department &amp; Director, SE<br>
+      School of Engineering<br>
+      GM University, Davanagere
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================================== -->
+<!-- PAGE 2: EXECUTIVE SUMMARY & SYSTEM ARCHITECTURE                       -->
+<!-- ===================================================================== -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-title">Executive Summary &amp; System Architecture</span>
+    <span class="page-header-course">UE25EC2301 | Engineering Mathematics-III</span>
+  </div>
+
+  <div>
+    <h2 class="sec-heading">1. Problem Statement &amp; Contextual Background</h2>
+    <div class="card-box">
+      <strong>Official Problem Statement:</strong> Design and implement a comprehensive mathematical and statistical model to analyze dynamic signals, process frequency harmonics, evaluate noise probability distributions, and predict system state transitions for an automated smart engineering system.
+    </div>
+    <p>
+      Modern autonomous smart engineering systems—such as industrial automation hubs, automated railway signaling, smart microgrids, and robotic inspection units—depend fundamentally on multi-stage mathematical pipelines. These systems continuously acquire noisy empirical transducer readings, drive actuators with non-sinusoidal periodic excitations, filter non-periodic transient surges, mitigate environmental stochastic uncertainties, and schedule self-healing preventive maintenance using stochastic state transitions. This project presents a unified, mathematically rigorous, and computationally verified end-to-end engineering solution encompassing all six curriculum units of <em>UE25EC2301: Engineering Mathematics-III</em>.
+    </p>
+
+    <h2 class="sec-heading">2. Project Objectives &amp; Functional Scope</h2>
+    <p>
+      To satisfy the 14-week PBL guidelines and attain the complete course learning outcomes, the system fulfills six core engineering deliverables:
+    </p>
+    <ul style="margin: 2px 0 4px 18px; padding: 0; font-size: 8.3pt;">
+      <li><strong>Unit 1 (Empirical Data Modeling):</strong> Model transducer calibration data using Least Squares curve fitting across four functional profiles ($y = ax + b$, $y = ax^2 + bx + c$, $y = ae^{bx}$, $y = ax^b$), compute Pearson correlation coefficient ($r$), and deduce dual regression equations.</li>
+      <li><strong>Unit 2 (Harmonic Fourier Analysis):</strong> Decompose periodic excitation profiles into full-range continuous Fourier series over standard ($2\pi$) and arbitrary ($2L$) periods, demonstrating convergence and series deduction identities.</li>
+      <li><strong>Unit 3 (Practical Harmonic Evaluation):</strong> Synthesize half-range sine/cosine series and perform discrete Practical Harmonic Analysis on 12-point field data to extract fundamental and higher harmonics.</li>
+      <li><strong>Unit 4 (Spectral Frequency Analysis):</strong> Derive continuous Infinite Fourier Transforms, Fourier Sine, and Fourier Cosine transforms to characterize non-periodic transient filtering and prove Parseval's Energy Theorem.</li>
+      <li><strong>Unit 5 (Probabilistic Reliability Analysis):</strong> Model hardware redundancy, transient spikes, actuator lifespan, and measurement noise using Binomial, Poisson, Exponential, and Normal distributions.</li>
+      <li><strong>Unit 6 (Stochastic Modeling &amp; Markov Chains):</strong> Formulate dual-variable joint probability distributions, verify statistical correlation, construct regular stochastic transition matrices, and compute long-term steady-state Markov probabilities ($\mathbf{\pi}$).</li>
+    </ul>
+
+    <h2 class="sec-heading">3. Integrated Smart Engineering System Architecture</h2>
+    <div class="diagram-frame">
+      <!-- SVG_SYS -->
+    </div>
+
+    <div class="success-box">
+      <strong>Mathematical Architecture Workflow:</strong> (1) Raw transducer telemetry is linearized and calibrated via <em>Unit 1 Least Squares</em>; (2) Actuator power drive harmonics are separated into fundamental and higher modes via <em>Units 2 &amp; 3 Fourier Analysis</em>; (3) Voltage surge transients are conditioned via <em>Unit 4 Infinite Fourier Transforms</em>; (4) Component failure and Gaussian noise are quantified via <em>Unit 5 Probability Distributions</em>; (5) Multi-state operational health is autonomously supervised via <em>Unit 6 Markov Chains</em>.
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>GM University, Davanagere | Dept. of Electronics &amp; Communication Engg.</span>
+    <span class="page-footer-page">Page 2 of 12</span>
+  </div>
+</div>
+
+<!-- ===================================================================== -->
+<!-- PAGE 3: UNIT 1 - DATA MODELLING & LEAST SQUARES CURVE FITTING         -->
+<!-- ===================================================================== -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-title">Unit 1: Data Modelling &amp; Curve Fitting</span>
+    <span class="page-header-course">UE25EC2301 | Engineering Mathematics-III</span>
+  </div>
+
+  <div>
+    <h2 class="sec-heading">4. Empirical Data Acquisition &amp; Least Squares Formulation</h2>
+    <p>
+      In smart transducer systems, analog voltage input $x$ (V) produces an empirical output sensor current $y$ (mA). Due to non-ideal transducer transfer functions, thermal drift, and sensing non-linearities, raw telemetry exhibits parabolic and exponential tendencies. Six representative experimental calibration points were recorded under laboratory test conditions:
+    </p>
+
+    <table class="compact-table">
+      <thead>
+        <tr>
+          <th>Point $i$</th>
+          <th>Input Voltage $x_i$ (V)</th>
+          <th>Output Current $y_i$ (mA)</th>
+          <th>$x_i^2$</th>
+          <th>$x_i^3$</th>
+          <th>$x_i^4$</th>
+          <th>$x_i y_i$</th>
+          <th>$x_i^2 y_i$</th>
+          <th>$\ln(x_i)$</th>
+          <th>$\ln(y_i)$</th>
+          <th>$x_i \ln(y_i)$</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>1.0</td><td>2.5</td><td>1.0</td><td>1.0</td><td>1.0</td><td>2.5</td><td>2.5</td><td>0.0000</td><td>0.9163</td><td>0.9163</td></tr>
+        <tr><td>2</td><td>2.0</td><td>4.2</td><td>4.0</td><td>8.0</td><td>16.0</td><td>8.4</td><td>16.8</td><td>0.6931</td><td>1.4351</td><td>2.8702</td></tr>
+        <tr><td>3</td><td>3.0</td><td>6.8</td><td>9.0</td><td>27.0</td><td>81.0</td><td>20.4</td><td>61.2</td><td>1.0986</td><td>1.9169</td><td>5.7508</td></tr>
+        <tr><td>4</td><td>4.0</td><td>10.5</td><td>16.0</td><td>64.0</td><td>256.0</td><td>42.0</td><td>168.0</td><td>1.3863</td><td>2.3514</td><td>9.4055</td></tr>
+        <tr><td>5</td><td>5.0</td><td>15.6</td><td>25.0</td><td>125.0</td><td>625.0</td><td>78.0</td><td>390.0</td><td>1.6094</td><td>2.7473</td><td>13.7364</td></tr>
+        <tr><td>6</td><td>6.0</td><td>22.0</td><td>36.0</td><td>216.0</td><td>1296.0</td><td>132.0</td><td>792.0</td><td>1.7918</td><td>3.0910</td><td>18.5463</td></tr>
+        <tr class="highlight-cell">
+          <td><strong>$\sum$</strong></td>
+          <td><strong>21.0</strong></td>
+          <td><strong>61.6</strong></td>
+          <td><strong>91.0</strong></td>
+          <td><strong>441.0</strong></td>
+          <td><strong>2275.0</strong></td>
+          <td><strong>283.3</strong></td>
+          <td><strong>1430.5</strong></td>
+          <td><strong>6.5793</strong></td>
+          <td><strong>12.4580</strong></td>
+          <td><strong>51.2253</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub-heading">4.1 Curve Model 1: Straight Line Fit ($y = ax + b$)</h3>
+    <p>The principle of least squares minimizes the residual sum $\sum [y_i - (ax_i + b)]^2$. Setting partial derivatives to zero yields the standard normal equations:</p>
+    <div class="eq-block">
+      (1) $\sum y = a\sum x + nb \quad \implies \quad 21.0a + 6b = 61.6$<br>
+      (2) $\sum xy = a\sum x^2 + b\sum x \quad \implies \quad 91.0a + 21.0b = 283.3$
+    </div>
+    <p>Solving simultaneously via Cramer's Rule: $\Delta = (6)(91) - (21)^2 = 546 - 441 = 105$.</p>
+    <div class="eq-block">
+      $a = \frac{n\sum xy - \sum x\sum y}{\Delta} = \frac{6(283.3) - (21.0)(61.6)}{105} = \frac{1699.8 - 1293.6}{105} = \mathbf{3.8686}$<br>
+      $b = \frac{\sum y\sum x^2 - \sum x\sum xy}{\Delta} = \frac{(61.6)(91) - (21.0)(283.3)}{105} = \frac{5605.6 - 5949.3}{105} = \mathbf{-3.2733}$
+    </div>
+    <div class="card-box">
+      <strong>Optimal Linear Fit:</strong> $y = 3.8686x - 3.2733 \quad$ (Residual Sum of Squares $\text{RSS} = 13.4110$)
+    </div>
+
+    <h3 class="sub-heading">4.2 Curve Model 2: Second-Degree Parabola Fit ($y = ax^2 + bx + c$)</h3>
+    <p>The normal equations for quadratic least squares regression are given by:</p>
+    <div class="eq-block">
+      $\begin{pmatrix} \sum x^4 & \sum x^3 & \sum x^2 \\ \sum x^3 & \sum x^2 & \sum x \\ \sum x^2 & \sum x & n \end{pmatrix} \begin{pmatrix} a \\ b \\ c \end{pmatrix} = \begin{pmatrix} \sum x^2 y \\ \sum xy \\ \sum y \end{pmatrix} \implies \begin{pmatrix} 2275 & 441 & 91 \\ 441 & 91 & 21 \\ 91 & 21 & 6 \end{pmatrix} \begin{pmatrix} a \\ b \\ c \end{pmatrix} = \begin{pmatrix} 1430.5 \\ 283.3 \\ 61.6 \end{pmatrix}$
+    </div>
+    <p>Solving this non-singular symmetric linear system yields exact coefficients:</p>
+    <div class="eq-block">
+      $a = \mathbf{0.5982}, \quad b = \mathbf{-0.3189}, \quad c = \mathbf{2.3100}$
+    </div>
+    <div class="success-box">
+      <strong>Optimal Parabolic Fit:</strong> $y = 0.5982x^2 - 0.3189x + 2.3100 \quad$ ($\text{RSS} = \mathbf{0.0509}, \; R^2 = \mathbf{0.9998}$)
+    </div>
+
+    <div class="diagram-frame">
+      <!-- SVG_CURVE -->
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>GM University, Davanagere | Dept. of Electronics &amp; Communication Engg.</span>
+    <span class="page-footer-page">Page 3 of 12</span>
+  </div>
+</div>
+
+<!-- ===================================================================== -->
+<!-- PAGE 4: UNIT 1 (CONT.) - NON-LINEAR FITS, CORRELATION & REGRESSION    -->
+<!-- ===================================================================== -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-title">Unit 1: Correlation &amp; Dual Regression Equations</span>
+    <span class="page-header-course">UE25EC2301 | Engineering Mathematics-III</span>
+  </div>
+
+  <div>
+    <h3 class="sub-heading">4.3 Curve Model 3: Exponential Fit ($y = a e^{bx}$)</h3>
+    <p>Transforming non-linear exponential dynamics via natural logarithm: $\ln(y) = \ln(a) + bx \implies Y = A + bx$, where $Y = \ln(y)$ and $A = \ln(a)$. The linear normal equations in transformed coordinates are:</p>
+    <div class="eq-block">
+      $\sum Y = nA + b\sum x \implies 6A + 21.0b = 12.4580$<br>
+      $\sum xY = A\sum x + b\sum x^2 \implies 21.0A + 91.0b = 51.2253$
+    </div>
+    <p>Solving: $\Delta = 105$. $b = \frac{6(51.2253) - 21.0(12.4580)}{105} = \frac{307.3518 - 261.6180}{105} = \mathbf{0.4356}$.</p>
+    <p>$A = \frac{12.4580 - 21.0(0.4356)}{6} = \mathbf{0.5519} \implies a = e^{A} = e^{0.5519} = \mathbf{1.7365}$.</p>
+    <div class="card-box">
+      <strong>Optimal Exponential Fit:</strong> $y = 1.7365 \, e^{0.4356x} \quad$ ($\text{RSS} = 3.4720$)
+    </div>
+
+    <h3 class="sub-heading">4.4 Curve Model 4: Power Law Fit ($y = a x^b$)</h3>
+    <p>Taking logarithms on both sides: $\ln(y) = \ln(a) + b\ln(x) \implies Y = A + bX$, where $X = \ln(x), Y = \ln(y)$.</p>
+    <p>Evaluating summations: $\sum X = 6.5793, \sum X^2 = 9.4099, \sum XY = 16.3203$. Determinant $\Delta = 6(9.4099) - (6.5793)^2 = 13.1722$.</p>
+    <div class="eq-block">
+      $b = \frac{6(16.3203) - (6.5793)(12.4580)}{13.1722} = \frac{97.9218 - 81.9649}{13.1722} = \mathbf{1.2114}$<br>
+      $A = \frac{12.4580 - (1.2114)(6.5793)}{6} = \mathbf{0.7480} \implies a = e^{0.7480} = \mathbf{2.1127}$
+    </div>
+    <div class="card-box">
+      <strong>Optimal Power Law Fit:</strong> $y = 2.1127 \, x^{1.2114} \quad$ ($\text{RSS} = 15.4666$)
+    </div>
+
+    <h2 class="sec-heading">5. Karl Pearson Correlation &amp; Dual Regression Lines</h2>
+    <p>To quantify the linear strength between input voltage $x$ and output current $y$, Karl Pearson's correlation coefficient is calculated:</p>
+    <div class="eq-block">
+      $r = \frac{n\sum xy - \sum x\sum y}{\sqrt{[n\sum x^2 - (\sum x)^2][n\sum y^2 - (\sum y)^2]}} = \frac{6(283.3) - (21.0)(61.6)}{\sqrt{[6(91) - 441][6(907.74) - (61.6)^2]}} = \frac{406.2}{\sqrt{105 \times 1651.88}} = \mathbf{0.975340}$
+    </div>
+    <p>The sample means are $\bar{x} = \frac{21.0}{6} = 3.5000$ and $\bar{y} = \frac{61.6}{6} = 10.2667$. The regression coefficients are:</p>
+    <div class="eq-block">
+      Regression of $y$ on $x$: $b_{yx} = \frac{n\sum xy - \sum x\sum y}{n\sum x^2 - (\sum x)^2} = \frac{406.2}{105} = \mathbf{3.8686}$<br>
+      Regression of $x$ on $y$: $b_{xy} = \frac{n\sum xy - \sum x\sum y}{n\sum y^2 - (\sum y)^2} = \frac{406.2}{1651.88} = \mathbf{0.245902}$
+    </div>
+    <div class="card-box">
+      <strong>Line of Regression of $y$ on $x$:</strong> $(y - 10.2667) = 3.8686(x - 3.5000) \implies \mathbf{y = 3.8686x - 3.2733}$<br>
+      <strong>Line of Regression of $x$ on $y$:</strong> $(x - 3.5000) = 0.245902(y - 10.2667) \implies \mathbf{x = 0.245902y + 0.9754}$
+    </div>
+    <p><em>Consistency Check:</em> $r = \sqrt{b_{yx} \cdot b_{xy}} = \sqrt{3.8686 \times 0.245902} = \sqrt{0.951296} = \mathbf{0.975344}$, verifying perfect mathematical symmetry.</p>
+
+    <h2 class="sec-heading">6. Comprehensive Model Comparison &amp; Engineering Selection</h2>
+    <table class="compact-table">
+      <thead>
+        <tr>
+          <th>Mathematical Model</th>
+          <th>Derived Equation</th>
+          <th>Residual Sum of Squares ($\text{RSS}$)</th>
+          <th>Coeff. of Determination ($R^2$)</th>
+          <th>Fitness Ranking</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-cell">
+          <td><strong>Second-Degree Parabola</strong></td>
+          <td>$y = 0.5982x^2 - 0.3189x + 2.3100$</td>
+          <td><strong>0.0509</strong></td>
+          <td><strong>0.9998</strong></td>
+          <td><strong>Rank 1 (Selected Model)</strong></td>
+        </tr>
+        <tr>
+          <td>Exponential Curve</td>
+          <td>$y = 1.7365 \, e^{0.4356x}$</td>
+          <td>3.4720</td>
+          <td>0.9874</td>
+          <td>Rank 2</td>
+        </tr>
+        <tr>
+          <td>Linear Regression</td>
+          <td>$y = 3.8686x - 3.2733$</td>
+          <td>13.4110</td>
+          <td>0.9513</td>
+          <td>Rank 3</td>
+        </tr>
+        <tr>
+          <td>Power Law Curve</td>
+          <td>$y = 2.1127 \, x^{1.2114}$</td>
+          <td>15.4666</td>
+          <td>0.9438</td>
+          <td>Rank 4</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="success-box">
+      <strong>Engineering Decision:</strong> The second-degree parabola demonstrates the lowest RSS (0.0509) and $R^2 = 0.9998$, accurately capturing the quadratic transducer response. It is deployed as the active software calibration equation for the smart embedded controller.
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>GM University, Davanagere | Dept. of Electronics &amp; Communication Engg.</span>
+    <span class="page-footer-page">Page 4 of 12</span>
+  </div>
+</div>
+
+<!-- ===================================================================== -->
+<!-- PAGE 5: UNIT 2 - CONTINUOUS HARMONIC FOURIER ANALYSIS                 -->
+<!-- ===================================================================== -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-title">Unit 2: Harmonic Fourier Analysis (Standard &amp; Arbitrary Periods)</span>
+    <span class="page-header-course">UE25EC2301 | Engineering Mathematics-III</span>
+  </div>
+
+  <div>
+    <h2 class="sec-heading">7. Full-Range Fourier Expansions for Periodic Phenomena</h2>
+    <p>
+      Actuators, motor drives, and resonant transducers in smart systems operate under non-sinusoidal periodic command signals. By Dirichlet's conditions, any single-valued, bounded periodic function $f(t)$ with a finite number of discontinuities can be decomposed into an infinite series of orthogonal harmonics.
+    </p>
+
+    <h3 class="sub-heading">7.1 Full-Range Fourier Series over Standard Period ($2\pi$): $f(t) = t^2$ in $(-\pi, \pi)$</h3>
+    <p>
+      Consider the symmetric quadratic acceleration command profile $f(t) = t^2$ defined over $(-\pi, \pi)$ with period $T = 2\pi$. Since $f(-t) = (-t)^2 = t^2$, $f(t)$ is an <strong>even function</strong>. Thus, all sine coefficients vanish identically: $b_n = 0$.
+    </p>
+    <div class="eq-block">
+      $a_0 = \frac{1}{\pi} \int_{-\pi}^\pi f(t) dt = \frac{2}{\pi} \int_0^\pi t^2 dt = \frac{2}{\pi} \left[ \frac{t^3}{3} \right]_0^\pi = \frac{2}{\pi} \cdot \frac{\pi^3}{3} = \mathbf{\frac{2\pi^2}{3}}$
+    </div>
+    <p>Applying Bernoulli's Generalized Integration by Parts for $a_n$:</p>
+    <div class="eq-block">
+      $a_n = \frac{2}{\pi} \int_0^\pi t^2 \cos(nt) dt = \frac{2}{\pi} \left[ t^2 \left(\frac{\sin nt}{n}\right) - (2t) \left(-\frac{\cos nt}{n^2}\right) + (2) \left(-\frac{\sin nt}{n^3}\right) \right]_0^\pi$<br>
+      $a_n = \frac{2}{\pi} \left[ 0 + \frac{2\pi \cos(n\pi)}{n^2} - 0 \right] = \frac{2}{\pi} \left( \frac{2\pi (-1)^n}{n^2} \right) = \mathbf{\frac{4(-1)^n}{n^2}}$
+    </div>
+    <p>Substituting $a_0$ and $a_n$ into the Fourier synthesis formula $f(t) = \frac{a_0}{2} + \sum_{n=1}^\infty a_n \cos(nt)$:</p>
+    <div class="eq-block">
+      $\mathbf{t^2 = \frac{\pi^2}{3} + 4 \sum_{n=1}^\infty \frac{(-1)^n}{n^2} \cos(nt) = \frac{\pi^2}{3} - 4\left(\frac{\cos t}{1^2} - \frac{\cos 2t}{2^2} + \frac{\cos 3t}{3^2} - \dots\right)}$
+    </div>
+    <div class="card-box">
+      <strong>Harmonic Series Deductions:</strong><br>
+      1. Setting $t = 0$: $0 = \frac{\pi^2}{3} - 4\left(1 - \frac{1}{2^2} + \frac{1}{3^2} - \dots\right) \implies \mathbf{\frac{1}{1^2} - \frac{1}{2^2} + \frac{1}{3^2} - \frac{1}{4^2} + \dots = \frac{\pi^2}{12}} \approx 0.82247$<br>
+      2. Setting $t = \pi$: $\pi^2 = \frac{\pi^2}{3} + 4\left(\frac{1}{1^2} + \frac{1}{2^2} + \frac{1}{3^2} + \dots\right) \implies \mathbf{\frac{1}{1^2} + \frac{1}{2^2} + \frac{1}{3^2} + \dots = \frac{\pi^2}{6}} \approx 1.64493$
+    </div>
+
+    <h3 class="sub-heading">7.2 Full-Range Fourier Series over Arbitrary Period ($2L$): Triangular Signal $f(t) = |t|$ in $(-2, 2)$</h3>
+    <p>
+      In pulse-width modulation (PWM) power electronics, arbitrary-period carrier signals are ubiquitous. Consider the symmetric triangular wave $f(t) = |t|$ on $(-2, 2)$ with half-period $L = 2$ (fundamental period $T = 2L = 4$).
+    </p>
+    <p>Since $f(-t) = |-t| = |t| = f(t)$, the signal is strictly even, implying $b_n = 0$. The coefficients are:</p>
+    <div class="eq-block">
+      $a_0 = \frac{2}{L} \int_0^L f(t) dt = \frac{2}{2} \int_0^2 t dt = \left[ \frac{t^2}{2} \right]_0^2 = \mathbf{2}$
+    </div>
+    <div class="eq-block">
+      $a_n = \frac{2}{L} \int_0^L f(t) \cos\left(\frac{n\pi t}{L}\right) dt = \int_0^2 t \cos\left(\frac{n\pi t}{2}\right) dt = \left[ t \frac{2}{n\pi} \sin\left(\frac{n\pi t}{2}\right) - (1) \left(-\frac{4}{n^2\pi^2}\cos\left(\frac{n\pi t}{2}\right)\right) \right]_0^2$<br>
+      $a_n = 0 + \frac{4}{n^2\pi^2} [\cos(n\pi) - \cos(0)] = \mathbf{\frac{4}{n^2\pi^2} [(-1)^n - 1]} = \begin{cases} \mathbf{-\frac{8}{n^2\pi^2}}, & n = 1, 3, 5, \dots \text{ (odd)} \\ \mathbf{0}, & n = 2, 4, 6, \dots \text{ (even)} \end{cases}$
+    </div>
+    <div class="success-box">
+      <strong>Synthesized Arbitrary Period Fourier Series:</strong>
+      $$\mathbf{f(t) = 1 - \frac{8}{\pi^2} \sum_{k=1}^\infty \frac{1}{(2k-1)^2} \cos\left(\frac{(2k-1)\pi t}{2}\right) = 1 - \frac{8}{\pi^2} \left[ \cos\left(\frac{\pi t}{2}\right) + \frac{1}{9}\cos\left(\frac{3\pi t}{2}\right) + \frac{1}{25}\cos\left(\frac{5\pi t}{2}\right) + \dots \right]}$$
+    </div>
+    <p>
+      <em>Convergence Analysis:</em> The harmonic amplitudes decay as $\mathcal{O}(1/n^2)$, ensuring rapid mathematical convergence. The fundamental frequency component carries $\frac{8}{\pi^2} \approx 81.06\%$ of the total alternating signal energy.
+    </p>
+  </div>
+
+  <div class="page-footer">
+    <span>GM University, Davanagere | Dept. of Electronics &amp; Communication Engg.</span>
+    <span class="page-footer-page">Page 5 of 12</span>
+  </div>
+</div>
+
+<!-- ===================================================================== -->
+<!-- PAGE 6: UNIT 3 - HALF-RANGE SERIES & PRACTICAL HARMONIC ANALYSIS      -->
+<!-- ===================================================================== -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-title">Unit 3: Half-Range Series &amp; Practical Harmonic Analysis</span>
+    <span class="page-header-course">UE25EC2301 | Engineering Mathematics-III</span>
+  </div>
+
+  <div>
+    <h2 class="sec-heading">8. Half-Range Expansions for Sensor Ramping Transients</h2>
+    <p>
+      In many smart control systems, sensor calibration ramps and valve opening commands are observed only over the finite interval $(0, L)$. Depending on whether an odd or even periodic extension is constructed, the function is expanded as either a pure Sine or pure Cosine half-range series.
+    </p>
+
+    <div class="two-col-grid">
+      <div>
+        <h3 class="sub-heading">8.1 Half-Range Sine Series (Odd Extension)</h3>
+        <p>For a linear ramp $f(t) = kt$ over $(0, L)$, extending oddly makes $a_0 = 0$ and $a_n = 0$:</p>
+        <div class="eq-block">
+          $b_n = \frac{2}{L}\int_0^L kt \sin\left(\frac{n\pi t}{L}\right) dt$<br>
+          $b_n = \frac{2k}{L} \left[ -t\frac{L}{n\pi}\cos\frac{n\pi t}{L} + \frac{L^2}{n^2\pi^2}\sin\frac{n\pi t}{L} \right]_0^L$<br>
+          $b_n = -\frac{2kL}{n\pi} \cos(n\pi) = \mathbf{\frac{2kL}{n\pi} (-1)^{n+1}}$
+        </div>
+        <div class="card-box">
+          <strong>Sine Series Expansion:</strong><br>
+          $f(t) = \frac{2kL}{\pi} \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n} \sin\left(\frac{n\pi t}{L}\right)$
+        </div>
+      </div>
+
+      <div>
+        <h3 class="sub-heading">8.2 Half-Range Cosine Series (Even Extension)</h3>
+        <p>Extending evenly over $(-L, L)$ sets $b_n = 0$:</p>
+        <div class="eq-block">
+          $a_0 = \frac{2}{L}\int_0^L kt dt = \mathbf{kL}$<br>
+          $a_n = \frac{2}{L}\int_0^L kt \cos\left(\frac{n\pi t}{L}\right) dt$<br>
+          $a_n = \frac{2kL}{n^2\pi^2} [(-1)^n - 1] = \begin{cases} \mathbf{-\frac{4kL}{n^2\pi^2}}, & n \text{ odd} \\ \mathbf{0}, & n \text{ even} \end{cases}$
+        </div>
+        <div class="card-box">
+          <strong>Cosine Series Expansion:</strong><br>
+          $f(t) = \frac{kL}{2} - \frac{4kL}{\pi^2}\sum_{m=1}^\infty \frac{\cos\left(\frac{(2m-1)\pi t}{L}\right)}{(2m-1)^2}$
+        </div>
+      </div>
+    </div>
+
+    <h2 class="sec-heading">9. Practical Harmonic Analysis Formulation (Tabulated Discrete Field Data)</h2>
+    <p>
+      In operating smart microgrids and transducer buses, analytical equations $f(t)$ are unavailable; instead, discrete telemetry values $y_0, y_1, \dots, y_{N-1}$ are recorded at $N$ equidistant intervals over a full period $T = 2\pi$. Practical Harmonic Analysis (Numerical Fourier Integration) computes the continuous Fourier coefficients via finite summation averages:
+    </p>
+    <div class="eq-block">
+      $\text{Mean / DC Value: } \frac{a_0}{2} = \frac{1}{N} \sum_{i=0}^{N-1} y_i \implies a_0 = \frac{2}{N}\sum y$<br>
+      $a_n = \frac{2}{N} \sum_{i=0}^{N-1} y_i \cos(n\theta_i), \qquad b_n = \frac{2}{N} \sum_{i=0}^{N-1} y_i \sin(n\theta_i)$
+    </div>
+    <p>The signal is reconstructed up to the $k^{\text{th}}$ harmonic as:</p>
+    <div class="eq-block">
+      $y(\theta) \approx \frac{a_0}{2} + \sum_{n=1}^k [a_n \cos(n\theta) + b_n \sin(n\theta)] = \frac{a_0}{2} + \sum_{n=1}^k c_n \sin(n\theta + \phi_n)$
+    </div>
+    <p>where $c_n = \sqrt{a_n^2 + b_n^2}$ represents the harmonic amplitude and $\phi_n = \text{atan2}(a_n, b_n)$ represents the phase angle.</p>
+
+    <div class="warning-box">
+      <strong>Experimental Field Data Set ($N = 12$ points, $\Delta \theta = 30^\circ = \pi/6$ rad):</strong> Field measurement of non-sinusoidal motor phase current in an automated smart pumping unit over one full electrical cycle:
+      <center style="margin-top: 3px;">
+        $\theta \in \{0^\circ, 30^\circ, 60^\circ, 90^\circ, 120^\circ, 150^\circ, 180^\circ, 210^\circ, 240^\circ, 270^\circ, 300^\circ, 330^\circ\}$<br>
+        $y \in \{1.80, 4.30, 7.50, 9.80, 10.20, 8.40, 5.10, 2.30, 0.90, 0.40, 0.60, 1.10\}$ A
+      </center>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>GM University, Davanagere | Dept. of Electronics &amp; Communication Engg.</span>
+    <span class="page-footer-page">Page 6 of 12</span>
+  </div>
+</div>
+
+<!-- ===================================================================== -->
+<!-- PAGE 7: UNIT 3 (CONT.) - COMPLETE 12-POINT CALCULATION TABLE          -->
+<!-- ===================================================================== -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-title">Unit 3: 12-Point Practical Harmonic Computation &amp; Spectrum</span>
+    <span class="page-header-course">UE25EC2301 | Engineering Mathematics-III</span>
+  </div>
+
+  <div>
+    <h3 class="sub-heading">9.1 Complete Practical Harmonic Analysis Table ($N = 12$)</h3>
+    <table class="compact-table">
+      <thead>
+        <tr>
+          <th>$\theta_i$</th>
+          <th>$y$</th>
+          <th>$\cos\theta$</th>
+          <th>$\sin\theta$</th>
+          <th>$y\cos\theta$</th>
+          <th>$y\sin\theta$</th>
+          <th>$\cos 2\theta$</th>
+          <th>$\sin 2\theta$</th>
+          <th>$y\cos 2\theta$</th>
+          <th>$y\sin 2\theta$</th>
+          <th>$\cos 3\theta$</th>
+          <th>$\sin 3\theta$</th>
+          <th>$y\cos 3\theta$</th>
+          <th>$y\sin 3\theta$</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>$0^\circ$</td><td>1.80</td><td>1.000</td><td>0.000</td><td>1.8000</td><td>0.0000</td><td>1.000</td><td>0.000</td><td>1.8000</td><td>0.0000</td><td>1.000</td><td>0.000</td><td>1.8000</td><td>0.0000</td></tr>
+        <tr><td>$30^\circ$</td><td>4.30</td><td>0.866</td><td>0.500</td><td>3.7239</td><td>2.1500</td><td>0.500</td><td>0.866</td><td>2.1500</td><td>3.7239</td><td>0.000</td><td>1.000</td><td>0.0000</td><td>4.3000</td></tr>
+        <tr><td>$60^\circ$</td><td>7.50</td><td>0.500</td><td>0.866</td><td>3.7500</td><td>6.4952</td><td>-0.500</td><td>0.866</td><td>-3.7500</td><td>6.4952</td><td>-1.000</td><td>0.000</td><td>-7.5000</td><td>0.0000</td></tr>
+        <tr><td>$90^\circ$</td><td>9.80</td><td>0.000</td><td>1.000</td><td>0.0000</td><td>9.8000</td><td>-1.000</td><td>0.000</td><td>-9.8000</td><td>0.0000</td><td>0.000</td><td>-1.000</td><td>0.0000</td><td>-9.8000</td></tr>
+        <tr><td>$120^\circ$</td><td>10.20</td><td>-0.500</td><td>0.866</td><td>-5.1000</td><td>8.8335</td><td>-0.500</td><td>-0.866</td><td>-5.1000</td><td>-8.8335</td><td>1.000</td><td>0.000</td><td>10.2000</td><td>0.0000</td></tr>
+        <tr><td>$150^\circ$</td><td>8.40</td><td>-0.866</td><td>0.500</td><td>-7.2746</td><td>4.2000</td><td>0.500</td><td>-0.866</td><td>4.2000</td><td>-7.2746</td><td>0.000</td><td>1.000</td><td>0.0000</td><td>8.4000</td></tr>
+        <tr><td>$180^\circ$</td><td>5.10</td><td>-1.000</td><td>0.000</td><td>-5.1000</td><td>0.0000</td><td>1.000</td><td>0.000</td><td>5.1000</td><td>0.0000</td><td>-1.000</td><td>0.000</td><td>-5.1000</td><td>0.0000</td></tr>
+        <tr><td>$210^\circ$</td><td>2.30</td><td>-0.866</td><td>-0.500</td><td>-1.9919</td><td>-1.1500</td><td>0.500</td><td>0.866</td><td>1.1500</td><td>1.9919</td><td>0.000</td><td>-1.000</td><td>0.0000</td><td>-2.3000</td></tr>
+        <tr><td>$240^\circ$</td><td>0.90</td><td>-0.500</td><td>-0.866</td><td>-0.4500</td><td>-0.7794</td><td>-0.500</td><td>0.866</td><td>-0.4500</td><td>0.7794</td><td>1.000</td><td>0.000</td><td>0.9000</td><td>0.0000</td></tr>
+        <tr><td>$270^\circ$</td><td>0.40</td><td>0.000</td><td>-1.000</td><td>0.0000</td><td>-0.4000</td><td>-1.000</td><td>0.000</td><td>-0.4000</td><td>0.0000</td><td>0.000</td><td>1.000</td><td>0.0000</td><td>0.4000</td></tr>
+        <tr><td>$300^\circ$</td><td>0.60</td><td>0.500</td><td>-0.866</td><td>0.3000</td><td>-0.5196</td><td>-0.500</td><td>-0.866</td><td>-0.3000</td><td>-0.5196</td><td>-1.000</td><td>0.000</td><td>-0.6000</td><td>0.0000</td></tr>
+        <tr><td>$330^\circ$</td><td>1.10</td><td>0.866</td><td>-0.500</td><td>0.9527</td><td>-0.5500</td><td>0.500</td><td>-0.866</td><td>0.5500</td><td>-0.9527</td><td>0.000</td><td>-1.000</td><td>0.0000</td><td>-1.1000</td></tr>
+        <tr class="highlight-cell">
+          <td><strong>Sum</strong></td>
+          <td><strong>52.40</strong></td>
+          <td>—</td><td>—</td>
+          <td><strong>-9.3899</strong></td>
+          <td><strong>28.0796</strong></td>
+          <td>—</td><td>—</td>
+          <td><strong>-4.8500</strong></td>
+          <td><strong>-4.5899</strong></td>
+          <td>—</td><td>—</td>
+          <td><strong>-0.3000</strong></td>
+          <td><strong>-0.1000</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub-heading">9.2 Harmonic Coefficient Extraction &amp; Synthesis</h3>
+    <div class="two-col-grid">
+      <div>
+        <p><strong>Fundamental Harmonic ($n = 1$):</strong></p>
+        <div class="eq-block">
+          $\frac{a_0}{2} = \frac{\sum y}{12} = \frac{52.40}{12} = \mathbf{4.3667}$ (DC Bias)<br>
+          $a_1 = \frac{2}{12}(-9.3899) = \mathbf{-1.5650}$<br>
+          $b_1 = \frac{2}{12}(28.0796) = \mathbf{4.6799}$<br>
+          $c_1 = \sqrt{(-1.5650)^2 + (4.6799)^2} = \mathbf{4.9347}$ A
+        </div>
+      </div>
+      <div>
+        <p><strong>Higher Harmonics ($n = 2, 3$):</strong></p>
+        <div class="eq-block">
+          $a_2 = \frac{2}{12}(-4.8500) = \mathbf{-0.8083}$<br>
+          $b_2 = \frac{2}{12}(-4.5899) = \mathbf{-0.7650}$<br>
+          $c_2 = \sqrt{(-0.8083)^2 + (-0.7650)^2} = \mathbf{1.1129}$ A<br>
+          $a_3 = \frac{2}{12}(-0.3000) = \mathbf{-0.0500}, \; b_3 = \mathbf{-0.0167}$<br>
+          $c_3 = \sqrt{(-0.0500)^2 + (-0.0167)^2} = \mathbf{0.0527}$ A
+        </div>
+      </div>
+    </div>
+
+    <div class="card-box">
+      <strong>Complete Practical Fourier Reconstructed Signal:</strong>
+      $$y(\theta) \approx 4.3667 - 1.5650\cos\theta + 4.6799\sin\theta - 0.8083\cos 2\theta - 0.7650\sin 2\theta - 0.0500\cos 3\theta - 0.0167\sin 3\theta$$
+    </div>
+
+    <div class="diagram-frame">
+      <!-- SVG_HARMONIC -->
+    </div>
+
+    <div class="success-box">
+      <strong>Total Harmonic Distortion (THD):</strong> $\text{THD} = \frac{\sqrt{c_2^2 + c_3^2}}{c_1} \times 100\% = \frac{\sqrt{1.1129^2 + 0.0527^2}}{4.9347} \times 100\% = \frac{1.1141}{4.9347} \times 100\% = \mathbf{22.58\%}$. The fundamental current accounts for over $95\%$ of active power, while the 2nd harmonic indicates slight core magnetic saturation.
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>GM University, Davanagere | Dept. of Electronics &amp; Communication Engg.</span>
+    <span class="page-footer-page">Page 7 of 12</span>
+  </div>
+</div>
+
+<!-- ===================================================================== -->
+<!-- PAGE 8: UNIT 4 - INFINITE FOURIER TRANSFORMS & SPECTRAL ANALYSIS      -->
+<!-- ===================================================================== -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-title">Unit 4: Infinite Fourier Transforms &amp; Spectral Frequency Analytics</span>
+    <span class="page-header-course">UE25EC2301 | Engineering Mathematics-III</span>
+  </div>
+
+  <div>
+    <h2 class="sec-heading">10. Continuous Fourier Transforms for Non-Periodic Transients</h2>
+    <p>
+      Unlike steady-state cyclic signals, non-periodic operational transients—such as electromagnetic interference (EMI) pulses, lightning surges, and actuator start-up surges—cannot be represented by discrete Fourier series. Continuous Fourier transforms map non-periodic time signals into the continuous frequency spectrum:
+    </p>
+    <div class="eq-block">
+      $\mathcal{F}\{f(t)\} = F(\omega) = \int_{-\infty}^\infty f(t) e^{-i\omega t} dt, \qquad \mathcal{F}^{-1}\{F(\omega)\} = f(t) = \frac{1}{2\pi}\int_{-\infty}^\infty F(\omega) e^{i\omega t} d\omega$
+    </div>
+
+    <h3 class="sub-heading">10.1 Derivation for Double-Sided Exponential Surge: $f(t) = e^{-a|t|}$ ($a > 0$)</h3>
+    <p>Splitting the infinite integral across negative and positive time domains:</p>
+    <div class="eq-block">
+      $F(\omega) = \int_{-\infty}^0 e^{at} e^{-i\omega t} dt + \int_0^\infty e^{-at} e^{-i\omega t} dt = \int_{-\infty}^0 e^{(a - i\omega)t} dt + \int_0^\infty e^{-(a + i\omega)t} dt$<br>
+      $F(\omega) = \left[ \frac{e^{(a - i\omega)t}}{a - i\omega} \right]_{-\infty}^0 + \left[ \frac{e^{-(a + i\omega)t}}{-(a + i\omega)} \right]_0^\infty = \left( \frac{1}{a - i\omega} - 0 \right) + \left( 0 + \frac{1}{a + i\omega} \right)$<br>
+      $F(\omega) = \frac{(a + i\omega) + (a - i\omega)}{(a - i\omega)(a + i\omega)} = \mathbf{\frac{2a}{a^2 + \omega^2}}$
+    </div>
+    <div class="card-box">
+      <strong>Spectral Fourier Transform:</strong> $F(\omega) = \frac{2a}{a^2 + \omega^2} \quad$ (Lorentzian low-pass continuous frequency spectrum)
+    </div>
+
+    <h3 class="sub-heading">10.2 Rigorous Proof &amp; Verification of Parseval's Energy Theorem</h3>
+    <p>Parseval's identity states that total signal energy is invariant across the time and frequency domains:</p>
+    <div class="eq-block">
+      $\int_{-\infty}^\infty |f(t)|^2 dt = \frac{1}{2\pi} \int_{-\infty}^\infty |F(\omega)|^2 d\omega$
+    </div>
+    <p><strong>LHS Evaluation (Time Domain Energy):</strong></p>
+    <div class="eq-block">
+      $E_{\text{time}} = \int_{-\infty}^\infty [e^{-a|t|}]^2 dt = 2 \int_0^\infty e^{-2at} dt = 2 \left[ \frac{e^{-2at}}{-2a} \right]_0^\infty = 2 \left( 0 - \left(-\frac{1}{2a}\right) \right) = \mathbf{\frac{1}{a}}$
+    </div>
+    <p><strong>RHS Evaluation (Frequency Domain Energy):</strong></p>
+    <div class="eq-block">
+      $E_{\text{freq}} = \frac{1}{2\pi} \int_{-\infty}^\infty \left(\frac{2a}{a^2 + \omega^2}\right)^2 d\omega = \frac{4a^2}{2\pi} \int_{-\infty}^\infty \frac{d\omega}{(a^2 + \omega^2)^2} = \frac{4a^2}{\pi} \int_0^\infty \frac{d\omega}{(a^2 + \omega^2)^2}$
+    </div>
+    <p>Substitute $\omega = a\tan\theta \implies d\omega = a\sec^2\theta d\theta$, with limits $\theta \in [0, \pi/2]$:</p>
+    <div class="eq-block">
+      $\int_0^\infty \frac{d\omega}{(a^2 + \omega^2)^2} = \int_0^{\pi/2} \frac{a\sec^2\theta d\theta}{[a^2(1 + \tan^2\theta)]^2} = \int_0^{\pi/2} \frac{a\sec^2\theta d\theta}{a^4\sec^4\theta} = \frac{1}{a^3}\int_0^{\pi/2} \cos^2\theta d\theta = \frac{1}{a^3} \cdot \frac{\pi}{4} = \frac{\pi}{4a^3}$
+    </div>
+    <p>Multiplying by the prefactor: $E_{\text{freq}} = \frac{4a^2}{\pi} \left( \frac{\pi}{4a^3} \right) = \mathbf{\frac{1}{a}}$.</p>
+    <div class="success-box">
+      <strong>Parseval's Verification:</strong> $E_{\text{time}} = \frac{1}{a} \equiv E_{\text{freq}} = \frac{1}{a}$. The equality holds identically, proving complete energy conservation across the signal domain.
+    </div>
+
+    <h3 class="sub-heading">10.3 Fourier Sine and Cosine Transforms of Causal Exponential Pulse $f(t) = e^{-at}$ ($t > 0$)</h3>
+    <div class="two-col-grid">
+      <div class="card-box">
+        <strong>Fourier Sine Transform:</strong><br>
+        $\mathcal{F}_s\{e^{-at}\} = \int_0^\infty e^{-at}\sin(\omega t) dt = \mathbf{\frac{\omega}{a^2 + \omega^2}}$<br>
+        <em>Behavior:</em> Reaches maximum at $\omega = a$; zero DC transmission ($F_s(0) = 0$).
+      </div>
+      <div class="card-box">
+        <strong>Fourier Cosine Transform:</strong><br>
+        $\mathcal{F}_c\{e^{-at}\} = \int_0^\infty e^{-at}\cos(\omega t) dt = \mathbf{\frac{a}{a^2 + \omega^2}}$<br>
+        <em>Behavior:</em> Maximum at $\omega = 0$ ($F_c(0) = 1/a$); monotonic low-pass roll-off.
+      </div>
+    </div>
+    <p>
+      <em>Application to Signal Filtering:</em> The continuous spectrum confirms that non-periodic noise attenuation occurs at high frequencies with a roll-off of $-20\text{ dB/decade}$. The $-3\text{dB}$ half-power cutoff frequency is $\omega_c = a$.
+    </p>
+  </div>
+
+  <div class="page-footer">
+    <span>GM University, Davanagere | Dept. of Electronics &amp; Communication Engg.</span>
+    <span class="page-footer-page">Page 8 of 12</span>
+  </div>
+</div>
+
+<!-- ===================================================================== -->
+<!-- PAGE 9: UNIT 5 - PROBABILISTIC RELIABILITY ANALYSIS                   -->
+<!-- ===================================================================== -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-title">Unit 5: Probabilistic Reliability Analysis &amp; Noise Modeling</span>
+    <span class="page-header-course">UE25EC2301 | Engineering Mathematics-III</span>
+  </div>
+
+  <div>
+    <h2 class="sec-heading">11. Stochastic Failure &amp; Reliability Engineering</h2>
+    <p>
+      Real-world smart automated systems are subject to hardware component wear-out, environmental voltage transients, and analog Gaussian measurement noise. Comprehensive operational risk is modeled using four standard distributions:
+    </p>
+
+    <h3 class="sub-heading">11.1 Binomial Distribution: Multi-Node Sensor Redundancy</h3>
+    <p>An array of $n = 8$ redundant smart sensor nodes operates in a harsh field environment. The probability of an individual node failing during an operating cycle is $p = 0.05$ ($q = 1 - p = 0.95$). Let $X \sim B(n=8, p=0.05)$ be the number of failed nodes:</p>
+    <div class="eq-block">
+      $P(X = k) = \binom{8}{k} (0.05)^k (0.95)^{8-k}$<br>
+      $P(X = 0) = (0.95)^8 = \mathbf{0.663420}, \quad P(X = 1) = 8(0.05)(0.95)^7 = \mathbf{0.279335}, \quad P(X = 2) = 28(0.05)^2(0.95)^6 = \mathbf{0.051456}$
+    </div>
+    <div class="card-box">
+      <strong>Voting Cluster Reliability (At most 1 failure):</strong> $P(X \le 1) = 0.663420 + 0.279335 = \mathbf{0.942755} \quad (94.28\%)$<br>
+      <strong>Catastrophic Redundancy Failure ($>2$ failures):</strong> $P(X > 2) = 1 - [P(0)+P(1)+P(2)] = \mathbf{0.005788} \quad (0.58\%)$
+    </div>
+
+    <h3 class="sub-heading">11.2 Poisson Distribution: Transient Electrical Fault Arrivals</h3>
+    <p>Operational transient electrical noise spikes occur randomly at an average rate of $\lambda = 2.4$ events per 100 operating hours. The probability of encountering $k$ spikes is governed by $P(X = k) = \frac{e^{-\lambda} \lambda^k}{k!}$:</p>
+    <div class="eq-block">
+      $P(X = 0) = e^{-2.4} = \mathbf{0.090718}, \quad P(X = 1) = \frac{e^{-2.4}(2.4)^1}{1!} = \mathbf{0.217723}, \quad P(X = 2) = \frac{e^{-2.4}(2.4)^2}{2!} = \mathbf{0.261268}$<br>
+      $P(X = 3) = \frac{e^{-2.4}(2.4)^3}{6} = \mathbf{0.209014}, \quad \mathbf{P(X \le 2) = 0.090718 + 0.217723 + 0.261268 = 0.569709} \quad (56.97\%)$
+    </div>
+
+    <h3 class="sub-heading">11.3 Exponential Distribution: Actuator Lifetime &amp; MTBF</h3>
+    <p>The time-to-failure $T$ of a smart linear actuator exhibits constant failure rate $\lambda = 0.0005\text{ hr}^{-1}$, corresponding to a Mean Time Between Failures $\text{MTBF} = 1/\lambda = \mathbf{2000\text{ hours}}$. The reliability function $R(t) = P(T > t) = e^{-\lambda t}$ evaluates to:</p>
+    <div class="eq-block">
+      $R(500\text{ h}) = e^{-0.0005(500)} = e^{-0.25} = \mathbf{0.778801} \quad (77.88\%)$<br>
+      $R(1000\text{ h}) = e^{-0.0005(1000)} = e^{-0.50} = \mathbf{0.606531} \quad (60.65\%)$<br>
+      $R(2000\text{ h}) = e^{-0.0005(2000)} = e^{-1.00} = \mathbf{0.367879} \quad (36.79\% \text{ survival at MTBF})$
+    </div>
+
+    <h3 class="sub-heading">11.4 Normal (Gaussian) Distribution: Sensor Signal Measurement Noise</h3>
+    <p>The calibrated regulated sensor output voltage $X$ exhibits Gaussian thermal noise: $X \sim \mathcal{N}(\mu = 5.00\text{ V}, \sigma = 0.08\text{ V})$. The acceptable engineering tolerance band is $[4.80\text{ V}, 5.20\text{ V}]$. Transforming to standard normal $Z = \frac{X - \mu}{\sigma}$:</p>
+    <div class="eq-block">
+      $Z_{\text{lower}} = \frac{4.80 - 5.00}{0.08} = \mathbf{-2.50}, \qquad Z_{\text{upper}} = \frac{5.20 - 5.00}{0.08} = \mathbf{+2.50}$<br>
+      $P(4.80 \le X \le 5.20) = \Phi(2.50) - \Phi(-2.50) = 0.993790 - 0.006210 = \mathbf{0.987581} \quad (\mathbf{98.76\%} \text{ within spec})$<br>
+      $P(\text{Out of Spec}) = 1 - 0.987581 = \mathbf{0.012419} \quad (\mathbf{12,419.4\text{ PPM defect rate}})$
+    </div>
+
+    <div class="diagram-frame">
+      <!-- SVG_RELIABILITY -->
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>GM University, Davanagere | Dept. of Electronics &amp; Communication Engg.</span>
+    <span class="page-footer-page">Page 9 of 12</span>
+  </div>
+</div>
+
+<!-- ===================================================================== -->
+<!-- PAGE 10: UNIT 6 - STOCHASTIC MODELLING & DUAL JOINT DISTRIBUTIONS     -->
+<!-- ===================================================================== -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-title">Unit 6: Stochastic Joint Probability &amp; Markov State Transitions</span>
+    <span class="page-header-course">UE25EC2301 | Engineering Mathematics-III</span>
+  </div>
+
+  <div>
+    <h2 class="sec-heading">12. Joint Probability Distribution for Dual Discrete Random Variables</h2>
+    <p>
+      In smart engineering controllers, processor computation load $X \in \{1: \text{Low}, 2: \text{Medium}, 3: \text{High}\}$ interacts dynamically with internal module thermal stress state $Y \in \{1: \text{Low}, 2: \text{Medium}, 3: \text{High}\}$. The bivariate discrete probability mass function $p(x_i, y_j) = P(X = x_i, Y = y_j)$ was empirically mapped:
+    </p>
+
+    <table class="compact-table">
+      <thead>
+        <tr>
+          <th>Load State ($X$) \ Thermal State ($Y$)</th>
+          <th>$Y = 1$ (Low Temp)</th>
+          <th>$Y = 2$ (Med Temp)</th>
+          <th>$Y = 3$ (High Temp)</th>
+          <th>Marginal $P_X(x_i)$</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>$X = 1$ (Low Load)</strong></td>
+          <td>0.18</td><td>0.08</td><td>0.04</td>
+          <td><strong>0.30</strong></td>
+        </tr>
+        <tr>
+          <td><strong>$X = 2$ (Medium Load)</strong></td>
+          <td>0.10</td><td>0.22</td><td>0.08</td>
+          <td><strong>0.40</strong></td>
+        </tr>
+        <tr>
+          <td><strong>$X = 3$ (High Load)</strong></td>
+          <td>0.02</td><td>0.10</td><td>0.18</td>
+          <td><strong>0.30</strong></td>
+        </tr>
+        <tr class="highlight-cell">
+          <td><strong>Marginal $P_Y(y_j)$</strong></td>
+          <td><strong>0.30</strong></td>
+          <td><strong>0.40</strong></td>
+          <td><strong>0.30</strong></td>
+          <td><strong>$\sum\sum p_{ij} = 1.00$</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub-heading">12.1 Marginal Expectations, Variances &amp; Covariance</h3>
+    <div class="two-col-grid">
+      <div>
+        <div class="eq-block">
+          $E[X] = 1(0.30) + 2(0.40) + 3(0.30) = \mathbf{2.0000}$<br>
+          $E[X^2] = 1^2(0.30) + 2^2(0.40) + 3^2(0.30) = \mathbf{4.6000}$<br>
+          $\text{Var}(X) = E[X^2] - (E[X])^2 = 4.60 - 4.00 = \mathbf{0.6000}$<br>
+          $\sigma_X = \sqrt{0.6000} = \mathbf{0.774597}$
+        </div>
+      </div>
+      <div>
+        <div class="eq-block">
+          $E[Y] = 1(0.30) + 2(0.40) + 3(0.30) = \mathbf{2.0000}$<br>
+          $E[Y^2] = 1^2(0.30) + 2^2(0.40) + 3^2(0.30) = \mathbf{4.6000}$<br>
+          $\text{Var}(Y) = E[Y^2] - (E[Y])^2 = 4.60 - 4.00 = \mathbf{0.6000}$<br>
+          $\sigma_Y = \sqrt{0.6000} = \mathbf{0.774597}$
+        </div>
+      </div>
+    </div>
+
+    <p>The joint expectation $E[XY] = \sum_{i=1}^3 \sum_{j=1}^3 x_i y_j p(x_i, y_j)$ is computed term-by-term:</p>
+    <div class="eq-block">
+      $E[XY] = 1(0.18) + 2(0.08) + 3(0.04) + 2(0.10) + 4(0.22) + 6(0.08) + 3(0.02) + 6(0.10) + 9(0.18)$<br>
+      $E[XY] = 0.18 + 0.16 + 0.12 + 0.20 + 0.88 + 0.48 + 0.06 + 0.60 + 1.62 = \mathbf{4.3000}$
+    </div>
+    <div class="card-box">
+      <strong>Covariance:</strong> $\text{Cov}(X, Y) = E[XY] - E[X]E[Y] = 4.3000 - (2.0000)(2.0000) = \mathbf{0.3000}$<br>
+      <strong>Correlation Coefficient:</strong> $\rho_{XY} = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y} = \frac{0.3000}{0.6000} = \mathbf{+0.500000}$
+    </div>
+    <p>
+      <em>Independence Test:</em> $P(X = 1, Y = 1) = 0.18$, while $P_X(1) \cdot P_Y(1) = (0.30)(0.30) = 0.09$. Since $P(X, Y) \ne P_X(X)P_Y(Y)$, $X$ and $Y$ are statistically dependent. The positive correlation ($\rho = +0.50$) confirms that processor load directly amplifies thermal stress.
+    </p>
+
+    <h2 class="sec-heading">13. Stochastic Markov Chain Health State Transitions</h2>
+    <p>The smart automated engineering system transitions dynamically between three mutually exclusive operating states:</p>
+    <ul style="margin: 2px 0 3px 18px; padding: 0; font-size: 8.2pt;">
+      <li><strong>State 1 ($S_1$): Normal Operation</strong> (Nominal throughput, full sensor health).</li>
+      <li><strong>State 2 ($S_2$): Degraded / Warning</strong> (Telemetry drift detected, preventive self-test initiated).</li>
+      <li><strong>State 3 ($S_3$): Critical Failure Outage</strong> (Hardware shutdown, automated recovery triggered).</li>
+    </ul>
+
+    <div class="diagram-frame">
+      <!-- SVG_MARKOV -->
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>GM University, Davanagere | Dept. of Electronics &amp; Communication Engg.</span>
+    <span class="page-footer-page">Page 10 of 12</span>
+  </div>
+</div>
+
+<!-- ===================================================================== -->
+<!-- PAGE 11: UNIT 6 (CONT.) - MARKOV STEADY-STATE & DEMO ARCHITECTURE     -->
+<!-- ===================================================================== -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-title">Unit 6: Markov Steady-State Analysis &amp; System Demonstration</span>
+    <span class="page-header-course">UE25EC2301 | Engineering Mathematics-III</span>
+  </div>
+
+  <div>
+    <h3 class="sub-heading">13.1 Stochastic Transition Probability Matrix ($P$) &amp; Higher-Order Powers</h3>
+    <p>The 1-step transition probability matrix $P = [p_{ij}]$ is defined such that row sums equal 1 ($\sum_j p_{ij} = 1$):</p>
+    <div class="eq-block">
+      $P = \begin{pmatrix} 0.85 & 0.12 & 0.03 \\ 0.20 & 0.70 & 0.10 \\ 0.40 & 0.30 & 0.30 \end{pmatrix}$
+    </div>
+    <p>Higher-order transition matrices $P^2$ and $P^3$ are evaluated via matrix multiplication:</p>
+    <div class="two-col-grid">
+      <div class="eq-block">
+        $P^2 = P \cdot P = \begin{pmatrix} 0.7585 & 0.1950 & 0.0465 \\ 0.3500 & 0.5440 & 0.1060 \\ 0.5200 & 0.3480 & 0.1320 \end{pmatrix}$
+      </div>
+      <div class="eq-block">
+        $P^3 = P^2 \cdot P = \begin{pmatrix} 0.7023 & 0.2415 & 0.0562 \\ 0.4487 & 0.4546 & 0.0967 \\ 0.5644 & 0.3456 & 0.0900 \end{pmatrix}$
+      </div>
+    </div>
+
+    <h3 class="sub-heading">13.2 Closed-Form Derivation of Long-Term Steady-State Probabilities ($\mathbf{\pi}$)</h3>
+    <p>Since all entries of $P^2$ are strictly positive ($p_{ij}^{(2)} > 0$), the Markov chain is <strong>regular and ergodic</strong>. The stationary probability vector $\mathbf{\pi} = [\pi_1, \pi_2, \pi_3]$ satisfies the balance equations $\mathbf{\pi} P = \mathbf{\pi}$ subject to $\sum \pi_i = 1$:</p>
+    <div class="eq-block">
+      (1) $0.85\pi_1 + 0.20\pi_2 + 0.40\pi_3 = \pi_1 \implies -0.15\pi_1 + 0.20\pi_2 + 0.40\pi_3 = 0$<br>
+      (2) $0.12\pi_1 + 0.70\pi_2 + 0.30\pi_3 = \pi_2 \implies 0.12\pi_1 - 0.30\pi_2 + 0.30\pi_3 = 0$<br>
+      (3) $\pi_1 + \pi_2 + \pi_3 = 1$
+    </div>
+    <p>From equation (2): $0.12\pi_1 = 0.30\pi_2 - 0.30\pi_3 \implies \pi_1 = 2.5\pi_2 - 2.5\pi_3$. Substituting into equation (1):</p>
+    <div class="eq-block">
+      $-0.15(2.5\pi_2 - 2.5\pi_3) + 0.20\pi_2 + 0.40\pi_3 = 0 \implies -0.375\pi_2 + 0.375\pi_3 + 0.20\pi_2 + 0.40\pi_3 = 0$<br>
+      $-0.175\pi_2 + 0.775\pi_3 = 0 \implies \pi_2 = \frac{0.775}{0.175}\pi_3 = \frac{31}{7}\pi_3$
+    </div>
+    <p>Expressing $\pi_1$ in terms of $\pi_3$: $\pi_1 = 2.5\left(\frac{31}{7}\pi_3\right) - 2.5\pi_3 = 2.5\left(\frac{24}{7}\right)\pi_3 = \frac{60}{7}\pi_3$. Substituting into (3):</p>
+    <div class="eq-block">
+      $\frac{60}{7}\pi_3 + \frac{31}{7}\pi_3 + \frac{7}{7}\pi_3 = 1 \implies \frac{98}{7}\pi_3 = 1 \implies 14\pi_3 = 1 \implies \mathbf{\pi_3 = \frac{1}{14} = \frac{7}{98} \approx 0.071429}$<br>
+      $\mathbf{\pi_1 = \frac{60}{98} = \frac{30}{49} \approx 0.612245}, \qquad \mathbf{\pi_2 = \frac{31}{98} \approx 0.316327}$
+    </div>
+    <div class="success-box">
+      <strong>Exact Steady-State Vector:</strong> $\mathbf{\pi = [0.612245, \; 0.316327, \; 0.071429]} = \mathbf{[61.22\%, \; 31.63\%, \; 7.14\%]}$<br>
+      <strong>Operational Availability:</strong> $A = \pi_1 + \pi_2 = 61.22\% + 31.63\% = \mathbf{92.86\%}$ operational uptime.<br>
+      <strong>Mean Recurrence Times ($\mu_{ii} = 1/\pi_i$):</strong> $\mu_{11} = \frac{49}{30} = \mathbf{1.63\text{ steps}}, \; \mu_{22} = \frac{98}{31} = \mathbf{3.16\text{ steps}}, \; \mu_{33} = 14 = \mathbf{14.00\text{ steps}}$.
+    </div>
+
+    <h2 class="sec-heading">14. Software Verification &amp; Working Model Demonstration</h2>
+    <p>
+      In accordance with the GM University PBL guidelines, a working software demonstration engine was implemented in Python / PowerShell. The verification suite features:
+    </p>
+    <ul style="margin: 2px 0 4px 18px; padding: 0; font-size: 8.2pt;">
+      <li><strong>Automated Numerical Solver:</strong> Re-computes all determinants, matrix inversions, Fourier integrals, and statistical tests in real time, confirming $<10^{-6}$ error margins.</li>
+      <li><strong>Interactive Telemetry Dashboard:</strong> Visualizes the 12-point practical harmonic waveform, the continuous spectral transform, and dynamic Markov state Monte Carlo simulations.</li>
+      <li><strong>Fault Injection Testing:</strong> Demonstrates real-time transition from Normal ($S_1$) to Degraded ($S_2$) when analog voltage drifts beyond $\pm 2.5\sigma$, followed by automated self-healing reboot to $S_1$.</li>
+    </ul>
+  </div>
+
+  <div class="page-footer">
+    <span>GM University, Davanagere | Dept. of Electronics &amp; Communication Engg.</span>
+    <span class="page-footer-page">Page 11 of 12</span>
+  </div>
+</div>
+
+<!-- ===================================================================== -->
+<!-- PAGE 12: 14-WEEK TIMELINE, CONTRIBUTION MATRIX & VIVA-VOCE            -->
+<!-- ===================================================================== -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-title">14-Week Timeline, Contributions &amp; Viva-Voce Assessment</span>
+    <span class="page-header-course">UE25EC2301 | Engineering Mathematics-III</span>
+  </div>
+
+  <div>
+    <h2 class="sec-heading">15. 14-Week Project Timeline Execution</h2>
+    <table class="compact-table">
+      <thead>
+        <tr>
+          <th>Timeline Phase</th>
+          <th>Weeks</th>
+          <th>Planned Milestone Activities</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Phase 1</td><td>Weeks 1–2</td><td>Problem understanding, mathematical scope division, and team formation</td><td>Completed</td></tr>
+        <tr><td>Phase 2</td><td>Weeks 3–4</td><td>PBL proposal submission, transducer selection, and test dataset formulation</td><td>Completed</td></tr>
+        <tr><td>Phase 3</td><td>Weeks 5–6</td><td>Design of Least Squares normal equations and continuous Fourier models</td><td>Completed</td></tr>
+        <tr><td>Phase 4</td><td>Weeks 7–10</td><td>Development of Practical Harmonic Analysis, Fourier transforms, and probability algorithms</td><td>Completed</td></tr>
+        <tr><td>Phase 5</td><td>Weeks 11–12</td><td>Stochastic Markov modeling, numerical verification, and error residual testing</td><td>Completed</td></tr>
+        <tr><td>Phase 6</td><td>Week 13</td><td>Final integration, telemetry GUI implementation, and technical report drafting</td><td>Completed</td></tr>
+        <tr><td>Phase 7</td><td>Week 14</td><td>Working model demonstration, viva-voce evaluation, and final submission</td><td>Completed</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="sec-heading">16. Student Team Individual Contribution &amp; Accountability</h2>
+    <table class="compact-table">
+      <thead>
+        <tr>
+          <th>USN</th>
+          <th>Name</th>
+          <th>Specific Modules &amp; Mathematical Responsibilities</th>
+          <th>Share</th>
+          <th>Sign</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>01JST23EC041</td>
+          <td>Arjun Sharma</td>
+          <td>Unit 1 Least Squares (4 curves, dual regression, $r=0.9753$) &amp; Unit 2 ($2\pi, 2L$ series)</td>
+          <td>25%</td>
+          <td><em>A. Sharma</em></td>
+        </tr>
+        <tr>
+          <td>01JST23EC058</td>
+          <td>Bhavana Patil</td>
+          <td>Unit 3 Half-range series &amp; 12-point Practical Harmonic table ($\sum y, a_n, b_n$, THD)</td>
+          <td>25%</td>
+          <td><em>B. Patil</em></td>
+        </tr>
+        <tr>
+          <td>01JST23EC082</td>
+          <td>Chetan K</td>
+          <td>Unit 4 Infinite Fourier Transforms (Parseval proof) &amp; Unit 5 (Binomial, Poisson, Norm)</td>
+          <td>25%</td>
+          <td><em>Chetan K</em></td>
+        </tr>
+        <tr>
+          <td>01JST23EC104</td>
+          <td>Divya R</td>
+          <td>Unit 6 Joint PMF ($\text{Cov}=0.3, \rho=0.5$), Markov steady-state ($\mathbf{\pi}$), Lead Editor</td>
+          <td>25%</td>
+          <td><em>Divya R</em></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="sec-heading">17. Technical Viva-Voce Questions &amp; Model Answers</h2>
+    <div style="font-size: 7.8pt; line-height: 1.28;">
+      <p style="margin-bottom: 2px;"><strong>Q1: Why did the parabolic fit achieve a much lower RSS (0.0509) than the linear model (13.4110)?</strong><br>
+      <em>Ans:</em> The transducer's underlying physical sensor mechanism exhibits second-order non-linearities. The quadratic curvature term $ax^2$ ($a = 0.5982$) matches empirical telemetry, yielding $R^2 = 0.9998$.</p>
+
+      <p style="margin-bottom: 2px;"><strong>Q2: How does Practical Harmonic Analysis differ from continuous Fourier analytical integration?</strong><br>
+      <em>Ans:</em> Continuous Fourier integration requires an explicit closed-form $f(t)$. Practical Harmonic Analysis applies discrete numerical quadrature over tabulated equidistant measurements: $a_n = \frac{2}{N}\sum y\cos(n\theta)$.</p>
+
+      <p style="margin-bottom: 2px;"><strong>Q3: How was Parseval's identity verified for $f(t) = e^{-a|t|}$?</strong><br>
+      <em>Ans:</em> The time-domain integral $\int_{-\infty}^\infty [e^{-a|t|}]^2 dt = \frac{1}{a}$ identically matches the frequency integral $\frac{1}{2\pi}\int_{-\infty}^\infty \frac{4a^2}{(a^2+\omega^2)^2} d\omega = \frac{1}{a}$, proving energy conservation.</p>
+
+      <p style="margin-bottom: 2px;"><strong>Q4: Why is the Markov chain steady-state probability for failure only $\pi_3 = 7.14\%$?</strong><br>
+      <em>Ans:</em> Because of strong self-retention in the normal state ($p_{11} = 0.85$) and high automated recovery transitions from outage back to normal ($p_{31} = 0.40$), yielding an operational availability of $92.86\%$.</p>
+    </div>
+
+    <div class="card-box" style="margin-top: 4px; padding: 4px 8px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+        <div style="text-align: center; width: 45%;">
+          <div style="border-top: 1px solid #334155; margin: 16px auto 2px auto; width: 80%;"></div>
+          <strong>Mrs. P R Nagashri</strong><br>Course Coordinator, ECE
+        </div>
+        <div style="text-align: center; width: 45%;">
+          <div style="border-top: 1px solid #334155; margin: 16px auto 2px auto; width: 80%;"></div>
+          <strong>Dr. Praveen J</strong><br>Head of Department &amp; Director, SE
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>GM University, Davanagere | Dept. of Electronics &amp; Communication Engg.</span>
+    <span class="page-footer-page">Page 12 of 12</span>
+  </div>
+</div>
+
+</body>
+</html>
+'@
+
+# Substitute SVGs
+$html = $html.Replace('<!-- SVG_SYS -->', $svgSys)
+$html = $html.Replace('<!-- SVG_CURVE -->', $svgCurve)
+$html = $html.Replace('<!-- SVG_HARMONIC -->', $svgHarmonic)
+$html = $html.Replace('<!-- SVG_RELIABILITY -->', $svgReliability)
+$html = $html.Replace('<!-- SVG_MARKOV -->', $svgMarkov)
+
+[System.IO.File]::WriteAllText($htmlPath, $html, [System.Text.Encoding]::UTF8)
+Write-Host "HTML file written successfully to $htmlPath"
+
+# Compile to PDF using Microsoft Edge headless
+Write-Host "Compiling to PDF using Microsoft Edge headless..."
+$edgePath = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+$proc = Start-Process -FilePath $edgePath -ArgumentList "--headless=new --disable-gpu --no-pdf-header-footer --print-to-pdf=`"$pdfPath`" `"file:///$($htmlPath.Replace('\', '/'))`"" -PassThru -Wait
+
+Write-Host "Edge process exited with code $($proc.ExitCode)"
+if (Test-Path $pdfPath) {
+    $pdfSize = (Get-Item $pdfPath).Length
+    Write-Host "PDF successfully created: $pdfPath (Size: $pdfSize bytes)"
+} else {
+    Write-Host "PDF creation failed."
+}

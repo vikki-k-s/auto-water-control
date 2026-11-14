@@ -1,0 +1,429 @@
+"""
+Generates the Master Engineering Circuit Schematic SVG for:
+Smart Real-Time Signal Monitoring and Analysis System
+Course: UE25EC2304 | Signals and Systems with Simulation
+GM University, Davanagere - Department of ECE
+"""
+
+def generate_master_schematic():
+    svg = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="100%" height="100%">
+  <defs>
+    <style>
+      .wire { stroke: #0f172a; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .wire-bus { stroke: #1e3a8a; stroke-width: 2.8; fill: none; stroke-linecap: round; }
+      .pwr-5v { stroke: #dc2626; stroke-width: 2.0; fill: none; }
+      .pwr-3v3 { stroke: #ea580c; stroke-width: 2.0; fill: none; }
+      .gnd-wire { stroke: #2563eb; stroke-width: 2.0; fill: none; }
+      .comp-body { fill: #ffffff; stroke: #1e3a8a; stroke-width: 1.8; }
+      .comp-ic { fill: #f8fafc; stroke: #0f172a; stroke-width: 2.0; }
+      .label { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; fill: #0f172a; }
+      .label-bold { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+      .title { font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; font-weight: 800; fill: #1e3a8a; }
+      .sub-title { font-family: 'Segoe UI', Arial, sans-serif; font-size: 10px; font-weight: 600; fill: #475569; }
+      .unit-tag { font-family: 'Segoe UI', Arial, sans-serif; font-size: 9px; fill: #7c3aed; font-weight: 700; }
+      .val { font-family: 'Segoe UI', Arial, sans-serif; font-size: 9.5px; fill: #475569; }
+      .pin { font-family: 'Courier New', monospace; font-size: 9px; fill: #334155; font-weight: bold; }
+      .node { fill: #0f172a; }
+      .test-point { fill: #f59e0b; stroke: #b45309; stroke-width: 1.5; }
+    </style>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.1"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#1e3a8a"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <!-- Sheet Background -->
+  <rect width="1200" height="800" fill="#ffffff"/>
+  <rect x="12" y="12" width="1176" height="776" fill="none" stroke="#1e3a8a" stroke-width="2.5" rx="6"/>
+  <rect x="18" y="18" width="1164" height="764" fill="none" stroke="#94a3b8" stroke-width="1" rx="4"/>
+
+  <!-- Engineering Title Header Block -->
+  <rect x="18" y="18" width="1164" height="58" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="35" y="42" class="title" style="font-size: 16px; letter-spacing: 0.5px;">
+    MASTER HARDWARE CIRCUIT SCHEMATIC: SMART REAL-TIME SIGNAL MONITORING SYSTEM
+  </text>
+  <text x="35" y="60" class="sub-title">
+    GM UNIVERSITY | DEPT OF ELECTRONICS &amp; COMMUNICATION ENGG | COURSE: UE25EC2304 (SIGNALS &amp; SYSTEMS) | SEMESTER 3
+  </text>
+  <rect x="980" y="26" width="185" height="42" rx="4" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="1072" y="42" font-family="'Segoe UI', sans-serif" font-size="10px" font-weight="700" fill="#1e3a8a" text-anchor="middle">
+    PBL EVALUATION: 40 MARKS
+  </text>
+  <text x="1072" y="58" font-family="'Segoe UI', sans-serif" font-size="9px" font-weight="600" fill="#047857" text-anchor="middle">
+    UNITS 1 TO 6 FULLY INTEGRATED
+  </text>
+
+  <!-- =================================================================== -->
+  <!-- SECTION A: POWER SUPPLY & LOW-NOISE 3.3V AREF REFERENCE (UNIT 6)   -->
+  <!-- =================================================================== -->
+  <rect x="30" y="90" width="340" height="185" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-dasharray="4,4"/>
+  <text x="42" y="108" class="title" style="font-size: 11.5px;">SECTION A: REGULATED POWER &amp; AREF</text>
+  <text x="42" y="121" class="unit-tag">[Unit 6: Hardware Power &amp; Low-Noise ADC Reference]</text>
+
+  <!-- USB +5V In -->
+  <circle cx="50" cy="155" r="4" fill="#dc2626"/>
+  <text x="60" y="159" class="label-bold" fill="#dc2626">+5V USB</text>
+  <line x1="50" y1="155" x2="110" y2="155" class="pwr-5v"/>
+  <circle cx="110" cy="155" r="3.5" class="node"/>
+
+  <!-- Input Filter Cap C1 -->
+  <line x1="110" y1="155" x2="110" y2="185" class="wire"/>
+  <line x1="102" y1="185" x2="118" y2="185" class="wire" stroke-width="2"/>
+  <line x1="102" y1="190" x2="118" y2="190" class="wire" stroke-width="2"/>
+  <line x1="110" y1="190" x2="110" y2="240" class="wire"/>
+  <text x="122" y="188" class="val">C1: 10µF</text>
+
+  <!-- AMS1117-3.3 Regulator IC -->
+  <rect x="145" y="130" width="85" height="55" rx="4" class="comp-ic" filter="url(#shadow)"/>
+  <text x="187" y="152" class="label-bold" text-anchor="middle">AMS1117</text>
+  <text x="187" y="165" class="val" text-anchor="middle">3.3V LDO</text>
+  <text x="150" y="145" class="pin">IN</text>
+  <text x="215" y="145" class="pin" text-anchor="end">OUT</text>
+  <text x="187" y="180" class="pin" text-anchor="middle">GND</text>
+
+  <!-- Wire 5V to Regulator IN -->
+  <line x1="110" y1="155" x2="145" y2="155" class="pwr-5v"/>
+
+  <!-- Output 3.3V Wire -->
+  <line x1="230" y1="155" x2="275" y2="155" class="pwr-3v3"/>
+  <circle cx="275" cy="155" r="3.5" class="node"/>
+
+  <!-- Output Filter Cap C2 -->
+  <line x1="275" y1="155" x2="275" y2="185" class="wire"/>
+  <line x1="267" y1="185" x2="283" y2="185" class="wire" stroke-width="2"/>
+  <line x1="267" y1="190" x2="283" y2="190" class="wire" stroke-width="2"/>
+  <line x1="275" y1="190" x2="275" y2="240" class="wire"/>
+  <text x="287" y="188" class="val">C2: 0.1µF</text>
+
+  <!-- 3.3V AREF Bus Rail -->
+  <line x1="275" y1="155" x2="350" y2="155" class="pwr-3v3" marker-end="url(#arrow)"/>
+  <circle cx="350" cy="155" r="4" fill="#ea580c"/>
+  <text x="290" y="145" class="label-bold" fill="#ea580c">AREF (3.30V)</text>
+  <text x="295" y="168" class="val">To MCU Pin 21</text>
+
+  <!-- Regulator GND Pin -->
+  <line x1="187" y1="185" x2="187" y2="240" class="wire"/>
+
+  <!-- Ground Rail Section A -->
+  <line x1="90" y1="240" x2="330" y2="240" class="gnd-wire"/>
+  <line x1="210" y1="240" x2="210" y2="255" class="wire"/>
+  <line x1="200" y1="255" x2="220" y2="255" class="wire" stroke-width="2"/>
+  <line x1="204" y1="259" x2="216" y2="259" class="wire" stroke-width="1.8"/>
+  <line x1="208" y1="263" x2="212" y2="263" class="wire" stroke-width="1.5"/>
+  <text x="225" y="258" class="label" fill="#2563eb">GND</text>
+
+  <!-- =================================================================== -->
+  <!-- SECTION B: BIOMEDICAL FRONT-END: AD8232 ECG SENSOR (UNITS 1 & 6)    -->
+  <!-- =================================================================== -->
+  <rect x="30" y="295" width="410" height="235" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-dasharray="4,4"/>
+  <text x="42" y="313" class="title" style="font-size: 11.5px;">SECTION B: AD8232 ECG BIO-POTENTIAL FRONT-END</text>
+  <text x="42" y="326" class="unit-tag">[Units 1 &amp; 6: Biomedical Signal Acquisition &amp; 0.5 - 40 Hz Band]</text>
+
+  <!-- Electrode Jack Block -->
+  <rect x="45" y="345" width="75" height="80" rx="4" class="comp-body"/>
+  <text x="82" y="362" class="label-bold" text-anchor="middle">3-LEAD</text>
+  <text x="82" y="375" class="val" text-anchor="middle">ELECTRODES</text>
+  <text x="50" y="392" class="pin">RA (R)</text>
+  <text x="50" y="405" class="pin">LA (Y)</text>
+  <text x="50" y="418" class="pin">RL (G)</text>
+
+  <!-- AD8232 IC Block -->
+  <rect x="175" y="340" width="135" height="150" rx="5" class="comp-ic" filter="url(#shadow)"/>
+  <text x="242" y="360" class="label-bold" text-anchor="middle">IC: AD8232</text>
+  <text x="242" y="373" class="val" text-anchor="middle">Single-Lead Heart Monitor</text>
+
+  <!-- AD8232 Left Pins -->
+  <text x="180" y="395" class="pin">IN- (RA)</text>
+  <text x="180" y="415" class="pin">IN+ (LA)</text>
+  <text x="180" y="435" class="pin">RLD (RL)</text>
+  <text x="180" y="465" class="pin">GND</text>
+
+  <!-- AD8232 Right Pins -->
+  <text x="305" y="395" class="pin" text-anchor="end">OUTPUT</text>
+  <text x="305" y="418" class="pin" text-anchor="end">LO+ (D10)</text>
+  <text x="305" y="438" class="pin" text-anchor="end">LO- (D11)</text>
+  <text x="305" y="465" class="pin" text-anchor="end">3.3V (VCC)</text>
+
+  <!-- Wires from Electrodes to AD8232 -->
+  <line x1="120" y1="390" x2="175" y2="390" class="wire"/>
+  <line x1="120" y1="410" x2="175" y2="410" class="wire"/>
+  <line x1="120" y1="425" x2="140" y2="425" class="wire"/>
+  <line x1="140" y1="425" x2="140" y2="435" class="wire"/>
+  <line x1="140" y1="435" x2="175" y2="435" class="wire"/>
+
+  <!-- Highpass & Lowpass Components on AD8232 -->
+  <rect x="195" y="495" width="95" height="25" rx="3" fill="#e0f2fe" stroke="#38bdf8"/>
+  <text x="242" y="511" class="val" text-anchor="middle" font-weight="bold">Gain = 100 V/V</text>
+
+  <!-- Output from AD8232 to TP1 -->
+  <line x1="310" y1="390" x2="360" y2="390" class="wire"/>
+  <circle cx="360" cy="390" r="5" class="test-point"/>
+  <text x="360" y="380" class="label-bold" text-anchor="middle" fill="#b45309">TP1</text>
+  <line x1="360" y1="390" x2="420" y2="390" class="wire-bus" marker-end="url(#arrow)"/>
+  <text x="375" y="405" class="label-bold" fill="#1e3a8a">ECG_OUT</text>
+  <text x="375" y="418" class="val">To MCU A0</text>
+
+  <!-- Leads-Off Wires -->
+  <line x1="310" y1="415" x2="420" y2="415" class="wire"/>
+  <text x="330" y="428" class="val">LO+ -> D10</text>
+  <line x1="310" y1="435" x2="420" y2="435" class="wire"/>
+  <text x="330" y="448" class="val">LO- -> D11</text>
+
+  <!-- =================================================================== -->
+  <!-- SECTION C: ENVIRONMENTAL SENSOR: LM35 TEMPERATURE (UNITS 1 & 6)     -->
+  <!-- =================================================================== -->
+  <rect x="30" y="545" width="410" height="230" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-dasharray="4,4"/>
+  <text x="42" y="563" class="title" style="font-size: 11.5px;">SECTION C: LM35 PRECISION TEMPERATURE SENSOR</text>
+  <text x="42" y="576" class="unit-tag">[Units 1 &amp; 6: Thermal Process Ingestion &amp; 10 mV/°C]</text>
+
+  <!-- LM35DZ Sensor Component (TO-92) -->
+  <rect x="55" y="605" width="90" height="70" rx="4" class="comp-ic" filter="url(#shadow)"/>
+  <text x="100" y="630" class="label-bold" text-anchor="middle">LM35DZ</text>
+  <text x="100" y="645" class="val" text-anchor="middle">10 mV / °C</text>
+  <text x="60" y="620" class="pin">Vs (1)</text>
+  <text x="140" y="640" class="pin" text-anchor="end">Vout (2)</text>
+  <text x="100" y="670" class="pin" text-anchor="middle">GND (3)</text>
+
+  <!-- Vs +5V connection with C3 bypass -->
+  <line x1="55" y1="615" x2="35" y2="615" class="wire"/>
+  <line x1="35" y1="615" x2="35" y2="595" class="pwr-5v"/>
+  <circle cx="35" cy="595" r="3.5" fill="#dc2626"/>
+  <text x="42" y="598" class="val" fill="#dc2626">+5V</text>
+
+  <!-- LM35 GND -->
+  <line x1="100" y1="675" x2="100" y2="735" class="wire"/>
+
+  <!-- RC Filter for LM35 Noise Suppression -->
+  <!-- Resistor R_temp -->
+  <line x1="145" y1="640" x2="190" y2="640" class="wire"/>
+  <rect x="190" y="633" width="40" height="14" class="comp-body"/>
+  <text x="210" y="644" class="val" text-anchor="middle">1.0 kΩ</text>
+  <line x1="230" y1="640" x2="280" y2="640" class="wire"/>
+  <circle cx="280" cy="640" r="3.5" class="node"/>
+
+  <!-- Cap C_temp 1.0uF to GND -->
+  <line x1="280" y1="640" x2="280" y2="685" class="wire"/>
+  <line x1="272" y1="685" x2="288" y2="685" class="wire" stroke-width="2"/>
+  <line x1="272" y1="690" x2="288" y2="690" class="wire" stroke-width="2"/>
+  <line x1="280" y1="690" x2="280" y2="735" class="wire"/>
+  <text x="292" y="688" class="val">1.0 µF</text>
+
+  <!-- Temp Ground Rail -->
+  <line x1="80" y1="735" x2="300" y2="735" class="gnd-wire"/>
+  <line x1="190" y1="735" x2="190" y2="748" class="wire"/>
+  <line x1="182" y1="748" x2="198" y2="748" class="wire" stroke-width="2"/>
+  <line x1="185" y1="752" x2="195" y2="752" class="wire" stroke-width="1.8"/>
+
+  <!-- Output to TP2 and MCU A1 -->
+  <line x1="280" y1="640" x2="350" y2="640" class="wire"/>
+  <circle cx="350" cy="640" r="5" class="test-point"/>
+  <text x="350" y="630" class="label-bold" text-anchor="middle" fill="#b45309">TP2</text>
+  <line x1="350" y1="640" x2="420" y2="640" class="wire-bus" marker-end="url(#arrow)"/>
+  <text x="365" y="655" class="label-bold" fill="#1e3a8a">TEMP_OUT</text>
+  <text x="365" y="668" class="val">To MCU A1</text>
+
+  <!-- =================================================================== -->
+  <!-- SECTION D: ACOUSTIC / SPEECH ELECTRET PRE-AMP (UNITS 1 & 6)          -->
+  <!-- =================================================================== -->
+  <rect x="460" y="90" width="360" height="240" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-dasharray="4,4"/>
+  <text x="472" y="108" class="title" style="font-size: 11.5px;">SECTION D: ACOUSTIC / SPEECH PRE-AMPLIFIER</text>
+  <text x="472" y="121" class="unit-tag">[Units 1 &amp; 6: Electret Capsule &amp; Formant Conditioning]</text>
+
+  <!-- Electret Mic Capsule Symbol -->
+  <circle cx="495" cy="175" r="16" class="comp-body"/>
+  <line x1="487" y1="165" x2="487" y2="185" class="wire" stroke-width="2.5"/>
+  <text x="495" y="198" class="val" text-anchor="middle">MIC</text>
+
+  <!-- Mic Bias Resistor R_b (2.2k) to +5V -->
+  <line x1="511" y1="175" x2="540" y2="175" class="wire"/>
+  <circle cx="540" cy="175" r="3.5" class="node"/>
+  <line x1="540" y1="175" x2="540" y2="140" class="wire"/>
+  <rect x="533" y="125" width="14" height="25" class="comp-body"/>
+  <text x="552" y="140" class="val">2.2 kΩ</text>
+  <line x1="540" y1="125" x2="540" y2="110" class="pwr-5v"/>
+  <circle cx="540" cy="110" r="3" fill="#dc2626"/>
+
+  <!-- DC Blocking Cap C_in (0.1uF) -->
+  <line x1="540" y1="175" x2="570" y2="175" class="wire"/>
+  <line x1="570" y1="168" x2="570" y2="182" class="wire" stroke-width="2"/>
+  <line x1="575" y1="168" x2="575" y2="182" class="wire" stroke-width="2"/>
+  <line x1="575" y1="175" x2="610" y2="175" class="wire"/>
+  <text x="562" y="162" class="val">0.1 µF</text>
+
+  <!-- Op-Amp Triangle LM358A -->
+  <polygon points="610,145 680,175 610,205" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+  <text x="618" y="163" class="pin">+</text>
+  <text x="618" y="193" class="pin">-</text>
+  <text x="635" y="177" class="label-bold" fill="#1e3a8a" font-size="9px">LM358</text>
+
+  <!-- Op-Amp Feedback Resistors: Gain = 1 + Rf/R1 = 1 + 47k/1k = 48 -->
+  <line x1="680" y1="175" x2="720" y2="175" class="wire"/>
+  <circle cx="720" cy="175" r="3.5" class="node"/>
+  
+  <!-- Loop to inverting pin -->
+  <line x1="720" y1="175" x2="720" y2="230" class="wire"/>
+  <line x1="720" y1="230" x2="665" y2="230" class="wire"/>
+  <rect x="635" y="223" width="30" height="14" class="comp-body"/>
+  <text x="650" y="233" class="val" text-anchor="middle">47 kΩ</text>
+  <line x1="635" y1="230" x2="600" y2="230" class="wire"/>
+  <circle cx="600" cy="230" r="3.5" class="node"/>
+  <line x1="600" y1="230" x2="600" y2="190" class="wire"/>
+  <line x1="600" y1="190" x2="610" y2="190" class="wire"/>
+
+  <!-- R1 (1k) to virtual ground -->
+  <line x1="600" y1="230" x2="600" y2="265" class="wire"/>
+  <rect x="593" y="265" width="14" height="25" class="comp-body"/>
+  <text x="612" y="280" class="val">1.0 kΩ</text>
+  <line x1="600" y1="290" x2="600" y2="305" class="wire"/>
+  <line x1="592" y1="305" x2="608" y2="305" class="wire" stroke-width="2"/>
+  <line x1="595" y1="309" x2="605" y2="309" class="wire" stroke-width="1.8"/>
+
+  <!-- Audio Output to TP3 and MCU A2 -->
+  <line x1="720" y1="175" x2="760" y2="175" class="wire"/>
+  <circle cx="760" cy="175" r="5" class="test-point"/>
+  <text x="760" y="165" class="label-bold" text-anchor="middle" fill="#b45309">TP3</text>
+  <line x1="760" y1="175" x2="810" y2="175" class="wire-bus" marker-end="url(#arrow)"/>
+  <text x="765" y="195" class="label-bold" fill="#1e3a8a">AUDIO_OUT</text>
+  <text x="765" y="208" class="val">To MCU A2</text>
+
+  <!-- =================================================================== -->
+  <!-- SECTION E: ACTIVE 2ND-ORDER SALLEN-KEY ANTI-ALIASING LPF (UNIT 2)   -->
+  <!-- =================================================================== -->
+  <rect x="460" y="345" width="360" height="235" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-dasharray="4,4"/>
+  <text x="472" y="363" class="title" style="font-size: 11.5px;">SECTION E: ACTIVE SALLEN-KEY ANTI-ALIASING LPF</text>
+  <text x="472" y="376" class="unit-tag">[Units 2, 4 &amp; 6: 2nd-Order Butterworth, fc = 200 Hz]</text>
+
+  <!-- Sallen Key Components -->
+  <line x1="475" y1="435" x2="500" y2="435" class="wire"/>
+  <rect x="500" y="428" width="30" height="14" class="comp-body"/>
+  <text x="515" y="438" class="val" text-anchor="middle">R1: 8.2k</text>
+
+  <line x1="530" y1="435" x2="555" y2="435" class="wire"/>
+  <circle cx="555" cy="435" r="3.5" class="node"/>
+
+  <rect x="555" y="428" width="30" height="14" class="comp-body"/>
+  <text x="570" y="438" class="val" text-anchor="middle">R2: 8.2k</text>
+
+  <line x1="585" y1="435" x2="620" y2="435" class="wire"/>
+  <circle cx="620" cy="435" r="3.5" class="node"/>
+
+  <!-- Cap C1 to Output Feedback -->
+  <line x1="555" y1="435" x2="555" y2="395" class="wire"/>
+  <line x1="555" y1="395" x2="675" y2="395" class="wire"/>
+  <line x1="675" y1="395" x2="685" y2="395" class="wire"/>
+  <line x1="685" y1="388" x2="685" y2="402" class="wire" stroke-width="2"/>
+  <line x1="690" y1="388" x2="690" y2="402" class="wire" stroke-width="2"/>
+  <line x1="690" y1="395" x2="725" y2="395" class="wire"/>
+  <circle cx="725" cy="435" r="3.5" class="node"/>
+  <line x1="725" y1="395" x2="725" y2="435" class="wire"/>
+  <text x="668" y="382" class="val">C1: 0.1 µF</text>
+
+  <!-- Cap C2 to Ground -->
+  <line x1="620" y1="435" x2="620" y2="480" class="wire"/>
+  <line x1="612" y1="480" x2="628" y2="480" class="wire" stroke-width="2"/>
+  <line x1="612" y1="485" x2="628" y2="485" class="wire" stroke-width="2"/>
+  <line x1="620" y1="485" x2="620" y2="520" class="wire"/>
+  <line x1="612" y1="520" x2="628" y2="520" class="wire" stroke-width="2"/>
+  <text x="632" y="484" class="val">C2: 0.1 µF</text>
+
+  <!-- Op-Amp Sallen Key -->
+  <polygon points="635,420 705,445 635,470" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+  <text x="642" y="437" class="pin">+</text>
+  <text x="642" y="462" class="pin">-</text>
+
+  <!-- Unity Gain Buffer wire from out to inverting -->
+  <line x1="705" y1="445" x2="725" y2="445" class="wire"/>
+  <line x1="725" y1="445" x2="725" y2="458" class="wire"/>
+  <line x1="725" y1="458" x2="630" y2="458" class="wire"/>
+  <line x1="630" y1="458" x2="635" y2="458" class="wire"/>
+
+  <rect x="660" y="525" width="145" height="42" rx="4" fill="#ecfdf5" stroke="#a7f3d0"/>
+  <text x="732" y="542" class="val" text-anchor="middle" font-weight="bold" fill="#065f46">fc = 1 / (2πRC) = 194 Hz</text>
+  <text x="732" y="556" class="val" text-anchor="middle" fill="#047857">Nyquist Anti-Aliasing &lt; 250Hz</text>
+
+  <!-- =================================================================== -->
+  <!-- SECTION F: ATMEGA328P / ARDUINO MICROCONTROLLER UNIT (UNIT 6)        -->
+  <!-- =================================================================== -->
+  <rect x="850" y="90" width="320" height="585" rx="6" fill="#f8fafc" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="850" y="90" width="320" height="34" rx="6" fill="#059669"/>
+  <rect x="850" y="118" width="320" height="6" fill="#059669"/>
+  <text x="1010" y="112" class="title" style="fill:#ffffff; font-size:12px;" text-anchor="middle">
+    MICROCONTROLLER UNIT (ATmega328P / ARDUINO)
+  </text>
+
+  <!-- Microcontroller Pin Labels -->
+  <!-- Left Column: Analog & Pwr -->
+  <text x="860" y="155" class="pin" fill="#047857">AREF (Pin 21)</text>
+  <text x="965" y="155" class="val">&lt;- 3.3V Precision Ref</text>
+
+  <text x="860" y="195" class="pin" fill="#1e3a8a">A0 (Pin 23)</text>
+  <text x="965" y="195" class="val">&lt;- ECG Signal (TP1)</text>
+
+  <text x="860" y="235" class="pin" fill="#1e3a8a">A1 (Pin 24)</text>
+  <text x="965" y="235" class="val">&lt;- Temp LM35 (TP2)</text>
+
+  <text x="860" y="275" class="pin" fill="#1e3a8a">A2 (Pin 25)</text>
+  <text x="965" y="275" class="val">&lt;- Audio Pre-amp (TP3)</text>
+
+  <text x="860" y="315" class="pin" fill="#334155">D10 (Pin 16)</text>
+  <text x="965" y="315" class="val">&lt;- ECG Leads-off LO+</text>
+
+  <text x="860" y="345" class="pin" fill="#334155">D11 (Pin 17)</text>
+  <text x="965" y="345" class="val">&lt;- ECG Leads-off LO-</text>
+
+  <!-- Embedded ADC Specs Box -->
+  <rect x="865" y="375" width="290" height="85" rx="5" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="1010" y="395" class="label-bold" fill="#1e3a8a" text-anchor="middle">10-Bit SAR Analog-to-Digital Converter</text>
+  <text x="875" y="415" class="val">&bull; Sampling Frequency: fs = 500 Hz (Timer1 ISR)</text>
+  <text x="875" y="430" class="val">&bull; Quantization Step LSB: 3.3V / 1024 = 3.222 mV</text>
+  <text x="875" y="445" class="val">&bull; Theoretical SQNR: 6.02·B + 1.76 = 61.96 dB</text>
+
+  <!-- Right/Bottom Pins: UART Serial -->
+  <text x="860" y="490" class="pin" fill="#dc2626">TXD (Pin 1 / D1)</text>
+  <text x="965" y="490" class="val">-&gt; UART Out @ 115200</text>
+
+  <text x="860" y="520" class="pin" fill="#dc2626">RXD (Pin 0 / D0)</text>
+  <text x="965" y="520" class="val">&lt;- UART In</text>
+
+  <text x="860" y="550" class="pin" fill="#047857">D13 (Pin 19)</text>
+  <text x="965" y="550" class="val">-&gt; Heartbeat Status LED</text>
+
+  <!-- Microcontroller Firmware Spec -->
+  <rect x="865" y="575" width="290" height="85" rx="5" fill="#ecfdf5" stroke="#a7f3d0"/>
+  <text x="1010" y="595" class="label-bold" fill="#065f46" text-anchor="middle">Firmware: SmartSignalAcquisition.ino</text>
+  <text x="875" y="615" class="val">&bull; Deterministic 2000 µs ISR execution</text>
+  <text x="875" y="630" class="val">&bull; Direct-Form II Transposed Difference Eqn</text>
+  <text x="875" y="645" class="val">&bull; Telemetry: {"t":ms, "ecg":mV, "temp":C, "aud":val}</text>
+
+  <!-- =================================================================== -->
+  <!-- SECTION G: PC WORKSTATION & WEB SERIAL SCADA (UNIT 1-5 DSP)         -->
+  <!-- =================================================================== -->
+  <rect x="460" y="600" width="360" height="175" rx="6" fill="#f8fafc" stroke="#4f46e5" stroke-width="1.8"/>
+  <rect x="460" y="600" width="360" height="26" rx="6" fill="#4f46e5"/>
+  <rect x="460" y="620" width="360" height="6" fill="#4f46e5"/>
+  <text x="640" y="618" class="title" style="fill:#ffffff; font-size:11px;" text-anchor="middle">
+    PC WORKSTATION / WEB SERIAL SCADA DASHBOARD
+  </text>
+  <text x="475" y="642" class="label-bold" fill="#3730a3">Real-Time DSP Python &amp; Web Engine:</text>
+  <text x="475" y="658" class="val">&bull; Unit 1: Multi-Attribute Signal Classification (Power vs Energy)</text>
+  <text x="475" y="673" class="val">&bull; Unit 2: LTI Convolution Engine &amp; QRS Heart Rate Detector</text>
+  <text x="475" y="688" class="val">&bull; Unit 3: Fourier Series Harmonic Synthesizer (N=1..50)</text>
+  <text x="475" y="703" class="val">&bull; Unit 4: Fast Fourier Transform (FFT) &amp; 50Hz Notch Filter</text>
+  <text x="475" y="718" class="val">&bull; Unit 5: Complex Z-Plane Pole-Zero Mapping &amp; ROC Stability</text>
+
+  <!-- UART USB Cable Link -->
+  <path d="M 850 495 L 820 495 L 820 650" stroke="#dc2626" stroke-width="2" stroke-dasharray="4,4" fill="none" marker-end="url(#arrowRed)"/>
+  <text x="825" y="560" class="val" fill="#dc2626" font-weight="bold">USB UART</text>
+  <text x="825" y="572" class="val" fill="#dc2626">115200 Baud</text>
+</svg>'''
+    with open('/mnt/d/Projects/PBL Project/docs/smart_signal_circuit_schematic.svg', 'w') as f:
+        f.write(svg)
+    print("Master Circuit Schematic successfully generated at docs/smart_signal_circuit_schematic.svg")
+
+if __name__ == "__main__":
+    generate_master_schematic()

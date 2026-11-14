@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 300" width="100%" height="100%">
+  <rect width="650" height="300" fill="#ffffff" rx="6" stroke="#e2e8f0" />
+  <text x="20" y="24" font-family="'Segoe UI', Arial" font-size="12" font-weight="bold" fill="#1e3a8a">FIG 2: EMPIRICAL SENSOR DATA &amp; LEAST-SQUARES CURVE FITTING COMPARISON</text>
+
+  <!-- Plot Area: x in [0, 6.5], y in [0, 25] -->
+  <!-- Map x: 60 to 450 (width 390, dx = 60 per unit) -->
+  <!-- Map y: 250 to 50 (height 200, dy = 8 per unit) -->
+  <!-- Origin at (60, 250) -->
+  
+  <!-- Grid Lines -->
+  <g stroke="#f1f5f9" stroke-width="1">
+    <line x1="60" y1="210" x2="450" y2="210" /><!-- y=5 -->
+    <line x1="60" y1="170" x2="450" y2="170" /><!-- y=10 -->
+    <line x1="60" y1="130" x2="450" y2="130" /><!-- y=15 -->
+    <line x1="60" y1="90" x2="450" y2="90" /><!-- y=20 -->
+    <line x1="60" y1="50" x2="450" y2="50" /><!-- y=25 -->
+
+    <line x1="120" y1="50" x2="120" y2="250" /><!-- x=1 -->
+    <line x1="180" y1="50" x2="180" y2="250" /><!-- x=2 -->
+    <line x1="240" y1="50" x2="240" y2="250" /><!-- x=3 -->
+    <line x1="300" y1="50" x2="300" y2="250" /><!-- x=4 -->
+    <line x1="360" y1="50" x2="360" y2="250" /><!-- x=5 -->
+    <line x1="420" y1="50" x2="420" y2="250" /><!-- x=6 -->
+  </g>
+
+  <!-- Axes -->
+  <line x1="60" y1="250" x2="460" y2="250" stroke="#475569" stroke-width="1.5" />
+  <line x1="60" y1="250" x2="60" y2="40" stroke="#475569" stroke-width="1.5" />
+  <text x="440" y="270" font-family="'Segoe UI', Arial" font-size="10" fill="#334155" font-weight="bold">Input x (V)</text>
+  <text x="15" y="45" font-family="'Segoe UI', Arial" font-size="10" fill="#334155" font-weight="bold">Output y (mA)</text>
+
+  <!-- Ticks & Labels -->
+  <text x="120" y="265" font-family="'Segoe UI', Arial" font-size="9" fill="#64748b" text-anchor="middle">1</text>
+  <text x="180" y="265" font-family="'Segoe UI', Arial" font-size="9" fill="#64748b" text-anchor="middle">2</text>
+  <text x="240" y="265" font-family="'Segoe UI', Arial" font-size="9" fill="#64748b" text-anchor="middle">3</text>
+  <text x="300" y="265" font-family="'Segoe UI', Arial" font-size="9" fill="#64748b" text-anchor="middle">4</text>
+  <text x="360" y="265" font-family="'Segoe UI', Arial" font-size="9" fill="#64748b" text-anchor="middle">5</text>
+  <text x="420" y="265" font-family="'Segoe UI', Arial" font-size="9" fill="#64748b" text-anchor="middle">6</text>
+
+  <text x="50" y="254" font-family="'Segoe UI', Arial" font-size="9" fill="#64748b" text-anchor="end">0</text>
+  <text x="50" y="214" font-family="'Segoe UI', Arial" font-size="9" fill="#64748b" text-anchor="end">5</text>
+  <text x="50" y="174" font-family="'Segoe UI', Arial" font-size="9" fill="#64748b" text-anchor="end">10</text>
+  <text x="50" y="134" font-family="'Segoe UI', Arial" font-size="9" fill="#64748b" text-anchor="end">15</text>
+  <text x="50" y="94" font-family="'Segoe UI', Arial" font-size="9" fill="#64748b" text-anchor="end">20</text>
+  <text x="50" y="54" font-family="'Segoe UI', Arial" font-size="9" fill="#64748b" text-anchor="end">25</text>
+
+  <!-- Curves -->
+  <!-- 1. Linear: y = 3.8686x - 3.2733 => at x=1: 0.595, at x=6: 19.938 -->
+  <!-- px1 = 120, py1 = 250 - 0.595*8 = 245.2; px6 = 420, py6 = 250 - 19.938*8 = 90.5 -->
+  <line x1="120" y1="245.2" x2="420" y2="90.5" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4 2" />
+
+  <!-- 2. Parabolic: y = 0.5982x^2 - 0.3189x + 2.3100 -->
+  <!-- x=1: 2.589(py=229.3), x=2: 4.065(py=217.5), x=3: 6.737(py=196.1), x=4: 10.605(py=165.2), x=5: 15.670(py=124.6), x=6: 21.931(py=74.6) -->
+  <path d="M 120 229.3 Q 150 223.4 180 217.5 T 240 196.1 T 300 165.2 T 360 124.6 T 420 74.6" fill="none" stroke="#10b981" stroke-width="2.5" />
+
+  <!-- 3. Exponential: y = 1.7365 e^(0.4356x) -->
+  <!-- x=1: 2.68(228.6), x=2: 4.15(216.8), x=3: 6.42(198.6), x=4: 9.92(170.6), x=5: 15.34(127.3), x=6: 23.72(60.2) -->
+  <path d="M 120 228.6 Q 180 216.8 240 198.6 T 360 127.3 T 420 60.2" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="2 2" />
+
+  <!-- Data Points (x=1:2.5, x=2:4.2, x=3:6.8, x=4:10.5, x=5:15.6, x=6:22.0) -->
+  <!-- py: 2.5*8=20 -> 230; 4.2*8=33.6 -> 216.4; 6.8*8=54.4 -> 195.6; 10.5*8=84 -> 166; 15.6*8=124.8 -> 125.2; 22.0*8=176 -> 74 -->
+  <circle cx="120" cy="230.0" r="4.5" fill="#dc2626" stroke="#991b1b" stroke-width="1.5" />
+  <circle cx="180" cy="216.4" r="4.5" fill="#dc2626" stroke="#991b1b" stroke-width="1.5" />
+  <circle cx="240" cy="195.6" r="4.5" fill="#dc2626" stroke="#991b1b" stroke-width="1.5" />
+  <circle cx="300" cy="166.0" r="4.5" fill="#dc2626" stroke="#991b1b" stroke-width="1.5" />
+  <circle cx="360" cy="125.2" r="4.5" fill="#dc2626" stroke="#991b1b" stroke-width="1.5" />
+  <circle cx="420" cy="74.0" r="4.5" fill="#dc2626" stroke="#991b1b" stroke-width="1.5" />
+
+  <!-- Legend Box -->
+  <g transform="translate(470, 50)">
+    <rect width="165" height="185" fill="#f8fafc" stroke="#cbd5e1" rx="4" />
+    <text x="12" y="20" font-family="'Segoe UI', Arial" font-size="10.5" font-weight="bold" fill="#1e293b">Legend &amp; Models</text>
+
+    <circle cx="20" cy="40" r="4" fill="#dc2626" />
+    <text x="32" y="44" font-family="'Segoe UI', Arial" font-size="9" fill="#334155">Empirical Data Points</text>
+
+    <line x1="12" y1="70" x2="28" y2="70" stroke="#10b981" stroke-width="2.5" />
+    <text x="32" y="67" font-family="'Segoe UI', Arial" font-size="9" font-weight="bold" fill="#047857">Parabolic (Best Fit)</text>
+    <text x="32" y="80" font-family="'Segoe UI', Arial" font-size="8" fill="#64748b">RSS = 0.051 | R² = 0.999</text>
+
+    <line x1="12" y1="105" x2="28" y2="105" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="2 2" />
+    <text x="32" y="102" font-family="'Segoe UI', Arial" font-size="9" font-weight="bold" fill="#b45309">Exponential</text>
+    <text x="32" y="115" font-family="'Segoe UI', Arial" font-size="8" fill="#64748b">RSS = 3.472</text>
+
+    <line x1="12" y1="140" x2="28" y2="140" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4 2" />
+    <text x="32" y="137" font-family="'Segoe UI', Arial" font-size="9" font-weight="bold" fill="#1d4ed8">Linear</text>
+    <text x="32" y="150" font-family="'Segoe UI', Arial" font-size="8" fill="#64748b">r = 0.9753 | RSS = 13.41</text>
+
+    <text x="12" y="173" font-family="'Segoe UI', Arial" font-size="8" fill="#475569">Power Fit RSS = 15.47</text>
+  </g>
+</svg>

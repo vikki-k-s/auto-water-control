@@ -1,9 +1,17 @@
-# Compiled binaries & simulation intermediates
+# Strictly exclude all PDF files
+*.pdf
+**/*.pdf
+
+# Python cache & compiled binaries
+__pycache__/
+*.py[cod]
+*$py.class
 *.out
-*.o
-*.obj
-*.exe
 sim/*.out
+*.vcd
+
+# Synthesis & temporary reports
+synth_report.txt
 
 # Operating System files
 .DS_Store

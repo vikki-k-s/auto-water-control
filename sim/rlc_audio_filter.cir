@@ -1,0 +1,59 @@
+* ==============================================================================
+* GM UNIVERSITY - FACULTY OF ENGINEERING AND TECHNOLOGY
+* DEPARTMENT OF ELECTRONICS AND COMMUNICATION ENGINEERING
+* COURSE: UE26EC2303 - NETWORK ANALYSIS AND SIMULATION (SEM 3, 40 MARKS)
+* PBL PROJECT: DESIGN AND DEVELOP AN RLC-BASED AUDIO BANDPASS FILTER
+* ==============================================================================
+* Circuit Parameters:
+* Center Frequency (fo) : 1000 Hz (1.0 kHz)
+* Quality Factor (Q)    : 2.00
+* Bandwidth (-3dB)      : 500 Hz (f1 = 781 Hz, f2 = 1281 Hz)
+* Component Values      : L1 = 100mH (Rcoil = 24 Ohm), C1 = 253.3nF, RL = 240 Ohm
+* Op-Amp Buffer         : TL072 / Universal Op-Amp Model
+* ==============================================================================
+
+.title RLC Audio Bandpass Filter (fo=1kHz, Q=2, BW=500Hz)
+
+* --- Input Audio Signal Source ---
+* Generates 1V AC test signal for Bode Plot & 1.0Vpp 1kHz sine wave for Transient
+Vin 1 0 SINE(0 0.5 1000) AC 1.0 0
+
+* --- Input Matching Resistor ---
+R1 1 2 50
+
+* --- Resonant Tank Branch ---
+* Inductor with internal copper winding resistance (Rcoil = 24 Ohm)
+L1 2 3 100m Rser=24
+
+* Capacitive branch: C = 253.3 nF (220nF in parallel with 33.3nF)
+C1 3 4 253.3n
+
+* --- Audio Load Resistor ---
+RL 4 0 240
+
+* --- Active Output Buffer Stage (TL072 Non-Inverting Voltage Follower) ---
+* E1 (Node_Out, 0) is a voltage-controlled voltage source modeling ideal op-amp buffer
+* Gains = 1.0, Infinite input impedance, zero output impedance
+E_BUF 5 0 4 0 1.0
+R_OUT 5 6 0.1
+R_TERMLOAD 6 0 10k
+
+* ==============================================================================
+* SIMULATION DIRECTIVES
+* ==============================================================================
+
+* 1. AC Analysis: 100 points per decade from 10 Hz to 100 kHz (Bode Plot)
+.ac dec 100 10 100k
+
+* 2. Transient Analysis: Audio step response & 1kHz sine response for 10 ms
+.tran 0.1u 10m 0 1u
+
+* 3. Automated Performance Measurements
+.meas AC Vmax MAX mag(V(4))
+.meas AC fo WHEN mag(V(4)) = Vmax
+.meas AC f1 WHEN mag(V(4)) = Vmax/1.4142 FALL=LAST
+.meas AC f2 WHEN mag(V(4)) = Vmax/1.4142 RISE=LAST
+.meas AC BW PARAM (f2 - f1)
+.meas AC Q_factor PARAM (fo / BW)
+
+.end

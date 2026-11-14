@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 300" width="100%" height="100%">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#1e3a8a"/>
+    </marker>
+  </defs>
+  <style>
+    .title { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #1e3a8a; }
+    .box-title { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; font-weight: 700; fill: #ffffff; }
+    .node-text { font-family: 'Segoe UI', Arial, sans-serif; font-size: 9px; fill: #334155; }
+    .pin-label { font-family: 'Courier New', monospace; font-size: 9px; font-weight: bold; fill: #0f172a; }
+  </style>
+
+  <!-- Title -->
+  <text x="20" y="22" class="title">HARDWARE SENSOR ACQUISITION &amp; ADC INTERFACE SCHEMATIC (UNIT 6)</text>
+  <line x1="20" y1="28" x2="830" y2="28" stroke="#cbd5e1" stroke-width="1.2"/>
+
+  <!-- Sensor 1: AD8232 ECG -->
+  <g transform="translate(25, 45)">
+    <rect x="0" y="0" width="150" height="95" rx="5" fill="#f8fafc" stroke="#3b82f6" stroke-width="1.5"/>
+    <rect x="0" y="0" width="150" height="22" rx="5" fill="#3b82f6"/>
+    <rect x="0" y="17" width="150" height="5" fill="#3b82f6"/>
+    <text x="10" y="15" class="box-title">AD8232 ECG Module</text>
+    <text x="10" y="38" class="node-text">Electrodes: RA, LA, RL</text>
+    <text x="10" y="52" class="node-text">Gain: 100 V/V</text>
+    <text x="10" y="66" class="node-text">Instrumentation Amp</text>
+    <text x="10" y="80" class="node-text">Bandwidth: 0.5 - 40 Hz</text>
+    <circle cx="150" cy="50" r="3" fill="#1e3a8a"/>
+    <text x="120" y="46" class="pin-label">OUTPUT</text>
+  </g>
+
+  <!-- Sensor 2: LM35 Temperature -->
+  <g transform="translate(25, 160)">
+    <rect x="0" y="0" width="150" height="95" rx="5" fill="#f8fafc" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="0" y="0" width="150" height="22" rx="5" fill="#f59e0b"/>
+    <rect x="0" y="17" width="150" height="5" fill="#f59e0b"/>
+    <text x="10" y="15" class="box-title">LM35 Precision Temp</text>
+    <text x="10" y="38" class="node-text">Calibrated in °Celsius</text>
+    <text x="10" y="52" class="node-text">Sensitivity: 10 mV/°C</text>
+    <text x="10" y="66" class="node-text">Range: -55°C to 150°C</text>
+    <text x="10" y="80" class="node-text">Linear Scale Factor</text>
+    <circle cx="150" cy="50" r="3" fill="#1e3a8a"/>
+    <text x="125" y="46" class="pin-label">VOUT</text>
+  </g>
+
+  <!-- Signal Conditioning (Buffer / Low Pass) -->
+  <g transform="translate(245, 95)">
+    <polygon points="0,0 80,45 0,90" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="12" y="35" class="pin-label">+</text>
+    <text x="12" y="65" class="pin-label">-</text>
+    <text x="22" y="50" style="font-family:'Segoe UI'; font-size:10px; font-weight:700; fill:#1e3a8a;">OP-AMP</text>
+    <text x="2" y="105" class="node-text">Anti-Aliasing Filter</text>
+    <text x="2" y="118" class="node-text">Sallen-Key 2nd Order</text>
+    <text x="2" y="130" class="node-text">fc = 200 Hz</text>
+  </g>
+
+  <!-- Wires from sensors to buffer -->
+  <path d="M 175 95 L 210 95 L 210 120 L 245 120" stroke="#1e3a8a" stroke-width="1.5" fill="none"/>
+  <path d="M 175 210 L 210 210 L 210 160 L 245 160" stroke="#1e3a8a" stroke-width="1.5" fill="none"/>
+
+  <!-- Microcontroller Block (Arduino / ATmega328P / ESP32) -->
+  <g transform="translate(390, 55)">
+    <rect x="0" y="0" width="200" height="195" rx="6" fill="#f8fafc" stroke="#059669" stroke-width="1.8"/>
+    <rect x="0" y="0" width="200" height="24" rx="6" fill="#059669"/>
+    <rect x="0" y="18" width="200" height="6" fill="#059669"/>
+    <text x="15" y="17" class="box-title">MICROCONTROLLER UNIT (MCU)</text>
+
+    <!-- Pins -->
+    <text x="12" y="45" class="pin-label">A0 (Pin 23)</text>
+    <text x="75" y="45" class="node-text">&lt;- ECG Analog Input</text>
+
+    <text x="12" y="70" class="pin-label">A1 (Pin 24)</text>
+    <text x="75" y="70" class="node-text">&lt;- Temp Sensor Input</text>
+
+    <text x="12" y="95" class="pin-label">AREF</text>
+    <text x="75" y="95" class="node-text">&lt;- 3.3V Low-Noise Ref</text>
+
+    <rect x="15" y="110" width="170" height="42" rx="3" fill="#ecfdf5" stroke="#a7f3d0"/>
+    <text x="22" y="125" style="font-family:'Segoe UI'; font-size:9.5px; font-weight:700; fill:#065f46;">10-Bit SAR Analog-to-Digital</text>
+    <text x="22" y="138" class="node-text">fs = 500 Hz (Timer1 ISR)</text>
+    <text x="22" y="148" class="node-text">LSB = 3.3V / 1024 = 3.22 mV</text>
+
+    <text x="12" y="172" class="pin-label">TX (Pin 1)</text>
+    <text x="75" y="172" class="node-text">-&gt; UART Serial Telemetry</text>
+  </g>
+
+  <!-- Wire buffer to MCU A0 -->
+  <path d="M 325 140 L 355 140 L 355 90 L 390 90" stroke="#1e3a8a" stroke-width="1.5" marker-end="url(#arrow)" fill="none"/>
+
+  <!-- PC / Signal Processing Workstation -->
+  <g transform="translate(660, 55)">
+    <rect x="0" y="0" width="165" height="195" rx="6" fill="#f8fafc" stroke="#4f46e5" stroke-width="1.8"/>
+    <rect x="0" y="0" width="165" height="24" rx="6" fill="#4f46e5"/>
+    <rect x="0" y="18" width="165" height="6" fill="#4f46e5"/>
+    <text x="10" y="17" class="box-title">PC WORKSTATION</text>
+
+    <text x="10" y="48" class="pin-label">USB UART (CH340/FTDI)</text>
+    <text x="10" y="62" class="node-text">Baud Rate: 115200 bps</text>
+    
+    <rect x="10" y="76" width="145" height="100" rx="3" fill="#eef2ff" stroke="#c7d2fe"/>
+    <text x="16" y="92" style="font-family:'Segoe UI'; font-size:9.5px; font-weight:700; fill:#3730a3;">Python DSP Engine</text>
+    <text x="16" y="106" class="node-text">• Unit 1: Signal Classify</text>
+    <text x="16" y="120" class="node-text">• Unit 2: LTI Convolution</text>
+    <text x="16" y="134" class="node-text">• Unit 3: Fourier Series</text>
+    <text x="16" y="148" class="node-text">• Unit 4: FFT Spectrum</text>
+    <text x="16" y="162" class="node-text">• Unit 5: Z-Transform</text>
+  </g>
+
+  <!-- Cable between MCU and PC -->
+  <path d="M 590 152 L 660 152" stroke="#4f46e5" stroke-width="2.5" stroke-dasharray="4" marker-end="url(#arrow)" fill="none"/>
+  <text x="596" y="144" style="font-family:'Segoe UI'; font-size:9px; font-weight:700; fill:#4f46e5;">USB Cable</text>
+</svg>

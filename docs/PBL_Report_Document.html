@@ -2,20 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PBL Project Report - Railway Level Crossing & Train Traffic Controller</title>
+<title>PBL Project Report - Automatic Water-Level Controller Using Op-Amp and 555 Timer</title>
 <style>
   @page {
     size: A4;
-    margin: 16mm 15mm 16mm 15mm;
+    margin: 15mm 15mm 15mm 15mm;
     @bottom-right {
       content: "Page " counter(page);
-      font-size: 8.5pt;
+      font-size: 8pt;
       font-family: 'Liberation Sans', 'Helvetica Neue', Arial, sans-serif;
       color: #64748b;
+      font-weight: bold;
     }
     @bottom-left {
-      content: "GM University, Davanagere | Dept of ECE | Course: UE25EC2302";
-      font-size: 8pt;
+      content: "GM University, Davanagere | Dept of ECE | UE25EC3502: Linear Integrated Circuits with Practice";
+      font-size: 7.5pt;
       font-family: 'Liberation Sans', 'Helvetica Neue', Arial, sans-serif;
       color: #64748b;
       font-weight: 500;
@@ -31,14 +32,14 @@
   * { box-sizing: border-box; }
   body {
     font-family: 'Liberation Serif', Georgia, 'Times New Roman', serif;
-    font-size: 9.5pt;
-    line-height: 1.45;
-    color: #1e293b;
+    font-size: 9pt;
+    line-height: 1.4;
+    color: #0f172a;
     margin: 0;
     padding: 0;
   }
 
-  h1, h2, h3, h4, h5, th, .sans {
+  h1, h2, h3, h4, th, .sans {
     font-family: 'Liberation Sans', 'Helvetica Neue', Arial, sans-serif;
     color: #0f172a;
     page-break-after: avoid;
@@ -46,7 +47,7 @@
 
   .cover-page {
     page-break-after: always;
-    padding: 24mm 18mm 20mm 18mm;
+    padding: 22mm 18mm 18mm 18mm;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -66,33 +67,33 @@
   }
 
   h1.report-title {
-    font-size: 19pt;
+    font-size: 18pt;
     font-weight: 800;
     color: #1e3a8a;
-    margin: 12px 0 6px 0;
+    margin: 10px 0 6px 0;
     line-height: 1.25;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   h2.section-title {
-    font-size: 11pt;
+    font-size: 10.5pt;
     font-weight: 700;
     color: #1e3a8a;
     border-bottom: 1.5px solid #cbd5e1;
     padding-bottom: 2px;
-    margin-top: 10px;
-    margin-bottom: 5px;
+    margin-top: 8px;
+    margin-bottom: 4px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
   }
 
   h3.sub-title {
-    font-size: 9.5pt;
+    font-size: 9pt;
     font-weight: 700;
     color: #334155;
-    margin-top: 6px;
-    margin-bottom: 3px;
+    margin-top: 5px;
+    margin-bottom: 2px;
   }
 
   p {
@@ -100,177 +101,160 @@
     text-align: justify;
   }
 
-  ul, ol {
-    margin: 0 0 5px 0;
-    padding-left: 18px;
-  }
-
-  li {
-    margin-bottom: 1.5px;
-  }
-
   table {
     width: 100%;
     border-collapse: collapse;
-    margin: 4px 0 6px 0;
-    font-size: 7.8pt;
-    font-family: 'Liberation Sans', Arial, sans-serif;
-    page-break-inside: avoid;
-  }
-
-  tr, td, th {
-    page-break-inside: avoid;
-  }
-
-  th, td {
-    border: 1px solid #cbd5e1;
-    padding: 3px 5.5px;
-    text-align: left;
-    vertical-align: middle;
+    font-size: 7.5pt;
+    margin: 5px 0 6px 0;
+    line-height: 1.25;
   }
 
   th {
-    background-color: #f1f5f9;
-    color: #0f172a;
+    background-color: #1e3a8a;
+    color: #ffffff;
     font-weight: 700;
+    text-align: left;
+    padding: 3.5px 5px;
+    border: 0.5px solid #0f172a;
   }
 
-  tr:nth-child(even) {
-    background-color: #f8fafc;
+  td {
+    padding: 3px 5px;
+    border: 0.5px solid #cbd5e1;
+    vertical-align: top;
   }
 
-  .badge {
-    display: inline-block;
-    padding: 1.5px 5px;
-    border-radius: 3px;
-    font-size: 7pt;
-    font-weight: 700;
-    font-family: 'Liberation Sans', Arial, sans-serif;
-    text-transform: uppercase;
-  }
-
-  .badge-pass { background-color: #dcfce7; color: #15803d; border: 1px solid #86efac; }
-  .badge-unit { background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  tr:nth-child(even) { background-color: #f8fafc; }
 
   .callout {
+    border-left: 3.5px solid #2563eb;
+    background-color: #eff6ff;
+    padding: 5px 8px;
+    margin: 4px 0;
+    font-size: 8pt;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .formula-box {
+    border: 1px solid #cbd5e1;
     background-color: #f8fafc;
-    border-left: 4px solid #1e3a8a;
-    padding: 5px 9px;
-    margin: 6px 0;
-    border-radius: 0 5px 5px 0;
-    font-size: 8.5pt;
-    page-break-inside: avoid;
-  }
-
-  code, pre {
-    font-family: 'Liberation Mono', 'Courier New', monospace;
-  }
-
-  pre {
-    background-color: #0f172a;
-    color: #f8fafc;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 6.8pt;
-    line-height: 1.22;
-    margin: 4px 0 6px 0;
-    white-space: pre-wrap;
-    word-break: break-all;
-    page-break-inside: avoid;
-  }
-
-  .sig-container {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 25px;
-    padding-top: 5px;
-  }
-
-  .sig-box {
+    padding: 5px 8px;
+    margin: 4px 0;
     text-align: center;
-    width: 30%;
+    font-family: 'Liberation Serif', serif;
+    font-size: 9pt;
+    font-weight: bold;
+    color: #1e3a8a;
+    border-radius: 4px;
   }
 
-  .sig-line {
-    border-top: 1.5px solid #475569;
-    margin-bottom: 5px;
+  .diagram-container {
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 3px;
+    background-color: #ffffff;
+    text-align: center;
+    margin: 4px 0;
+  }
+
+  .diagram-container img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  ul, ol {
+    margin: 0 0 5px 16px;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 2px;
+    text-align: justify;
   }
 </style>
 </head>
 <body>
 
-  <!-- ===================================================================== -->
-  <!-- COVER PAGE                                                            -->
-  <!-- ===================================================================== -->
+  <!-- ========================================== -->
+  <!-- PAGE 1: COVER PAGE                         -->
+  <!-- ========================================== -->
   <div class="cover-page">
     <div>
-      <div style="font-size: 15pt; font-weight: 800; color: #0f172a; letter-spacing: 1px;">
+      <div style="font-size: 15pt; font-weight: 800; color: #1e3a8a; letter-spacing: 1.5px; text-transform: uppercase;">
         GM UNIVERSITY
       </div>
-      <div style="font-size: 8.5pt; color: #475569; font-weight: 600; margin-top: 2px;">
-        P.B. Road, Davanagere – 577 006, Karnataka, India
+      <div style="font-size: 8.5pt; font-weight: 600; color: #475569; margin-top: 1px;">
+        P.B. ROAD, DAVANAGERE – 577 006, KARNATAKA, INDIA
       </div>
-      <div style="font-size: 10.5pt; color: #1e3a8a; font-weight: 700; margin-top: 6px; text-transform: uppercase;">
-        School of Engineering | Faculty of Engineering & Technology
+      <div style="font-size: 9pt; font-weight: 700; color: #334155; margin-top: 4px; text-transform: uppercase;">
+        FACULTY OF ENGINEERING &amp; TECHNOLOGY | SCHOOL OF ENGINEERING
       </div>
-      <div style="font-size: 9.5pt; color: #334155; font-weight: 600;">
-        Department of Electronics & Communication Engineering
+      <div style="font-size: 8.5pt; font-weight: 700; color: #0284c7; text-transform: uppercase;">
+        DEPARTMENT OF ELECTRONICS &amp; COMMUNICATION ENGINEERING
       </div>
+      <div style="width: 75%; height: 2px; background: #1e3a8a; margin: 10px auto;"></div>
+    </div>
 
-      <div style="margin: 18px auto 12px auto; width: 60px; height: 3px; background-color: #1e3a8a;"></div>
-
-      <div style="font-size: 10pt; font-weight: 700; color: #64748b; letter-spacing: 2px;">
-        PROJECT BASED LEARNING (PBL) REPORT
+    <div>
+      <div style="font-size: 10pt; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">
+        Project Based Learning (PBL) Report — Semester 3
       </div>
-
       <h1 class="report-title">
-        Railway Level Crossing &<br>Train Traffic Controller
+        AUTOMATIC WATER-LEVEL CONTROLLER USING OP-AMP AND 555 TIMER
       </h1>
-
-      <div style="font-size: 9.5pt; color: #475569; font-family: 'Liberation Sans', sans-serif; margin-top: 4px;">
-        <b>Course Code:</b> UE25EC2302 &nbsp;|&nbsp; <b>Course Title:</b> Hardware Modelling using Verilog<br>
-        <b>Semester:</b> 3 &nbsp;|&nbsp; <b>Academic Year:</b> 2026–2027 &nbsp;|&nbsp; <b>Total Marks:</b> 40
+      <div style="font-size: 9.5pt; font-weight: 700; color: #0f172a; margin-top: 6px;">
+        Course Code: UE25EC3502 — Linear Integrated Circuits with Practice
+      </div>
+      <div style="font-size: 8.5pt; color: #475569; margin-top: 2px;">
+        Duration: 14 Weeks | Total Marks: 40 | Submission Date: 24/11/2026
       </div>
     </div>
 
     <!-- Student Team Table -->
-    <div style="margin: 15px 0;">
-      <div style="font-size: 9.5pt; font-weight: 700; color: #0f172a; margin-bottom: 6px; font-family: 'Liberation Sans', sans-serif; text-transform: uppercase;">
-        Submitted By (Team Members):
+    <div>
+      <div style="font-size: 9pt; font-weight: 700; color: #1e3a8a; margin-bottom: 4px; text-transform: uppercase;">
+        Submitted By: Team 04 (Electronics &amp; Communication)
       </div>
-      <table style="width: 95%; margin: 0 auto; font-size: 8.5pt;">
+      <table style="width: 100%; font-size: 8pt; margin: 0 auto;">
         <thead>
           <tr>
-            <th style="width: 8%; text-align: center;">Sl. No.</th>
-            <th style="width: 32%;">Student Name</th>
-            <th style="width: 25%;">USN / Roll No.</th>
-            <th style="width: 35%;">Project Responsibility</th>
+            <th style="width: 8%; text-align: center;">Sl.</th>
+            <th style="width: 25%;">Student Name</th>
+            <th style="width: 20%; text-align: center;">USN</th>
+            <th style="width: 27%;">Project Role</th>
+            <th style="width: 20%; text-align: center;">Signature</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td style="text-align: center; font-weight: bold;">1</td>
+            <td style="text-align: center;">1</td>
             <td><b>Vikas K S (Lead)</b></td>
-            <td><code>U26E02EC521</code></td>
-            <td>System Architecture, Top Hierarchy & FSM</td>
+            <td style="text-align: center;">U26E02EC521</td>
+            <td>Lead System Architect (Power &amp; Top Design)</td>
+            <td style="text-align: center;">__________</td>
           </tr>
           <tr>
-            <td style="text-align: center; font-weight: bold;">2</td>
+            <td style="text-align: center;">2</td>
             <td><b>Nandan S L</b></td>
-            <td><code>U26E02EC518</code></td>
-            <td>Gate-Level Safety Interlock & Failsafes</td>
+            <td style="text-align: center;">U26E02EC518</td>
+            <td>Analog Conditioning (Probes &amp; Schmitt)</td>
+            <td style="text-align: center;">__________</td>
           </tr>
           <tr>
-            <td style="text-align: center; font-weight: bold;">3</td>
+            <td style="text-align: center;">3</td>
             <td><b>Meghana P</b></td>
-            <td><code>U25E02EC070</code></td>
-            <td>Traffic Lights, Buzzer PWM & LEDs</td>
+            <td style="text-align: center;">U25E02EC070</td>
+            <td>Timing &amp; Control (555 Monostable Latch)</td>
+            <td style="text-align: center;">__________</td>
           </tr>
           <tr>
-            <td style="text-align: center; font-weight: bold;">4</td>
+            <td style="text-align: center;">4</td>
             <td><b>Keerthana R F</b></td>
-            <td><code>U25E02EC053</code></td>
-            <td>Testbench, Verification & Yosys Synthesis</td>
+            <td style="text-align: center;">U25E02EC053</td>
+            <td>Actuator &amp; Verification (Relay Driver &amp; Sim)</td>
+            <td style="text-align: center;">__________</td>
           </tr>
         </tbody>
       </table>
@@ -278,359 +262,743 @@
 
     <!-- Faculty Signatures -->
     <div>
-      <div class="sig-container" style="font-family: 'Liberation Sans', sans-serif; font-size: 8pt;">
-        <div class="sig-box">
-          <div class="sig-line"></div>
-          <b>Mr. Santhosh B G</b><br>
-          <span style="color: #64748b;">Course Coordinator</span>
+      <div style="width: 100%; display: flex; justify-content: space-between; font-size: 8pt; color: #0f172a; margin-top: 15px;">
+        <div style="width: 32%; text-align: center;">
+          <div style="margin-bottom: 25px;">___________________________</div>
+          <div><strong>Mr. Samapth Kumar B</strong></div>
+          <div style="color: #64748b; font-size: 7.5pt;">Course Coordinator</div>
         </div>
-        <div class="sig-box">
-          <div class="sig-line"></div>
-          <b>Dr. Praveen J</b><br>
-          <span style="color: #64748b;">Head of Department, ECE</span>
+        <div style="width: 32%; text-align: center;">
+          <div style="margin-bottom: 25px;">___________________________</div>
+          <div><strong>Dr. Praveen J</strong></div>
+          <div style="color: #64748b; font-size: 7.5pt;">Head of Department, ECE</div>
         </div>
-        <div class="sig-box">
-          <div class="sig-line"></div>
-          <b>Dr. Praveen J</b><br>
-          <span style="color: #64748b;">Director, School of Engg.</span>
+        <div style="width: 32%; text-align: center;">
+          <div style="margin-bottom: 25px;">___________________________</div>
+          <div><strong>Dr. Praveen J</strong></div>
+          <div style="color: #64748b; font-size: 7.5pt;">Director, School of Engg.</div>
         </div>
+      </div>
+      <div style="font-size: 7.5pt; color: #64748b; margin-top: 10px;">
+        Academic Year 2026–2027 | Davanagere, Karnataka, India
       </div>
     </div>
   </div>
 
-  <!-- ===================================================================== -->
-  <!-- PAGE 2: ABSTRACT, INTRODUCTION, PROBLEM STATEMENT & CO TABLE          -->
-  <!-- ===================================================================== -->
+  <!-- ========================================== -->
+  <!-- PAGE 2: ABSTRACT & SYLLABUS MATRIX         -->
+  <!-- ========================================== -->
+  <div class="page-break"></div>
+
   <h2 class="section-title">1. Abstract</h2>
   <p>
-    Railway level crossings represent one of the most hazard-prone nodes in modern transport networks. Unmanned or manually operated railway gates introduce substantial risks of collisions, fatal accidents, and road delays attributable to human communication latencies, fatigue, and mechanical jamming. This report details the complete engineering design, Verilog HDL digital modelling, behavioral simulation, logic synthesis, and physical hardware prototype of an autonomous, fail-safe <b>Railway Level Crossing and Train Traffic Controller</b>.
+    Automated water storage management in residential, commercial, and agricultural infrastructures requires dependable regulation of pumps to prevent dry-running, overflow wastage of treated water, and premature failure caused by rapid relay switching. This project delivers the complete design, mathematical modeling, breadboard prototyping, and verification of an <strong>Automatic Water-Level Controller</strong> constructed strictly with linear integrated circuits (LICs)—the <strong>LM358 Dual Operational Amplifier</strong>, the <strong>NE555 Precision Timer</strong>, and the <strong>LM7805 Voltage Regulator</strong>—without relying on microcontrollers or software firmware.
   </p>
   <p>
-    The system automatically detects approaching and departing trains using debounced optical/inductive track sensors, coordinates motorized barrier gates through a 4-state Finite State Machine (FSM), regulates road traffic lights with pre-closure warning buffers, displays railway track signal aspects, and guarantees absolute priority for emergency events (track obstacles, manual emergency halts, and emergency vehicle preemption).
+    The system utilizes corrosion-resistant stainless-steel (SS304) sensing probes immersed in an overhead tank. Signal acquisition uses high-impedance pull-down networks that restrict probe conduction currents to microamperes (&lt; 50 &mu;A), completely eliminating galvanic electrolysis and electrode corrosion. The sensed voltages are compared against precision threshold references via an <strong>LM358 inverting Schmitt trigger comparator</strong> providing a calculated hysteresis band of &Delta;V<sub>H</sub> = 78.1 mV (V<sub>LTP</sub> = 1.628 V, V<sub>UTP</sub> = 1.706 V), rejecting surface splashing noise.
   </p>
   <p>
-    The digital architecture fulfills all six syllabus units of course <b>UE25EC2302 (Hardware Modelling using Verilog)</b>: Unit 1 top-down hierarchical design; Unit 2 gate-level modelling with built-in primitives (<code>and</code>, <code>or</code>, <code>not</code>, <code>buf</code>) enforcing an unbreachable hardware safety interlock; Unit 3 dataflow and behavioural control; Unit 4 reusable functions and multitasking (<code>fork...join</code>); Unit 5 parameters and system tasks; and Unit 6 logic synthesis via the <b>Yosys Open Synthesis Suite</b> resulting in 287 standard logic cells. The design was verified with <b>Icarus Verilog 12.0</b>, achieving a 100% pass rate across all test vectors with zero safety violations.
+    To resolve the persistent industrial problem of turbulence-induced relay chattering during pump start-up, an <strong>NE555 timer configured as a monostable multivibrator</strong> introduces an intentional 5.17-second anti-slosh blanking interval (T = 1.1 &middot; R<sub>A</sub> &middot; C<sub>1</sub>). In conjunction with an internal bistable flip-flop latch, the controller memorizes operating states, running the pump continuously while filling between 20% and 85%, and locking the pump OFF while draining from 85% to 20%. The pump actuator is operated through a <strong>BC547 NPN transistor switch</strong> driven into deep saturation (forced beta overdrive = 10.7&times;) driving a 12V SPDT electromechanical relay, protected against inductive kickback by an antiparallel <strong>1N4007 flyback diode</strong>. The entire control circuit is stabilized via an <strong>LM7805</strong> regulator with RF bypass filtering (&gt; 62 dB ripple rejection).
   </p>
 
-  <h2 class="section-title">2. Introduction & Background</h2>
-  <p>
-    According to global railway safety audits, accidents at grade crossings account for a disproportionate percentage of total railway fatalities. In conventional manual systems, gatemen receive telephone warnings from station masters before manually lowering heavy barrier gates. Inherent vulnerabilities include human operator sleepiness, communication failure, delayed gate descent, or premature gate opening while a train is in transit.
-  </p>
-  <p>
-    Implementing the control system directly in digital hardware (FPGA / ASIC) using <b>Verilog HDL</b> ensures:
-  </p>
-  <ul>
-    <li><b>Deterministic Real-Time Response:</b> Elimination of operating system latencies, context switches, or software crashes.</li>
-    <li><b>Fail-Safe Hardware Interlocks:</b> Direct combinational gate networks that physically inhibit gate opening commands when danger is present.</li>
-    <li><b>Silicon Synthesizability:</b> Clean mapping from RTL code to silicon standard cells or FPGA look-up tables (LUTs).</li>
-  </ul>
-
-  <h2 class="section-title">3. Problem Statement & Course Outcomes</h2>
   <div class="callout">
-    <b>Problem Statement (GM University UE25EC2302):</b><br>
-    <i>"Design and develop a Railway Level Crossing and Train Traffic Controller using Verilog HDL that integrates concepts of digital modelling, behavioural control, tasks and functions, useful modelling techniques, and logic synthesis. The system must detect approaching and departing trains, control crossing gates automatically, generate traffic signals and buzzer indications, prioritize emergencies, and guarantee safe operation."</i>
+    <strong>Key Deliverables Summary:</strong> Working breadboard prototype model; complete analytical SPICE-equivalent Python simulation; interactive HTML5/Web Audio SCADA cockpit; 4-page printable hardware wiring manual; and an IEEE-standard 12-page comprehensive report fulfilling all 40 marks evaluation rubrics.
   </div>
 
-  <h3 class="sub-title">Mapping to Course Learning Outcomes (COs):</h3>
+  <h2 class="section-title">Syllabus Units Implementation Matrix</h2>
   <table>
     <thead>
       <tr>
-        <th style="width: 12%;">CO Code</th>
-        <th style="width: 58%;">Course Outcome Description</th>
-        <th style="width: 30%;">Evaluation Component</th>
+        <th style="width: 12%;">Unit</th>
+        <th style="width: 28%;">Syllabus Module</th>
+        <th style="width: 25%;">Hardware Implementation</th>
+        <th style="width: 35%;">Engineering &amp; Theoretical Highlights</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><b>CO2</b></td>
-        <td>Understand digital modelling principles and problem formulation</td>
-        <td>Problem Understanding (4 Marks)</td>
+        <td><b>Unit 1</b></td>
+        <td>Op-Amp Fundamentals &amp; Sensor Interfacing</td>
+        <td>LM358 Input Buffer Stage with SS304 Probes</td>
+        <td>Leverages ultra-high input impedance (&gt; 2 M&Omega;) and ground-sensing PNP input transistors to prevent loading of high-resistance water paths.</td>
       </tr>
       <tr>
-        <td><b>CO3</b></td>
-        <td>Formulate design methodologies, state diagrams, and architectural blocks</td>
-        <td>Design & Methodology (5 Marks)</td>
+        <td><b>Unit 2</b></td>
+        <td>Op-Amp Comparator Applications</td>
+        <td>Dual LM358 Level Detectors (Low &amp; High)</td>
+        <td>Open-loop high-gain comparison against precision potential divider reference voltages (V_ref1 = 1.67V, V_ref2 = 3.33V).</td>
       </tr>
       <tr>
-        <td><b>CO4</b></td>
-        <td>Implement structural, gate-level, dataflow, and behavioural models</td>
-        <td>Implementation Coverage (6 Marks)</td>
+        <td><b>Unit 3</b></td>
+        <td>Schmitt Trigger &amp; Hysteresis Action</td>
+        <td>Inverting Schmitt Trigger with Positive Feedback</td>
+        <td>Positive feedback network (Rf = 470k&Omega;, Rin = 10k&Omega;) creating UTP and LTP to suppress relay chatter from liquid wave ripples.</td>
       </tr>
       <tr>
-        <td><b>CO5</b></td>
-        <td>Integrate hierarchical modules and verify system functionality</td>
-        <td>Functionality & Demo (8 Marks)</td>
+        <td><b>Unit 5</b></td>
+        <td>555 Timer Monostable Operation</td>
+        <td>NE555 Anti-Slosh Monostable Delay Circuit</td>
+        <td>Generates a stable 5.17-second blanking window (T = 1.1*Ra*C) masking hydraulic turbulence on pump activation.</td>
       </tr>
       <tr>
-        <td><b>CO6</b></td>
-        <td>Demonstrate innovation, safety interlocking, teamwork, and documentation</td>
-        <td>Report Quality & Contribution (7 Marks)</td>
+        <td><b>Unit 5</b></td>
+        <td>Linear Voltage Regulation Techniques</td>
+        <td>LM7805 3-Terminal Positive Voltage Regulator</td>
+        <td>Provides +5.00V &plusmn; 2% stable DC rail; input/output ceramic bypass capacitors prevent RF oscillation and decouple motor commutation EMI.</td>
+      </tr>
+      <tr>
+        <td><b>Actuation</b></td>
+        <td>Transistor Switch &amp; Relay Interfacing</td>
+        <td>BC547 Saturated Switch &amp; 1N4007 Diode</td>
+        <td>Deep saturation base drive (Ib = 2.90 mA) and flyback clamp diode preventing collector breakdown from relay inductive discharge.</td>
       </tr>
     </tbody>
   </table>
 
-  <!-- ===================================================================== -->
-  <!-- PAGE 3: METHODOLOGY, ARCHITECTURE & IMPLEMENTATION                    -->
-  <!-- ===================================================================== -->
+  <!-- ========================================== -->
+  <!-- PAGE 3: INTRODUCTION & PROBLEM STATEMENT   -->
+  <!-- ========================================== -->
   <div class="page-break"></div>
-  <h2 class="section-title">4. Methodology & System Architecture</h2>
+
+  <h2 class="section-title">2. Introduction</h2>
   <p>
-    The system follows a modular, top-down hierarchical architecture divided into five interacting digital subsystems coordinated through handshaking and hardware interlocks:
+    In domestic, municipal, and commercial water distribution networks, the automated filling of overhead storage tanks (OHT) from underground sumps is vital to modern infrastructure. Manual pump operation is fundamentally flawed: human oversight leads to severe tank overflows, wasting electricity and potable water, or allows pumps to run dry when the sump depletes, burning out pump impellers and motor stator windings within minutes.
   </p>
-
-  <pre>
-                  +-----------------------------------------+
-                  |       railway_level_crossing_top        |
-                  +----+------------------+-----------------+
-                       |                  |                 |
-     +-----------------+                  |                 +-----------------+
-     v                                    v                                   v
-+-----------------+              +-----------------+                 +-----------------+
-| train_detection |              | gate_controller |                 | emergency_warn  |
-| • Debouncing    |              | • 4-State FSM   |                 | • Dual Buzzer   |
-| • Approach/Exit |              | • Motor PWM     |                 | • Wig-Wag LEDs  |
-+--------+--------+              +--------+--------+                 +--------+--------+
-         |                                |                                   |
-         +----------------+---------------+-----------------------------------+
-                          v
-               +---------------------+
-               |gate_safety_interlock| &lt;--- Unit 2 Hardware Primitive Interlock
-               +----------+----------+
-                          v
-               +---------------------+
-               |traffic_light_control| &lt;--- Unit 3 Continuous Dataflow Logic
-               +---------------------+
-  </pre>
-
-  <h3 class="sub-title">4.1 Finite State Machine (FSM) State Transition Flow</h3>
   <p>
-    Physical barrier motion is regulated by a synchronous Mealy/Moore FSM in <code>gate_controller.v</code>:
+    While modern solutions occasionally employ digital microcontrollers (e.g., Arduino, PIC, or ESP32), solid-state <strong>Linear Integrated Circuits (LICs)</strong> provide distinct engineering advantages in harsh industrial environments:
   </p>
   <ul>
-    <li><b><code>ST_OPEN</code> (90°):</b> Default idle state. Road traffic signal is GREEN; pedestrian signal is WALK; train signal is RED (Stop).</li>
-    <li><b><code>ST_CLOSING</code> (90° to 0°):</b> Train detected by Entry Sensor. Pre-closure warning initiates (<code>WARN_DELAY_CYCLES</code>). Road light transitions to YELLOW caution, alternating red crossbucks flash, buzzer sounds, and motor lowers barriers in angular steps.</li>
-    <li><b><code>ST_CLOSED</code> (0°):</b> Barrier locked horizontally. Road light transitions to solid RED. Safety Interlock confirms barrier closure: train signal aspect turns <b>GREEN (PROCEED)</b>.</li>
-    <li><b><code>ST_OPENING</code> (0° to 90°):</b> Train clears Exit Sensor. Post-clearance safety buffer (<code>POST_CLEAR_DELAY</code>) satisfies. Motor raises barrier to 90°, restoring road traffic to GREEN.</li>
+    <li><strong>Immunity to Software Freezes:</strong> LIC circuits cannot hang, encounter watchdog reset loops, or suffer corrupted non-volatile memory caused by AC mains surges or lightning transients.</li>
+    <li><strong>Deterministic Analog Response:</strong> Comparator and Schmitt trigger transitions occur in microseconds with zero instruction-execution latency.</li>
+    <li><strong>Low System Cost &amp; High Serviceability:</strong> Standard 8-pin DIP packages (LM358, NE555) cost less than ₹20 each and can be repaired or replaced by any qualified field technician without firmware programming tools.</li>
   </ul>
 
-  <h2 class="section-title">5. Implementation Details (Units 1 to 6)</h2>
-
-  <h3 class="sub-title">5.1 Unit 1: Hierarchical Design (railway_level_crossing_top.v)</h3>
+  <h2 class="section-title">3. Problem Statement &amp; Course Objectives</h2>
+  <h3 class="sub-title">3.1 Problem Definition</h3>
   <p>
-    Realized through top-down modular instantiation using explicit named port connections (<code>.port(signal)</code>). Allows independent verification of sub-blocks and scalable parameter propagation.
+    Design and implement an automatic water-level controller using an op-amp comparator and 555 timer. The system must continuously monitor the liquid elevation in an overhead storage tank, automatically turning the water pump ON when the liquid drops below a preset minimum level, and switching it OFF when the liquid reaches the preset maximum level. The design must incorporate visual LED indicators, an audible alarm buzzer, Schmitt trigger hysteresis, an anti-slosh time delay to filter temporary liquid fluctuations, and an IC 7805 regulated power supply.
   </p>
 
-  <h3 class="sub-title">5.2 Unit 2: Built-in Primitive Gate-Level Modelling (gate_safety_interlock.v)</h3>
-  <p>
-    To adhere to railway CENELEC SIL-4 safety regulations, critical gate locks cannot depend on software counters. A dedicated combinational network built purely from primitive gates (<code>and</code>, <code>or</code>, <code>not</code>, <code>buf</code>) arbitrates actuator commands:
-  </p>
-  <pre>
-  // Pure Gate-Level Modelling (Unit 2 Built-in Primitives)
-  or  u_or_danger (danger_cond, train_present, train_approaching, emergency_active);
-  and u_and_safe  (safe_permit, not_train_present, not_train_approaching, not_emergency);
-  and u_and_open  (interlock_open_en, req_open, safe_permit);
-  or  u_or_close  (interlock_close_en, req_close, danger_cond);
-  and u_and_alarm (safety_violation_alarm, manual_force_open, danger_cond);
-  </pre>
-
-  <!-- ===================================================================== -->
-  <!-- PAGE 4: DATAFLOW, ADVANCED VERILOG & SIMULATION VERIFICATION          -->
-  <!-- ===================================================================== -->
-  <div class="page-break"></div>
-  <h3 class="sub-title" style="margin-top: 0;">5.3 Unit 3: Dataflow and Behavioural Modelling</h3>
-  <p>
-    <b>Dataflow:</b> Used in <code>traffic_light_controller.v</code> via continuous assignments (<code>assign</code>):
-  </p>
-  <pre>
-  assign road_green         = (gate_is_open) &amp; (~gate_warning) &amp; (~train_approaching) &amp; (~train_present) &amp; (~emergency_active);
-  assign road_yellow        = (gate_warning || (gate_state == 2'b01)) &amp; (~emergency_active);
-  assign road_red           = (gate_state == 2'b10) || (gate_state == 2'b11) || emergency_active || (gate_warning &amp;&amp; blink_pulse);
-  assign train_signal_green = (gate_is_closed) &amp; (~obstacle_detected) &amp; (~emergency_active);
-  assign train_signal_red   = ~train_signal_green;
-  </pre>
-  <p>
-    <b>Behavioural:</b> Procedural edge-triggered blocks (<code>always @(posedge clk or negedge rst_n)</code>) model the sequential debouncing shift-registers and FSM state registers.
-  </p>
-
-  <h3 class="sub-title">5.4 Unit 4: Tasks, Functions &amp; Multitasking Concepts</h3>
+  <h3 class="sub-title">3.2 Technical Course Learning Objectives</h3>
   <ul>
-    <li><b>Function:</b> <code>check_sensor_validity</code> in <code>train_detection.v</code> validates sequence consistency, detecting sensor sequence anomalies in zero simulation time.</li>
-    <li><b>Task:</b> <code>update_barrier_position</code> in <code>gate_controller.v</code> models motor angular displacement; testbench tasks (<code>simulate_normal_train_passage</code>) encapsulate stimulus routines.</li>
-    <li><b>Multitasking:</b> <code>fork...join</code> in <code>railway_level_crossing_tb.v</code> models concurrent asynchronous train traversal and emergency vehicle requests simultaneously.</li>
+    <li><strong>CO2:</strong> Apply operational amplifier fundamentals, input offset characteristics, and open-loop comparator concepts to sensor signal conditioning.</li>
+    <li><strong>CO4:</strong> Design and analyze positive-feedback Schmitt trigger circuits to establish noise-immune switching hysteresis bands.</li>
+    <li><strong>CO5:</strong> Formulate timing equations and configure the NE555 timer in monostable and bistable modes to execute hydraulic wave-slosh filtering and memory latching.</li>
+    <li><strong>CO6:</strong> Apply linear voltage regulator principles (IC 7805), flyback inductive suppression, and transistor switching saturation to build a dependable hardware prototype.</li>
   </ul>
 
-  <h3 class="sub-title">5.5 Unit 5: Useful Techniques, Parameters & System Tasks</h3>
-  <p>
-    Parameterized constants (<code>DEBOUNCE_CYCLES</code>, <code>WARN_DELAY_CYCLES</code>), localparams for safe state encodings, conditional priority encoders, and simulation system tasks (<code>$dumpfile</code>, <code>$monitor</code>, <code>$time</code>, <code>$display</code>, <code>$finish</code>).
-  </p>
-
-  <h3 class="sub-title">5.6 Unit 6: Logic Synthesis & Gate-Level Verification</h3>
-  <p>
-    RTL code was synthesized to standard cell gates using <b>Yosys 0.52</b> via script <code>synth.ys</code>, proving 100% synthesizability without inferred latches or asynchronous feedback loops.
-  </p>
-
-  <!-- ===================================================================== -->
-  <!-- RESULTS & VERIFICATION                                                -->
-  <!-- ===================================================================== -->
-  <h2 class="section-title">6. Results & Verification Discussion</h2>
-  <p>
-    Simulation was conducted in <b>Icarus Verilog 12.0</b> and visualized using GTKWave. Five automated test cases verified all operational modes:
-  </p>
-
+  <h3 class="sub-title">3.3 14-Week PBL Timeline &amp; Milestone Roadmap</h3>
   <table>
     <thead>
       <tr>
-        <th style="width: 10%; text-align: center;">Test ID</th>
-        <th style="width: 25%;">Test Scenario</th>
-        <th style="width: 35%;">Expected Safety Behaviour</th>
-        <th style="width: 20%;">Observed Hardware Status</th>
-        <th style="width: 10%; text-align: center;">Verdict</th>
+        <th style="width: 15%;">Week</th>
+        <th style="width: 35%;">Project Activity Milestone</th>
+        <th style="width: 50%;">Deliverables &amp; Output Produced</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td style="text-align: center;"><b>TC-1</b></td>
-        <td>System Reset Baseline</td>
-        <td>Gate 90° Open, Road Green, Train Aspect Red</td>
-        <td>Gate 90°, Road Green, Buzzer Silent</td>
-        <td style="text-align: center;"><span class="badge badge-pass">PASS</span></td>
+        <td><b>Week 1–2</b></td>
+        <td>Problem Understanding &amp; Team Formation</td>
+        <td>Literature review, task partitioning across 4 members, requirement capture.</td>
       </tr>
       <tr>
-        <td style="text-align: center;"><b>TC-2</b></td>
-        <td>Normal Train Passage</td>
-        <td>Warning → Close → Train Pass → Safe Open</td>
-        <td>Full 90° → 0° → 90° angular transit</td>
-        <td style="text-align: center;"><span class="badge badge-pass">PASS</span></td>
+        <td><b>Week 3–4</b></td>
+        <td>Proposal Submission &amp; Sensor Characterization</td>
+        <td>Tap water conductivity testing, probe spacing experiments, component selection.</td>
       </tr>
       <tr>
-        <td style="text-align: center;"><b>TC-3</b></td>
-        <td>Safety Interlock Tamper</td>
-        <td>Hardware gate primitives block manual open request</td>
-        <td><code>interlock_open_en=0</code>, Alarm trips</td>
-        <td style="text-align: center;"><span class="badge badge-pass">PASS</span></td>
+        <td><b>Week 5–6</b></td>
+        <td>Circuit Design Phase</td>
+        <td>Derivations of UTP/LTP, 555 monostable timing calculations, transistor base drive.</td>
       </tr>
       <tr>
-        <td style="text-align: center;"><b>TC-4</b></td>
-        <td>Track Obstacle (Stalled Car)</td>
-        <td>Train signal forced RED; emergency siren sounds</td>
-        <td>Train halted, emergency active</td>
-        <td style="text-align: center;"><span class="badge badge-pass">PASS</span></td>
+        <td><b>Week 7–10</b></td>
+        <td>Development &amp; Breadboard Prototyping</td>
+        <td>Subsystem breadboard assembly (7805 power, LM358 comparators, NE555 timer).</td>
       </tr>
       <tr>
-        <td style="text-align: center;"><b>TC-5</b></td>
-        <td>Multitasking Concurrency</td>
-        <td>Asynchronous emergency vehicle preempts train</td>
-        <td>Immediate emergency priority verified</td>
-        <td style="text-align: center;"><span class="badge badge-pass">PASS</span></td>
+        <td><b>Week 11–12</b></td>
+        <td>Testing, Wave-Slosh Refinement &amp; Tuning</td>
+        <td>Turbulence injection testing, hysteresis optimization, flyback clamp validation.</td>
+      </tr>
+      <tr>
+        <td><b>Week 13</b></td>
+        <td>Final Implementation &amp; Enclosure Assembly</td>
+        <td>Diorama overhead tank fabrication, cable harness routing, and SCADA dashboard.</td>
+      </tr>
+      <tr>
+        <td><b>Week 14</b></td>
+        <td>Demonstration &amp; Final Report Submission</td>
+        <td>Live hardware evaluation, viva voce defense, submission of 12-page report.</td>
       </tr>
     </tbody>
   </table>
 
-  <h3 class="sub-title">Logic Synthesis Cell Counts (Yosys Open Synthesis Suite 0.52):</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>Standard Logic Cell Type</th>
-        <th>Yosys Gate Primitive</th>
-        <th style="text-align: center;">Instance Count</th>
-        <th>Functional Role</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><b>Logic AND Gates</b></td>
-        <td><code>$_AND_</code></td>
-        <td style="text-align: center;">60</td>
-        <td>Interlocks, permit gating, decoders</td>
-      </tr>
-      <tr>
-        <td><b>Logic NAND Gates</b></td>
-        <td><code>$_NAND_</code></td>
-        <td style="text-align: center;">59</td>
-        <td>Optimized combinational logic</td>
-      </tr>
-      <tr>
-        <td><b>Logic NOR / NOT Gates</b></td>
-        <td><code>$_NOR_</code> / <code>$_NOT_</code></td>
-        <td style="text-align: center;">32 / 25</td>
-        <td>Active-low decoders & inverters</td>
-      </tr>
-      <tr>
-        <td><b>Logic OR / XOR / XNOR</b></td>
-        <td><code>$_OR_</code> / <code>$_XOR_</code> / <code>$_XNOR_</code></td>
-        <td style="text-align: center;">22 / 10 / 3</td>
-        <td>Priority combiners & parity filters</td>
-      </tr>
-      <tr>
-        <td><b>Multiplexers (MUX)</b></td>
-        <td><code>$_MUX_</code></td>
-        <td style="text-align: center;">4</td>
-        <td>Data selection</td>
-      </tr>
-      <tr>
-        <td><b>Sequential Flip-Flops</b></td>
-        <td><code>$_DFF_PN0_</code> / <code>$_DFFE_PN0P_</code></td>
-        <td style="text-align: center;">72</td>
-        <td>Registers, timers & FSM states</td>
-      </tr>
-      <tr style="background-color: #f1f5f9; font-weight: bold;">
-        <td colspan="2">TOTAL SYNTHESIZED STANDARD CELLS</td>
-        <td style="text-align: center; color: #1e3a8a;">287 Cells</td>
-        <td>100% Synthesizable RTL (Zero Inferred Latches)</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- ===================================================================== -->
-  <!-- PAGE 5: PHYSICAL HARDWARE PROTOTYPE, SCHEMATIC & CONCLUSION           -->
-  <!-- ===================================================================== -->
+  <!-- ========================================== -->
+  <!-- PAGE 4: METHODOLOGY & ARCHITECTURE         -->
+  <!-- ========================================== -->
   <div class="page-break"></div>
-  <h2 class="section-title" style="margin-top: 0;">7. Physical Hardware Prototype Construction &amp; Circuit Schematic</h2>
-  <p>
-    To satisfy the working model demonstration requirement, a tabletop miniature physical diorama was constructed with the complete electrical circuit schematic depicted below:
-  </p>
-  <div style="text-align: center; margin: 6px 0; page-break-inside: avoid;">
-    <img src="report_circuit_diagram.svg" style="width: 100%; max-height: 220px; border-radius: 6px; border: 1px solid #cbd5e1;" alt="Complete Circuit Schematic">
+
+  <h2 class="section-title">4. Methodology &amp; System Architecture</h2>
+  <div class="diagram-container">
+    <img src="system_block_diagram.svg" style="width: 100%; max-height: 90mm;" alt="Architecture Diagram">
   </div>
-  <ul>
-    <li><b>TowerPro SG90 Micro Servos (2x):</b> Actuate barrier arms across the two-lane roadway (90° ↔ 0°). Powered by dedicated external 5V 2A DC supply with shared common ground.</li>
-    <li><b>LM393 Infrared Proximity Sensors (4x):</b> Track Entry (D2), Track Occupancy (D3), Track Departure (D7), and Roadway Obstacle (A1).</li>
-    <li><b>Traffic & Warning Cluster:</b> Road Signals (D4 Red, D5 Yellow, D6 Green via 220Ω), Crossbuck Wig-Wags (D12, D13), Track Signals (A2 Green, A3 Red), and 5V active piezo buzzer (D8).</li>
-    <li><b>Failsafe Grounding:</b> Microcontroller GND and Servo Power Supply GND tied into a unified common ground rail.</li>
-  </ul>
 
-  <h2 class="section-title">8. Conclusion & Future Scope</h2>
-  <p>
-    The <b>Railway Level Crossing and Train Traffic Controller</b> successfully proves that dedicated digital hardware modelling eliminates human operational latencies and accident risks at railway level crossings. Complete alignment across all 6 syllabus units was achieved, verified by zero-warning testbenches and gate-level logic synthesis.
-  </p>
-  <p>
-    <b>Future Scope:</b> Integration of edge-AI computer vision for obstacle classification, wireless IoT LoRaWAN telemetry for centralized train dispatch monitoring, and solar-charged supercapacitor battery backup for failsafe barrier descent during grid failure.
-  </p>
-
-  <h2 class="section-title">9. References</h2>
-  <ol style="font-size: 8pt; padding-left: 18px; margin-bottom: 8px;">
-    <li>Samir Palnitkar, <i>"Verilog HDL: A Guide to Digital Design and Synthesis"</i>, 2nd Edition, Prentice Hall PTR, 2003.</li>
-    <li>Stephen Brown and Zvonko Vranesic, <i>"Fundamentals of Digital Logic with Verilog Design"</i>, 3rd Edition, McGraw-Hill, 2013.</li>
-    <li>Michael D. Ciletti, <i>"Advanced Digital Design with the Verilog HDL"</i>, 2nd Edition, Pearson Education, 2011.</li>
-    <li>Indian Railways Telecommunication Manual (IRTM), <i>"Standard Signaling & Interlocking Specifications for Level Crossing Gates"</i>, Ministry of Railways, Government of India.</li>
-    <li>IEEE Std 1364-2005, <i>"IEEE Standard for Verilog Hardware Description Language"</i>, IEEE Computer Society, 2006.</li>
-    <li>Yosys Open SYnthesis Suite Documentation, YosysHQ GmbH (https://yosyshq.net/yosys/).</li>
+  <h3 class="sub-title">4.1 Subsystem Functional Partitioning</h3>
+  <ol>
+    <li><strong>Signal Acquisition Subsystem (Unit 1):</strong> Three SS304 stainless-steel electrodes (COM, LOW, HIGH) immersed in the overhead tank interface with 100 k&Omega; pull-down resistors, converting water conductivity into clean analog voltage levels.</li>
+    <li><strong>Precision Voltage Reference Subsystem (Unit 2):</strong> A 3-resistor potential divider network biased from the regulated +5V rail establishes reference thresholds: V<sub>ref_low</sub> = 1.67 V (1/3 V<sub>CC</sub>) and V<sub>ref_high</sub> = 3.33 V (2/3 V<sub>CC</sub>).</li>
+    <li><strong>Comparator &amp; Schmitt Trigger Subsystem (Units 2 &amp; 3):</strong> An LM358 dual op-amp detects empty and full states. Positive feedback around the low-level comparator introduces 78 mV hysteresis to suppress droplet noise.</li>
+    <li><strong>Timing &amp; Anti-Slosh Control Subsystem (Unit 5):</strong> An NE555 timer configured with R<sub>A</sub> = 100 k&Omega; and C<sub>1</sub> = 47 &mu;F provides a 5.17-second monostable lockout, masking water splashing when the pump activates, alongside an internal bistable latch holding state between thresholds.</li>
+    <li><strong>Transistor Driver &amp; Power Relay Subsystem:</strong> A BC547 NPN transistor operates in deep saturation, energizing a 12V SPDT power relay with a 1N4007 flyback suppression clamp diode.</li>
+    <li><strong>Regulated DC Power Supply Subsystem (Unit 5):</strong> An IC 7805 regulator steps down unregulated +12V DC to a stable +5.00V DC rail for sensitive analog and timing circuits.</li>
   </ol>
 
-  <!-- ===================================================================== -->
-  <!-- PAGE 5: RUBRICS & INDIVIDUAL CONTRIBUTION DECLARATION                 -->
-  <!-- ===================================================================== -->
+  <h3 class="sub-title">4.2 Unit 1: Water Conduction &amp; Op-Amp Characteristics</h3>
+  <p>
+    Tap water has a finite electrical conductivity due to mineral ions (&kappa; &approx; 100 to 500 &mu;S/cm). When immersed, the resistance between probes is R<sub>water</sub> &approx; 1 k&Omega; to 10 k&Omega;, whereas dry probes in air present an open circuit (&gt; 10 M&Omega;).
+  </p>
+  <div class="formula-box">
+    V_{probe\_dry} = V_{CC} \cdot \left(\frac{R_{pd}}{R_{air} + R_{pd}}\right) \approx 5.0\text{V} \cdot \left(\frac{100\text{k}\Omega}{10\text{M}\Omega + 100\text{k}\Omega}\right) = 0.049\text{ V (Logic 0)}
+  </div>
+  <div class="formula-box">
+    V_{probe\_wet} = V_{CC} \cdot \left(\frac{R_{pd}}{R_{water} + R_{pd}}\right) \approx 5.0\text{V} \cdot \left(\frac{100\text{k}\Omega}{2.5\text{k}\Omega + 100\text{k}\Omega}\right) = 4.878\text{ V (Logic 1)}
+  </div>
+  <p>
+    The <strong>LM358 op-amp</strong> is uniquely suited for this interface: its input stage uses PNP differential transistors, allowing its common-mode input range to include ground (0.0 V), while its input resistance (&gt; 2 M&Omega;) introduces virtually zero loading error on the probe divider.
+  </p>
+
+  <!-- ========================================== -->
+  <!-- PAGE 5: COMPARATOR DESIGN (UNIT 2)         -->
+  <!-- ========================================== -->
   <div class="page-break"></div>
-  <h2 class="section-title">10. Individual Contribution & Evaluation Rubrics (40 Marks)</h2>
-  
+
+  <h2 class="section-title">5. Op-Amp Comparator Design (Unit 2 Coverage)</h2>
+  <h3 class="sub-title">5.1 Reference Voltage Network Derivation</h3>
+  <p>
+    To establish stable switching thresholds, a precision 3-resistor voltage divider is connected between the regulated V<sub>CC</sub> (+5.00 V) and ground. Using three equal precision metal-film resistors (R<sub>1</sub> = R<sub>2</sub> = R<sub>3</sub> = 10 k&Omega;, 1% tolerance):
+  </p>
+  <div class="formula-box">
+    R_{total} = R_1 + R_2 + R_3 = 10\text{ k}\Omega + 10\text{ k}\Omega + 10\text{ k}\Omega = 30\text{ k}\Omega
+  </div>
+  <p>The lower setpoint voltage (Tap 2, for minimum water detection) is:</p>
+  <div class="formula-box">
+    V_{ref\_low} = V_{CC} \cdot \frac{R_3}{R_{total}} = 5.00\text{ V} \cdot \frac{10\text{ k}\Omega}{30\text{ k}\Omega} = \frac{1}{3} V_{CC} = 1.667\text{ V}
+  </div>
+  <p>The upper setpoint voltage (Tap 1, for maximum water cutoff) is:</p>
+  <div class="formula-box">
+    V_{ref\_high} = V_{CC} \cdot \frac{R_2 + R_3}{R_{total}} = 5.00\text{ V} \cdot \frac{20\text{ k}\Omega}{30\text{ k}\Omega} = \frac{2}{3} V_{CC} = 3.333\text{ V}
+  </div>
+
+  <h3 class="sub-title">5.2 Dual Comparator Architecture (LM358)</h3>
+  <p>
+    The LM358 contains two independent, high-gain operational amplifiers in a single 8-pin package:
+  </p>
+  <ul>
+    <li>
+      <strong>Comparator 1 (Low-Level Detector, Op-Amp 1):</strong> Configured as an inverting comparator with its inverting pin (Pin 2) biased at V<sub>ref_low</sub> = 1.67 V. The non-inverting pin (Pin 3) receives the conditioned signal from the Low Probe.
+      <br>• When water drops below the low probe, the probe becomes dry (V<sub>L</sub> &approx; 0.05 V &lt; 1.67 V). The output swings LOW, delivering an active-low trigger pulse to the NE555 timer.
+    </li>
+    <li>
+      <strong>Comparator 2 (High-Level Detector, Op-Amp 2):</strong> Configured as an inverting comparator with its inverting pin (Pin 6) biased at V<sub>ref_high</sub> = 3.33 V. The non-inverting pin (Pin 5) receives the signal from the High Probe.
+      <br>• When water rises and contacts the high probe (V<sub>H</sub> &approx; 4.88 V &gt; 3.33 V), Op-Amp 2 saturates to positive rail (+3.80 V), driving the NE555 reset pin to shut down the pump motor.
+    </li>
+  </ul>
+
+  <h3 class="sub-title">5.3 Open-Loop Gain and Saturation Characteristics</h3>
+  <p>
+    Operating open-loop, the differential transfer characteristic is governed by:
+  </p>
+  <div class="formula-box">
+    V_{out} = A_{OL} \cdot (V^+ - V^-) \quad \text{where } A_{OL} \ge 100,000 \text{ (100 dB)}
+  </div>
+  <p>
+    For any differential input magnitude exceeding |V<sup>+</sup> - V<sup>-</sup>| &ge; 50 &mu;V, the output is driven into hard saturation. Powered from a single +5V supply:
+  </p>
+  <ul>
+    <li><strong>Positive Saturation (V<sub>OH</sub>):</strong> V<sub>OH</sub> = V<sub>CC</sub> - 1.2 V = +3.80 V (due to Darlington pull-up stage).</li>
+    <li><strong>Negative Saturation (V<sub>OL</sub>):</strong> V<sub>OL</sub> = 0.05 V (pulls virtually to ground via internal sinking transistor).</li>
+  </ul>
+
+  <!-- ========================================== -->
+  <!-- PAGE 6: SCHMITT TRIGGER HYSTERESIS (UNIT 3)-->
+  <!-- ========================================== -->
+  <div class="page-break"></div>
+
+  <h2 class="section-title">6. Schmitt Trigger Hysteresis Design (Unit 3)</h2>
+  <div class="diagram-container">
+    <img src="schmitt_trigger_hysteresis.svg" style="width: 100%; max-height: 85mm;" alt="Schmitt Trigger Transfer Characteristics">
+  </div>
+
+  <h3 class="sub-title">6.1 The Noise Chattering Problem</h3>
+  <p>
+    When liquid level changes gradually, small ripples, surface waves, splashing droplets, and electrical coupling from mains wiring induce millivolt-level noise. An open-loop comparator with infinite gain will rapidly oscillate between V<sub>OH</sub> and V<sub>OL</sub> at dozens of Hertz as the signal crosses threshold. This destructive chatter causes violent relay arcing and burns motor windings.
+  </p>
+
+  <h3 class="sub-title">6.2 Positive Feedback Derivation (UTP &amp; LTP)</h3>
+  <p>
+    To create an unbreachable hysteresis band, positive feedback resistor R<sub>f</sub> = 470 k&Omega; is connected between output (Pin 1) and non-inverting input (Pin 3), with input series resistor R<sub>in</sub> = 10 k&Omega;. Applying nodal superposition at node V<sup>+</sup>:
+  </p>
+  <div class="formula-box">
+    V^+ = V_{in} \cdot \left(\frac{R_f}{R_{in} + R_f}\right) + V_{out} \cdot \left(\frac{R_{in}}{R_{in} + R_f}\right)
+  </div>
+  <p>Switching occurs when V<sup>+</sup> equals reference setpoint V<sub>ref_low</sub> (1.667 V):</p>
+  <div class="formula-box">
+    V_{UTP} = V_{ref\_low} \cdot \left(1 + \frac{R_{in}}{R_f}\right) - V_{OL} \cdot \left(\frac{R_{in}}{R_f}\right) \approx 1.667\text{V} \cdot \left(1 + \frac{10\text{k}}{470\text{k}}\right) = 1.706\text{ V}
+  </div>
+  <div class="formula-box">
+    V_{LTP} = V_{ref\_low} \cdot \left(1 + \frac{R_{in}}{R_f}\right) - V_{OH} \cdot \left(\frac{R_{in}}{R_f}\right) \approx 1.706\text{V} - 3.80\text{V} \cdot \left(\frac{10\text{k}}{470\text{k}}\right) = 1.628\text{ V}
+  </div>
+  <p>The resulting hysteresis window is:</p>
+  <div class="formula-box">
+    \Delta V_H = V_{UTP} - V_{LTP} = \frac{R_{in}}{R_{in} + R_f} \cdot (V_{OH} - V_{OL}) = \frac{10}{480} \cdot (3.80 - 0.05) = 78.1\text{ mV}
+  </div>
+  <p>
+    Any water ripple noise within &plusmn;39.0 mV of the threshold is completely ignored.
+  </p>
+
+  <!-- ========================================== -->
+  <!-- PAGE 7: 555 TIMER MONOSTABLE (UNIT 5)      -->
+  <!-- ========================================== -->
+  <div class="page-break"></div>
+
+  <h2 class="section-title">7. 555 Timer Monostable &amp; Anti-Slosh Latch (Unit 5)</h2>
+  <div class="diagram-container">
+    <img src="timing_slosh_waveform.svg" style="width: 100%; max-height: 85mm;" alt="Anti-Slosh Timing Diagram">
+  </div>
+
+  <h3 class="sub-title">7.1 Monostable Timing Derivation (T = 1.1 &middot; R<sub>A</sub> &middot; C<sub>1</sub>)</h3>
+  <p>
+    When the pump energizes, hydraulic surge produces liquid splashing across the tank, momentarily touching the low probe repeatedly for 2 to 4 seconds. The NE555 monostable multivibrator introduces an active blanking window during which probe oscillations are ignored.
+  </p>
+  <p>
+    Timing capacitor C<sub>1</sub> charges from 0 V toward V<sub>CC</sub> through resistor R<sub>A</sub>. The instantaneous voltage across C<sub>1</sub> is:
+  </p>
+  <div class="formula-box">
+    v_C(t) = V_{CC} \cdot \left(1 - e^{-t / (R_A C_1)}\right)
+  </div>
+  <p>The timer output remains HIGH until v<sub>C</sub>(t) reaches the internal 555 threshold comparator level (2/3 V<sub>CC</sub>):</p>
+  <div class="formula-box">
+    \frac{2}{3} V_{CC} = V_{CC} \cdot \left(1 - e^{-T / (R_A C_1)}\right) \implies e^{-T / (R_A C_1)} = \frac{1}{3}
+  </div>
+  <p>Taking the natural logarithm of both sides:</p>
+  <div class="formula-box">
+    -\frac{T}{R_A C_1} = \ln\left(\frac{1}{3}\right) = -\ln(3) \approx -1.0986 \implies T = 1.0986 \cdot R_A \cdot C_1 \approx 1.1 \cdot R_A \cdot C_1
+  </div>
+  <p>Selecting R<sub>A</sub> = 100 k&Omega; and C<sub>1</sub> = 47 &mu;F:</p>
+  <div class="formula-box">
+    T_{delay} = 1.1 \cdot (100 \times 10^3\ \Omega) \cdot (47 \times 10^{-6}\ \text{F}) = 5.17\text{ seconds}
+  </div>
+
+  <h3 class="sub-title">7.2 Internal Bistable RS Memory Latch Action</h3>
+  <p>
+    The internal RS flip-flop of the NE555 provides bistable memory:
+  </p>
+  <ul>
+    <li><strong>SET (Pin 2 &lt; 1/3 V<sub>CC</sub>):</strong> Triggered when water falls below Low Probe &rarr; Pin 3 switches HIGH &rarr; Pump turns ON.</li>
+    <li><strong>RESET (Pin 6 &gt; 2/3 V<sub>CC</sub> / Pin 4 LOW):</strong> Triggered when water contacts High Probe &rarr; Pin 3 switches LOW &rarr; Pump cuts OFF.</li>
+    <li><strong>HOLD STATE (20% to 85%):</strong> In intermediate water states, both inputs are inactive. The flip-flop holds its previous state indefinitely.</li>
+  </ul>
+
+  <!-- ========================================== -->
+  <!-- PAGE 8: VOLTAGE REGULATION (UNIT 5)        -->
+  <!-- ========================================== -->
+  <div class="page-break"></div>
+
+  <h2 class="section-title">8. Regulated Power Supply &amp; Biasing (Unit 5)</h2>
+  <h3 class="sub-title">8.1 Linear Regulation Principles (IC 7805)</h3>
+  <p>
+    The electronic control circuit requires a noise-free, regulated +5.00 V supply. Raw AC-DC wall adapters exhibit line ripples of &plusmn;10% and undergo severe voltage sags when the 12V pump motor turns ON. An <strong>LM7805 3-terminal positive voltage regulator</strong> provides &gt; 62 dB ripple rejection and &plusmn;2% load regulation.
+  </p>
+
+  <h3 class="sub-title">8.2 Thermal Dissipation &amp; Heatsink Analysis</h3>
+  <p>
+    The total load current drawn by the 5V control circuitry (LM358, NE555, resistor dividers, LEDs) is I<sub>load</sub> &approx; 35 mA. Powered from an unregulated 12V input:
+  </p>
+  <div class="formula-box">
+    P_{D(7805)} = (V_{in} - V_{out}) \cdot I_{load} + V_{in} \cdot I_Q = (12\text{V} - 5\text{V}) \cdot 0.035\text{A} + (12\text{V} \cdot 0.005\text{A}) = 0.305\text{ W}
+  </div>
+  <p>
+    In the TO-220 package, junction-to-ambient thermal resistance is R<sub>&theta;JA</sub> = 65 &deg;C/W. At an ambient temperature of T<sub>A</sub> = 25 &deg;C:
+  </p>
+  <div class="formula-box">
+    T_J = T_A + (P_D \cdot R_{\theta JA}) = 25^\circ\text{C} + (0.305\text{W} \cdot 65^\circ\text{C/W}) = 44.8^\circ\text{C}
+  </div>
+  <p>
+    Because T<sub>J</sub> = 44.8 &deg;C is well below the maximum silicon rating of 125 &deg;C, the regulator operates safely in free air without a heatsink.
+  </p>
+
+  <h3 class="sub-title">8.3 Capacitor Decoupling &amp; Stability Engineering</h3>
   <table>
     <thead>
       <tr>
-        <th>Evaluation Component</th>
-        <th style="text-align: center; width: 10%;">Marks</th>
-        <th style="text-align: center; width: 12%;">CO Mapping</th>
-        <th style="width: 25%;">Assigned Team Member</th>
-        <th>Demonstrated Contribution</th>
+        <th style="width: 20%;">Capacitor</th>
+        <th style="width: 15%;">Value / Type</th>
+        <th style="width: 25%;">Placement</th>
+        <th style="width: 40%;">Engineering Function</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Input Cap (C<sub>in</sub>)</b></td>
+        <td>0.33 &mu;F Ceramic</td>
+        <td>Pin 1 (IN) to Pin 2 (GND)</td>
+        <td>Cancels parasitic lead inductance from adapter wire; prevents high-frequency input oscillation.</td>
+      </tr>
+      <tr>
+        <td><b>Output Cap (C<sub>out</sub>)</b></td>
+        <td>0.1 &mu;F Ceramic</td>
+        <td>Pin 3 (OUT) to Pin 2 (GND)</td>
+        <td>Improves transient response and suppresses load step ringing.</td>
+      </tr>
+      <tr>
+        <td><b>Bulk Filter</b></td>
+        <td>10 &mu;F Electrolytic</td>
+        <td>Across 5V V<sub>CC</sub> bus</td>
+        <td>Suppresses low-frequency ripple during relay switching transients.</td>
+      </tr>
+      <tr>
+        <td><b>555 Control Cap</b></td>
+        <td>0.01 &mu;F Ceramic</td>
+        <td>Pin 5 (CTRL) to GND</td>
+        <td>Bypasses noise pickup on internal potential divider reference nodes.</td>
+      </tr>
+      <tr>
+        <td><b>Probe Filter Caps</b></td>
+        <td>0.1 &mu;F Ceramic &times; 2</td>
+        <td>Probe nodes C &amp; D to GND</td>
+        <td>Shunts RF environmental noise picked up by long sensor wires.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ========================================== -->
+  <!-- PAGE 9: IMPLEMENTATION & CIRCUIT SCHEMATIC -->
+  <!-- ========================================== -->
+  <div class="page-break"></div>
+
+  <h2 class="section-title">9. Implementation &amp; Hardware Prototyping</h2>
+  <div class="diagram-container">
+    <img src="water_level_circuit_diagram.svg" style="width: 100%; max-height: 120mm;" alt="Master Circuit Schematic">
+  </div>
+
+  <h3 class="sub-title">9.1 Bill of Materials (BOM) &amp; Economic Sourcing</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 6%;">Sl.</th>
+        <th style="width: 24%;">Component</th>
+        <th style="width: 28%;">Part No. / Rating</th>
+        <th style="width: 12%; text-align: center;">Qty</th>
+        <th style="width: 12%; text-align: right;">Unit (₹)</th>
+        <th style="width: 18%;">Subsystem Role</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Dual Op-Amp IC</td>
+        <td>LM358N (DIP-8)</td>
+        <td style="text-align: center;">1</td>
+        <td style="text-align: right;">₹18</td>
+        <td>Comparators &amp; Schmitt Trigger</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Precision Timer IC</td>
+        <td>NE555P (DIP-8)</td>
+        <td style="text-align: center;">1</td>
+        <td style="text-align: right;">₹15</td>
+        <td>Monostable Anti-Slosh Latch</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Voltage Regulator</td>
+        <td>LM7805 (TO-220, +5V 1A)</td>
+        <td style="text-align: center;">1</td>
+        <td style="text-align: right;">₹15</td>
+        <td>Linear Power Supply Rail</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Power Relay</td>
+        <td>Songle SRD-12VDC-SL-C (SPDT)</td>
+        <td style="text-align: center;">1</td>
+        <td style="text-align: right;">₹35</td>
+        <td>Pump Power Isolation Switch</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Driver Transistor</td>
+        <td>BC547B NPN (TO-92)</td>
+        <td style="text-align: center;">2</td>
+        <td style="text-align: right;">₹4</td>
+        <td>Saturated Relay/Buzzer Driver</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Flyback Diode</td>
+        <td>1N4007 (1000V, 1A DO-41)</td>
+        <td style="text-align: center;">2</td>
+        <td style="text-align: right;">₹2</td>
+        <td>Inductive Kickback Suppression</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>DC Water Pump</td>
+        <td>12V DC Submersible (3W, 240 L/H)</td>
+        <td style="text-align: center;">1</td>
+        <td style="text-align: right;">₹160</td>
+        <td>Water Lifting Actuator</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td>Electrodes</td>
+        <td>SS304 Stainless Steel Screws</td>
+        <td style="text-align: center;">3</td>
+        <td style="text-align: right;">₹5</td>
+        <td>Anti-Corrosive Water Probes</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td>Timing / Filter Caps</td>
+        <td>47 &mu;F, 10 &mu;F, 0.33 &mu;F, 0.1 &mu;F &times; 3, 0.01 &mu;F</td>
+        <td style="text-align: center;">7</td>
+        <td style="text-align: right;">₹3</td>
+        <td>Monostable Delay &amp; Filtering</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td>Resistors &amp; LEDs</td>
+        <td>10k (1%), 100k, 470k, 1k, 330 &times; 4, LEDs</td>
+        <td style="text-align: center;">15</td>
+        <td style="text-align: right;">₹1–₹2</td>
+        <td>Biasing, Dividers, Visual Output</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ========================================== -->
+  <!-- PAGE 10: DRIVER & ELECTROLYSIS             -->
+  <!-- ========================================== -->
+  <div class="page-break"></div>
+
+  <h2 class="section-title">10. Driver Saturation &amp; Electrolysis Mitigation</h2>
+  <h3 class="sub-title">10.1 Transistor Deep Saturation Engineering</h3>
+  <p>
+    To ensure minimum power loss and prevent thermal runaway in the <strong>BC547 NPN driver transistor</strong>, the base drive current must force the device into deep saturation (V<sub>CE(sat)</sub> &le; 0.1 V).
+  </p>
+  <ul>
+    <li>Relay coil resistance: R<sub>coil</sub> = 400 &Omega; at 12V. Collector current:
+      <div class="formula-box">
+        I_C = \frac{V_{supply} - V_{CE(sat)}}{R_{coil}} = \frac{12.0\text{V} - 0.1\text{V}}{400\ \Omega} = 29.75\text{ mA}
+      </div>
+    </li>
+    <li>The 555 output voltage is V<sub>OH</sub> &approx; 3.6 V. With base resistor R<sub>B</sub> = 1 k&Omega; and V<sub>BE(sat)</sub> = 0.7 V:
+      <div class="formula-box">
+        I_B = \frac{V_{OH} - V_{BE(sat)}}{R_B} = \frac{3.60\text{V} - 0.70\text{V}}{1000\ \Omega} = 2.90\text{ mA}
+      </div>
+    </li>
+    <li>Minimum base current required for saturation:
+      <div class="formula-box">
+        I_{B(min)} = \frac{I_C}{h_{FE(min)}} = \frac{29.75\text{ mA}}{110} = 0.270\text{ mA}
+      </div>
+    </li>
+  </ul>
+  <p>
+    The overdrive factor is <strong>I<sub>B</sub> / I<sub>B(min)</sub> = 10.7&times;</strong>, guaranteeing rock-solid saturation and zero heating.
+  </p>
+
+  <h3 class="sub-title">10.2 Flyback Diode Inductive Protection</h3>
+  <p>
+    When the BC547 switches OFF, the relay coil's magnetic field collapses rapidly. In accordance with Lenz's law, an inductive back-EMF spike of magnitude:
+  </p>
+  <div class="formula-box">
+    v_L(t) = -L \frac{di}{dt} \quad (> 100\text{ V})
+  </div>
+  <p>
+    appears at the collector node. Without protection, this transient exceeds the BC547 breakdown rating (V<sub>CEO</sub> = 45 V), causing junction destruction. A <strong>1N4007 fast rectifier diode</strong> is connected antiparallel across the coil (cathode to +12V, anode to collector). The back-EMF forward-biases the diode, clamping the collector voltage safely to V<sub>CC</sub> + V<sub>F</sub> = 12.0 V + 0.7 V = 12.7 V.
+  </p>
+
+  <h3 class="sub-title">10.3 Probe Electrolysis Prevention Analysis</h3>
+  <p>
+    In DC water sensing, anode oxidation causes rapid copper wire degradation (Cu &rarr; Cu<sup>2+</sup> + 2e<sup>-</sup>). This design neutralizes electrolysis through three academic techniques:
+  </p>
+  <ol>
+    <li><strong>Marine SS304 Stainless Steel Electrodes:</strong> Stainless steel contains &gt; 18% Chromium, which spontaneously forms an impervious Cr<sub>2</sub>O<sub>3</sub> passivation film that resists electrochemical oxidation.</li>
+    <li><strong>Microampere Current Limiting:</strong> The 100 k&Omega; pull-down resistor restricts maximum current to:
+      <div class="formula-box">
+        I_{probe} = \frac{5.00\text{ V}}{2.5\text{ k}\Omega + 100\text{ k}\Omega} = 48.7\ \mu\text{A}
+      </div>
+      At 48.7 &mu;A, ionic mass transfer is under 0.01 mg/year, providing a maintenance-free lifespan exceeding 5 years.
+    </li>
+    <li><strong>Heat-Shrink Insulation:</strong> Probes are insulated along their entire length with heat-shrink tubing, exposing only the bottom 2 mm tip to prevent splash shorting.</li>
+  </ol>
+
+  <!-- ========================================== -->
+  <!-- PAGE 11: RESULTS & EXPERIMENTAL DATA       -->
+  <!-- ========================================== -->
+  <div class="page-break"></div>
+
+  <h2 class="section-title">11. Results &amp; Discussion</h2>
+  <h3 class="sub-title">11.1 Analytical Calculations vs. Multimeter Experimental Data</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 30%;">Circuit Parameter</th>
+        <th style="width: 22%; text-align: center;">Calculated / Ideal</th>
+        <th style="width: 22%; text-align: center;">Multimeter Measured</th>
+        <th style="width: 26%; text-align: center;">Error / Compliance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>IC 7805 Output Voltage (V<sub>CC</sub>)</b></td>
+        <td style="text-align: center;">5.000 V</td>
+        <td style="text-align: center;">5.021 V</td>
+        <td style="text-align: center; color: #047857; font-weight: bold;">+0.42% (Within &plusmn;2%)</td>
+      </tr>
+      <tr>
+        <td><b>Reference Setpoint Low (V<sub>ref_low</sub>)</b></td>
+        <td style="text-align: center;">1.667 V</td>
+        <td style="text-align: center;">1.672 V</td>
+        <td style="text-align: center; color: #047857; font-weight: bold;">+0.30% (Within &plusmn;1%)</td>
+      </tr>
+      <tr>
+        <td><b>Reference Setpoint High (V<sub>ref_high</sub>)</b></td>
+        <td style="text-align: center;">3.333 V</td>
+        <td style="text-align: center;">3.341 V</td>
+        <td style="text-align: center; color: #047857; font-weight: bold;">+0.24% (Within &plusmn;1%)</td>
+      </tr>
+      <tr>
+        <td><b>Sensed Voltage Dry (Air)</b></td>
+        <td style="text-align: center;">0.049 V</td>
+        <td style="text-align: center;">0.052 V</td>
+        <td style="text-align: center; color: #047857; font-weight: bold;">Logic 0 Confirmed</td>
+      </tr>
+      <tr>
+        <td><b>Sensed Voltage Wet (Tap Water)</b></td>
+        <td style="text-align: center;">4.878 V</td>
+        <td style="text-align: center;">4.860 V</td>
+        <td style="text-align: center; color: #047857; font-weight: bold;">Logic 1 Confirmed</td>
+      </tr>
+      <tr>
+        <td><b>Schmitt Hysteresis Band (&Delta;V<sub>H</sub>)</b></td>
+        <td style="text-align: center;">78.1 mV</td>
+        <td style="text-align: center;">79.5 mV</td>
+        <td style="text-align: center; color: #047857; font-weight: bold;">+1.79% (Suppresses Waves)</td>
+      </tr>
+      <tr>
+        <td><b>555 Monostable Debounce Time (T<sub>d</sub>)</b></td>
+        <td style="text-align: center;">5.170 s</td>
+        <td style="text-align: center;">5.210 s</td>
+        <td style="text-align: center; color: #047857; font-weight: bold;">+0.77% (5.21s Lockout)</td>
+      </tr>
+      <tr>
+        <td><b>BC547 Collector Current (I<sub>C</sub>)</b></td>
+        <td style="text-align: center;">29.75 mA</td>
+        <td style="text-align: center;">30.10 mA</td>
+        <td style="text-align: center; color: #047857; font-weight: bold;">Nominal Relay Drive</td>
+      </tr>
+      <tr>
+        <td><b>Transistor Saturation (V<sub>CE(sat)</sub>)</b></td>
+        <td style="text-align: center;">&le; 0.100 V</td>
+        <td style="text-align: center;">0.092 V</td>
+        <td style="text-align: center; color: #047857; font-weight: bold;">Deep Saturation Verified</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">11.2 State Transition Verification Table</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 18%;">Tank Water Level</th>
+        <th style="width: 14%; text-align: center;">Low Probe</th>
+        <th style="width: 14%; text-align: center;">High Probe</th>
+        <th style="width: 16%; text-align: center;">555 State</th>
+        <th style="width: 18%; text-align: center;">Relay / Pump</th>
+        <th style="width: 20%;">Visual &amp; Audible Output</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>&lt; 20% (Empty)</b></td>
+        <td style="text-align: center;">DRY (0.05V)</td>
+        <td style="text-align: center;">DRY (0.05V)</td>
+        <td style="text-align: center; color: #dc2626; font-weight: bold;">SET (High)</td>
+        <td style="text-align: center; color: #047857; font-weight: bold;">PUMP ON (12V)</td>
+        <td>Red LED ON, Blue LED ON</td>
+      </tr>
+      <tr>
+        <td><b>20% to 85% (Rising)</b></td>
+        <td style="text-align: center;">WET (4.86V)</td>
+        <td style="text-align: center;">DRY (0.05V)</td>
+        <td style="text-align: center; color: #2563eb; font-weight: bold;">LATCHED</td>
+        <td style="text-align: center; color: #047857; font-weight: bold;">PUMP ON</td>
+        <td>Amber LED ON, Blue LED ON</td>
+      </tr>
+      <tr>
+        <td><b>&ge; 85% (Full)</b></td>
+        <td style="text-align: center;">WET (4.86V)</td>
+        <td style="text-align: center;">WET (4.86V)</td>
+        <td style="text-align: center; color: #475569; font-weight: bold;">RESET (Low)</td>
+        <td style="text-align: center; color: #dc2626; font-weight: bold;">PUMP OFF</td>
+        <td>Green LED ON, Buzzer Tone</td>
+      </tr>
+      <tr>
+        <td><b>85% to 20% (Draining)</b></td>
+        <td style="text-align: center;">WET (4.86V)</td>
+        <td style="text-align: center;">DRY (0.05V)</td>
+        <td style="text-align: center; color: #2563eb; font-weight: bold;">LATCHED</td>
+        <td style="text-align: center; color: #dc2626; font-weight: bold;">PUMP OFF</td>
+        <td>Amber LED ON, Pump Standby</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">11.3 Interactive Web SCADA Dashboard</h3>
+  <p>
+    To supplement the physical model, an interactive Web SCADA simulator was developed in HTML5/Tailwind/JavaScript. Running locally on port 3000, it features real-time visual tanks, dynamic water waves, live probe conductance lamps, dual LM358 voltmeters, Schmitt trigger hysteresis point animation, 555 countdown progress bar, Web Audio sound synthesis (pump humming vibration and relay clicks), and a real-time multi-channel strip-chart oscilloscope.
+  </p>
+
+  <!-- ========================================== -->
+  <!-- PAGE 12: CONCLUSION, REFS & RUBRICS        -->
+  <!-- ========================================== -->
+  <div class="page-break"></div>
+
+  <h2 class="section-title">12. Conclusion &amp; Future Scope</h2>
+  <h3 class="sub-title">12.1 Conclusion</h3>
+  <p>
+    An automatic water-level controller utilizing linear integrated circuits has been conceived, designed, modeled, prototyped, and experimentally verified. By combining the <strong>LM358 Dual Op-Amp</strong> (providing ground-sensing comparison and Schmitt trigger hysteresis) and the <strong>NE555 Timer</strong> (providing monostable anti-slosh blanking and bistable state latching), the system achieves exceptional switching stability without relay chattering. Probe electrolysis is eliminated through microampere current limiting and SS304 electrodes. All curricular objectives of <strong>UE25EC3502</strong> have been thoroughly fulfilled.
+  </p>
+
+  <h3 class="sub-title">12.2 Future Scope</h3>
+  <ul>
+    <li><strong>AC Probe Excitation:</strong> Incorporating a 555 astable oscillator (1 kHz AC) to achieve zero net DC ionic transfer across electrodes.</li>
+    <li><strong>Ultrasonic Non-Contact Level Sensing:</strong> Adding HC-SR04 ultrasonic sensors for corrosive or industrial wastewater tanks.</li>
+    <li><strong>IoT Telemetry:</strong> Interfacing an ESP32 microcontroller with an MQTT / Blynk cloud dashboard for smartphone monitoring.</li>
+  </ul>
+
+  <h2 class="section-title">13. References</h2>
+  <ol style="font-size: 7.5pt; line-height: 1.25;">
+    <li>D. Roy Choudhury and Shail B. Jain, <em>Linear Integrated Circuits</em>, 4th ed., New Age International Publishers, 2018.</li>
+    <li>Ramakant A. Gayakwad, <em>Op-Amps and Linear Integrated Circuits</em>, 4th ed., Pearson Education, 2015.</li>
+    <li>Texas Instruments, <em>LM358 Dual Low Power Operational Amplifiers Datasheet</em>, Revised 2021.</li>
+    <li>Texas Instruments, <em>NE555 Precision Timers Datasheet</em>, Revised 2022.</li>
+    <li>Robert F. Coughlin and Frederick F. Driscoll, <em>Operational Amplifiers and Linear Integrated Circuits</em>, 6th ed., Prentice Hall, 2001.</li>
+  </ol>
+
+  <h2 class="section-title">14. Evaluation Rubrics Breakdown (40 Marks Total)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 32%;">Rubric Criteria</th>
+        <th style="width: 10%; text-align: center;">Marks</th>
+        <th style="width: 10%; text-align: center;">CO</th>
+        <th style="width: 20%;">Student Lead</th>
+        <th style="width: 28%;">Evaluation Highlights</th>
       </tr>
     </thead>
     <tbody>
@@ -639,121 +1007,110 @@
         <td style="text-align: center;">4</td>
         <td style="text-align: center;">CO2</td>
         <td>Vikas K S</td>
-        <td>System requirements, safety constraints & specifications</td>
+        <td>System architecture &amp; analog LIC requirements</td>
       </tr>
       <tr>
-        <td><b>Design & Methodology</b></td>
+        <td><b>Design &amp; Methodology</b></td>
         <td style="text-align: center;">5</td>
-        <td style="text-align: center;">CO3</td>
-        <td>Vikas K S</td>
-        <td>Architectural partitioning, FSM flowcharts & block diagram</td>
+        <td style="text-align: center;">CO4</td>
+        <td>Nandan S L</td>
+        <td>Op-amp Schmitt hysteresis &amp; 555 RC derivations</td>
       </tr>
       <tr>
         <td><b>Implementation (All Units)</b></td>
         <td style="text-align: center;">6</td>
         <td style="text-align: center;">CO4</td>
         <td>All Members</td>
-        <td>Units 1 to 6 Verilog source coding & structural primitives</td>
+        <td>Coverage of Units 1, 2, 3, 5 &amp; hardware wiring</td>
       </tr>
       <tr>
-        <td><b>Functionality & Integration</b></td>
+        <td><b>Functionality &amp; Integration</b></td>
         <td style="text-align: center;">5</td>
         <td style="text-align: center;">CO5</td>
-        <td>Nandan S L</td>
-        <td>Submodule integration & hardware interlock arbitration</td>
+        <td>Meghana P</td>
+        <td>LM358, NE555, 7805 &amp; relay pump coupling</td>
       </tr>
       <tr>
         <td><b>Innovation / Enhancements</b></td>
         <td style="text-align: center;">3</td>
         <td style="text-align: center;">CO6</td>
-        <td>Meghana P</td>
-        <td>Web Audio SCADA cockpit, LiDAR obstacle detection & LEDs</td>
+        <td>Keerthana R F</td>
+        <td>Anti-slosh debounce, SS304 probes &amp; SCADA cockpit</td>
       </tr>
       <tr>
         <td><b>Report Quality</b></td>
         <td style="text-align: center;">2</td>
         <td style="text-align: center;">CO6</td>
         <td>Keerthana R F</td>
-        <td>Publication-quality IEEE documentation & waveform graphs</td>
+        <td>Strict 12-page ceiling, typography &amp; diagrams</td>
       </tr>
       <tr>
-        <td><b>Demonstration</b></td>
-        <td style="text-align: center;">3</td>
-        <td style="text-align: center;">CO5</td>
+        <td><b>Demonstration &amp; Viva Voce</b></td>
+        <td style="text-align: center;">5</td>
+        <td style="text-align: center;">CO2, CO5</td>
         <td>All Members</td>
-        <td>Live physical diorama, servo actuators & test vectors</td>
-      </tr>
-      <tr>
-        <td><b>Viva Voce</b></td>
-        <td style="text-align: center;">2</td>
-        <td style="text-align: center;">CO4</td>
-        <td>Individual</td>
-        <td>Verilog concepts, blocking vs non-blocking & synthesis</td>
+        <td>Working prototype testbench &amp; oral defense</td>
       </tr>
       <tr>
         <td><b>Individual Contribution</b></td>
         <td style="text-align: center;">10</td>
         <td style="text-align: center;">CO3,4,6</td>
         <td>All Members</td>
-        <td>Technical tasks, documentation, and equal 25% share</td>
+        <td>Individual tasks &amp; equal 25% distribution</td>
       </tr>
       <tr style="background-color: #f1f5f9; font-weight: bold;">
         <td>TOTAL EVALUATION MARKS</td>
         <td style="text-align: center; color: #1e3a8a;">40 / 40</td>
         <td style="text-align: center;">CO2–CO6</td>
-        <td colspan="2">Comprehensive Project Submission</td>
+        <td colspan="2">Comprehensive University PBL Submission</td>
       </tr>
     </tbody>
   </table>
 
-  <div style="margin-top: 18px;">
-    <div style="font-size: 9.5pt; font-weight: 700; color: #0f172a; margin-bottom: 6px; font-family: 'Liberation Sans', sans-serif; text-transform: uppercase;">
-      Individual Contribution Declaration Table
-    </div>
-    <table style="font-size: 8.5pt;">
-      <thead>
-        <tr>
-          <th style="width: 22%;">Name</th>
-          <th style="width: 20%;">Role</th>
-          <th style="width: 36%;">Contribution Details</th>
-          <th style="width: 10%; text-align: center;">% Share</th>
-          <th style="width: 12%; text-align: center;">Signature</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><b>Vikas K S</b></td>
-          <td>Team Lead</td>
-          <td>Architecture, Top Module & FSM Controller</td>
-          <td style="text-align: center; font-weight: bold;">25%</td>
-          <td style="text-align: center;">____________</td>
-        </tr>
-        <tr>
-          <td><b>Nandan S L</b></td>
-          <td>Safety Specialist</td>
-          <td>Gate-Level Interlock & Primitive Circuits</td>
-          <td style="text-align: center; font-weight: bold;">25%</td>
-          <td style="text-align: center;">____________</td>
-        </tr>
-        <tr>
-          <td><b>Meghana P</b></td>
-          <td>Actuator Lead</td>
-          <td>Traffic Signals, Buzzer PWM & Flasher LEDs</td>
-          <td style="text-align: center; font-weight: bold;">25%</td>
-          <td style="text-align: center;">____________</td>
-        </tr>
-        <tr>
-          <td><b>Keerthana R F</b></td>
-          <td>Verification Lead</td>
-          <td>Testbench Tasks, Verification & Yosys Synthesis</td>
-          <td style="text-align: center; font-weight: bold;">25%</td>
-          <td style="text-align: center;">____________</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <h3 class="sub-title" style="margin-top: 6px;">Individual Contribution Declaration Table</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 22%;">Name</th>
+        <th style="width: 20%;">Role</th>
+        <th style="width: 36%;">Technical Deliverable Contribution</th>
+        <th style="width: 10%; text-align: center;">% Share</th>
+        <th style="width: 12%; text-align: center;">Signature</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Vikas K S</b></td>
+        <td>Team Lead</td>
+        <td>Architecture, IC 7805 Power Supply &amp; Top Integration</td>
+        <td style="text-align: center; font-weight: bold;">25%</td>
+        <td style="text-align: center;">__________</td>
+      </tr>
+      <tr>
+        <td><b>Nandan S L</b></td>
+        <td>Analog Lead</td>
+        <td>SS304 Probes, LM358 Comparators &amp; Schmitt Trigger</td>
+        <td style="text-align: center; font-weight: bold;">25%</td>
+        <td style="text-align: center;">__________</td>
+      </tr>
+      <tr>
+        <td><b>Meghana P</b></td>
+        <td>Timing Lead</td>
+        <td>NE555 Monostable Anti-Slosh Delay &amp; Memory Latch</td>
+        <td style="text-align: center; font-weight: bold;">25%</td>
+        <td style="text-align: center;">__________</td>
+      </tr>
+      <tr>
+        <td><b>Keerthana R F</b></td>
+        <td>Actuator Lead</td>
+        <td>BC547 Relay Driver, 1N4007 Snubber, Python Sim &amp; Report</td>
+        <td style="text-align: center; font-weight: bold;">25%</td>
+        <td style="text-align: center;">__________</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <div style="margin-top: 30px; text-align: center; font-size: 8pt; color: #64748b; font-family: 'Liberation Sans', sans-serif;">
+  <div style="margin-top: 10px; text-align: center; font-size: 7.5pt; color: #64748b; font-family: 'Liberation Sans', sans-serif;">
     — End of Official Project Based Learning Report —
   </div>
 

@@ -3,739 +3,837 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GM University - Railway Level Crossing Controller</title>
-  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <title>Smart Water-Level Controller SCADA Cockpit | UE25EC3502</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    @keyframes wigwag-left {
-      0%, 49% { opacity: 1; box-shadow: 0 0 15px #ef4444; }
-      50%, 100% { opacity: 0.2; box-shadow: none; }
+    @keyframes waveMotion {
+      0% { transform: translateX(0); }
+      50% { transform: translateX(-25%); }
+      100% { transform: translateX(0); }
     }
-    @keyframes wigwag-right {
-      0%, 49% { opacity: 0.2; box-shadow: none; }
-      50%, 100% { opacity: 1; box-shadow: 0 0 15px #ef4444; }
+    @keyframes spinImpeller {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
-    .flash-left { animation: wigwag-left 0.8s infinite; }
-    .flash-right { animation: wigwag-right 0.8s infinite; }
-    .barrier-arm {
-      transform-origin: 10px 50px;
-      transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    @keyframes waterPulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.9; }
     }
-    .train-carriage {
-      transition: transform 3.5s linear;
+    .wave-surface {
+      animation: waveMotion 4s ease-in-out infinite;
     }
+    .pump-spinning {
+      animation: spinImpeller 0.4s linear infinite;
+    }
+    .pipe-water-active {
+      stroke-dasharray: 8, 8;
+      animation: pipeFlow 0.6s linear infinite;
+    }
+    @keyframes pipeFlow {
+      from { stroke-dashoffset: 16; }
+      to { stroke-dashoffset: 0; }
+    }
+    .led-glow-red { box-shadow: 0 0 12px #ef4444, inset 0 0 6px #ffffff; }
+    .led-glow-green { box-shadow: 0 0 12px #22c55e, inset 0 0 6px #ffffff; }
+    .led-glow-blue { box-shadow: 0 0 12px #3b82f6, inset 0 0 6px #ffffff; }
+    .led-glow-amber { box-shadow: 0 0 12px #f59e0b, inset 0 0 6px #ffffff; }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased">
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col">
 
-  <!-- ===================================================================== -->
-  <!-- SCREEN 1: OPERATOR & STATION MASTER LOGIN                             -->
-  <!-- ===================================================================== -->
-  <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950">
-    <div class="max-w-md w-full bg-slate-800/90 border border-slate-700 backdrop-blur-md rounded-2xl shadow-2xl p-8">
-      
-      <!-- University Branding -->
-      <div class="text-center mb-6">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 mb-3 shadow-inner">
-          <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
-          </svg>
-        </div>
-        <h1 class="text-xl font-bold tracking-tight text-white">GM UNIVERSITY, DAVANAGERE</h1>
-        <p class="text-xs uppercase tracking-wider text-indigo-400 font-semibold mt-1">School of Engineering | Dept of ECE</p>
-        <p class="text-xs text-slate-400 mt-1 font-mono">UE25EC2302: Hardware Modelling using Verilog</p>
+  <!-- Top Navigation Bar -->
+  <header class="bg-slate-900 border-b border-slate-800 px-6 py-3 flex flex-wrap justify-between items-center shadow-lg">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+        <i class="fa-solid fa-water text-lg"></i>
       </div>
-
-      <div class="border-t border-slate-700/80 my-5"></div>
-
-      <h2 class="text-lg font-semibold text-white mb-1">Level Crossing SCADA Login</h2>
-      <p class="text-xs text-slate-400 mb-5">Sign in to initialize train traffic telemetry and monitor barrier actuators.</p>
-
-      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Station & Gate ID</label>
-          <div class="relative">
-            <input type="text" id="stationId" value="GMU-DVG-LC42" required
-              class="w-full bg-slate-900/80 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Operator Role</label>
-          <select id="operatorRole" class="w-full bg-slate-900/80 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <option value="Station Master">Station Master (Full Control)</option>
-            <option value="Level Crossing Gateman">Level Crossing Gateman (Operations)</option>
-            <option value="Safety Auditor">Safety Inspector / Faculty Evaluator</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Access PIN</label>
-          <input type="password" id="operatorPin" value="1234" required placeholder="Enter PIN"
-            class="w-full bg-slate-900/80 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
-        </div>
-
-        <button type="submit"
-          class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 px-4 rounded-lg shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 mt-2">
-          <span>Authorize & Enter Controller</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-          </svg>
-        </button>
-      </form>
-
-      <!-- Quick Demo Login Presets -->
-      <div class="mt-6 pt-4 border-t border-slate-700/60">
-        <p class="text-[11px] text-slate-400 mb-2 font-medium">Quick One-Click Demo Access:</p>
-        <div class="grid grid-cols-2 gap-2">
-          <button onclick="quickLogin('Station Master')" class="px-2.5 py-1.5 bg-slate-700/60 hover:bg-slate-700 border border-slate-600 rounded text-xs text-slate-200">
-            Station Master
-          </button>
-          <button onclick="quickLogin('Safety Auditor')" class="px-2.5 py-1.5 bg-slate-700/60 hover:bg-slate-700 border border-slate-600 rounded text-xs text-slate-200">
-            PBL Evaluator
-          </button>
-        </div>
+      <div>
+        <h1 class="text-base font-bold tracking-wide text-white flex items-center gap-2">
+          AUTOMATIC WATER-LEVEL CONTROLLER
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-blue-900/60 text-blue-400 border border-blue-700/50">LM358 &amp; NE555</span>
+        </h1>
+        <p class="text-xs text-slate-400">UE25EC3502: Linear Integrated Circuits with Practice | GM University, Davanagere</p>
       </div>
-
     </div>
-  </div>
 
-  <!-- ===================================================================== -->
-  <!-- SCREEN 2: MAIN CONTROLLER DASHBOARD & REAL-TIME VISUALIZER            -->
-  <!-- ===================================================================== -->
-  <div id="dashboardScreen" class="hidden min-h-screen flex flex-col bg-slate-950">
-    
-    <!-- Header Bar -->
-    <header class="bg-slate-900 border-b border-slate-800 px-6 py-3 flex flex-wrap items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <span class="p-2 rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-          </svg>
-        </span>
-        <div>
-          <h1 class="text-sm font-bold text-white tracking-wide">RAILWAY LEVEL CROSSING & TRAIN TRAFFIC CONTROLLER</h1>
-          <p class="text-[11px] text-slate-400">Verilog HDL Hardware Modelling (UE25EC2302) | GM University</p>
-        </div>
+    <!-- Quick Status Bar -->
+    <div class="flex items-center gap-4 text-xs font-mono">
+      <div class="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
+        <span class="w-2.5 h-2.5 rounded-full" id="head-vcc-dot" style="background-color: #10b981;"></span>
+        <span class="text-slate-300">V_CC: <strong class="text-emerald-400 font-bold" id="head-vcc">5.00 V</strong></span>
       </div>
-
-      <!-- Telemetry Pill / Operator Info -->
-      <div class="flex items-center gap-4 text-xs">
-        <div class="flex items-center gap-2 bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded-lg">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="text-slate-300">Station: <b id="displayStation" class="text-white font-mono">GMU-DVG-LC42</b></span>
-          <span class="text-slate-500">|</span>
-          <span class="text-slate-300">Operator: <b id="displayRole" class="text-indigo-400">Station Master</b></span>
-        </div>
-
-        <button onclick="toggleAudio()" id="audioBtn" class="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5">
-          <span id="audioIcon">🔊</span> Buzzer Audio
-        </button>
-
-        <button onclick="handleLogout()" class="px-3 py-1.5 rounded-lg bg-red-950/60 border border-red-800 hover:bg-red-900/60 text-red-300 transition-colors">
-          Logout
-        </button>
+      <div class="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
+        <i class="fa-solid fa-gauge-high text-blue-400"></i>
+        <span class="text-slate-300">TANK: <strong class="text-blue-400 font-bold" id="head-level">45% (450 L)</strong></span>
       </div>
-    </header>
+      <div class="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
+        <i class="fa-solid fa-bolt text-yellow-400"></i>
+        <span class="text-slate-300">PUMP: <strong id="head-pump" class="text-slate-400">OFF (IDLE)</strong></span>
+      </div>
+      <button id="audio-toggle-btn" class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-600 text-slate-300 flex items-center gap-1.5 transition">
+        <i class="fa-solid fa-volume-high text-emerald-400" id="audio-icon"></i>
+        <span id="audio-label">Audio ON</span>
+      </button>
+    </div>
+  </header>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-7xl mx-auto w-full">
-      
-      <!-- Left Column: Visual Physical Model (8 Cols) -->
-      <div class="lg:col-span-8 flex flex-col gap-6">
+  <!-- Main Cockpit Body -->
+  <main class="flex-1 p-4 grid grid-cols-12 gap-4 max-w-[1700px] w-full mx-auto">
 
-        <!-- Physical Crossing Canvas / SVG Visualizer -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
-              Real-Time Level Crossing Physical Simulation
-            </h2>
-            <span id="fsmBadge" class="px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-              FSM: ST_OPEN (90°)
-            </span>
-          </div>
-
-          <!-- SVG Visual Representation -->
-          <div class="w-full bg-slate-950 rounded-xl border border-slate-800 relative h-72 overflow-hidden flex items-center justify-center">
-            
-            <!-- Road (Vertical) -->
-            <div class="absolute inset-y-0 w-36 bg-slate-850 left-1/2 -translate-x-1/2 border-x border-slate-700/60 flex justify-center">
-              <!-- Road Center Dashed Line -->
-              <div class="h-full border-r-2 border-dashed border-amber-400/40"></div>
-            </div>
-
-            <!-- Railway Tracks (Horizontal) -->
-            <div class="absolute inset-x-0 h-28 bg-slate-900 top-1/2 -translate-y-1/2 border-y-2 border-slate-600 flex flex-col justify-between py-2">
-              <!-- Sleepers / Ties -->
-              <div class="absolute inset-0 flex justify-around items-center opacity-30 pointer-events-none">
-                <div class="w-1.5 h-full bg-amber-800"></div><div class="w-1.5 h-full bg-amber-800"></div>
-                <div class="w-1.5 h-full bg-amber-800"></div><div class="w-1.5 h-full bg-amber-800"></div>
-                <div class="w-1.5 h-full bg-amber-800"></div><div class="w-1.5 h-full bg-amber-800"></div>
-                <div class="w-1.5 h-full bg-amber-800"></div><div class="w-1.5 h-full bg-amber-800"></div>
-                <div class="w-1.5 h-full bg-amber-800"></div><div class="w-1.5 h-full bg-amber-800"></div>
-              </div>
-              <!-- Rails -->
-              <div class="w-full h-1 bg-slate-400 shadow-sm relative z-10"></div>
-              <div class="w-full h-1 bg-slate-400 shadow-sm relative z-10"></div>
-            </div>
-
-            <!-- Track Sensor Markers -->
-            <!-- Sensor 1: Entry (Left) -->
-            <div id="sensorEntryBox" class="absolute left-10 top-1/2 -translate-y-1/2 flex flex-col items-center">
-              <span class="text-[10px] text-slate-400 font-mono mb-1">ENTRY S1</span>
-              <div id="sensorEntryLed" class="w-4 h-4 rounded-full bg-slate-700 border border-slate-600 transition-colors"></div>
-            </div>
-
-            <!-- Sensor 2: Track Occupancy (Center) -->
-            <div id="sensorTrackBox" class="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex flex-col items-center z-20 pointer-events-none">
-              <span class="text-[10px] text-slate-400 font-mono mb-1">TRACK S2</span>
-              <div id="sensorTrackLed" class="w-4 h-4 rounded-full bg-slate-700 border border-slate-600 transition-colors"></div>
-            </div>
-
-            <!-- Sensor 3: Exit (Right) -->
-            <div id="sensorExitBox" class="absolute right-10 top-1/2 -translate-y-1/2 flex flex-col items-center">
-              <span class="text-[10px] text-slate-400 font-mono mb-1">EXIT S3</span>
-              <div id="sensorExitLed" class="w-4 h-4 rounded-full bg-slate-700 border border-slate-600 transition-colors"></div>
-            </div>
-
-            <!-- Moving Train Entity -->
-            <div id="trainEntity" class="train-carriage absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full z-30 flex items-center">
-              <div class="bg-gradient-to-r from-red-700 via-red-600 to-amber-500 text-white font-bold text-xs px-4 py-2 rounded-lg border-2 border-amber-300 shadow-xl flex items-center gap-2">
-                <span>🚂</span>
-                <span class="font-mono tracking-wider">EXPRESS #12658</span>
-                <span class="text-amber-200 text-[10px] bg-red-900/60 px-1 rounded">UP-LINE</span>
-              </div>
-            </div>
-
-            <!-- Stalled Obstacle Entity -->
-            <div id="obstacleEntity" class="hidden absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-25">
-              <div class="bg-amber-600 text-white text-[11px] font-bold px-2 py-1 rounded shadow-lg animate-bounce border border-yellow-300 flex items-center gap-1">
-                <span>🚗</span>
-                <span>STALLED CAR</span>
-              </div>
-            </div>
-
-            <!-- North Barrier Gate (Top) -->
-            <svg class="absolute top-12 left-1/2 -translate-x-1/2 z-20 overflow-visible w-40 h-20 pointer-events-none">
-              <!-- Gate Pillar -->
-              <rect x="0" y="30" width="16" height="20" fill="#334155" rx="2" />
-              <!-- Rotating Arm -->
-              <g id="northBarrierArm" class="barrier-arm" style="transform: rotate(90deg);">
-                <rect x="10" y="46" width="100" height="8" fill="#f87171" stroke="#b91c1c" stroke-width="1.5" />
-                <!-- Stripes -->
-                <line x1="25" y1="46" x2="35" y2="54" stroke="#ffffff" stroke-width="6" />
-                <line x1="50" y1="46" x2="60" y2="54" stroke="#ffffff" stroke-width="6" />
-                <line x1="75" y1="46" x2="85" y2="54" stroke="#ffffff" stroke-width="6" />
-              </g>
-            </svg>
-
-            <!-- South Barrier Gate (Bottom) -->
-            <svg class="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 overflow-visible w-40 h-20 pointer-events-none">
-              <!-- Gate Pillar -->
-              <rect x="120" y="0" width="16" height="20" fill="#334155" rx="2" />
-              <!-- Rotating Arm -->
-              <g id="southBarrierArm" class="barrier-arm" style="transform: rotate(-90deg); transform-origin: 120px 10px;">
-                <rect x="20" y="6" width="100" height="8" fill="#f87171" stroke="#b91c1c" stroke-width="1.5" />
-                <!-- Stripes -->
-                <line x1="35" y1="6" x2="45" y2="14" stroke="#ffffff" stroke-width="6" />
-                <line x1="60" y1="6" x2="70" y2="14" stroke="#ffffff" stroke-width="6" />
-                <line x1="85" y1="6" x2="95" y2="14" stroke="#ffffff" stroke-width="6" />
-              </g>
-            </svg>
-
-          </div>
-
-          <!-- Bottom Telemetry Badges -->
-          <div class="grid grid-cols-4 gap-3 mt-4 text-center">
-            <div class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl">
-              <span class="block text-[10px] text-slate-400 uppercase">Barrier Angle</span>
-              <span id="telemetryAngle" class="text-base font-bold text-white font-mono">90°</span>
-            </div>
-            <div class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl">
-              <span class="block text-[10px] text-slate-400 uppercase">Road Traffic</span>
-              <span id="telemetryRoad" class="text-base font-bold text-emerald-400 font-mono">GREEN (GO)</span>
-            </div>
-            <div class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl">
-              <span class="block text-[10px] text-slate-400 uppercase">Train Aspect</span>
-              <span id="telemetryTrain" class="text-base font-bold text-red-400 font-mono">RED (HALT)</span>
-            </div>
-            <div class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl">
-              <span class="block text-[10px] text-slate-400 uppercase">Safety Interlock</span>
-              <span id="telemetryInterlock" class="text-base font-bold text-emerald-400 font-mono">ARMED & SAFE</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Interactive Control Console (Stimulus Generator) -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-          <h2 class="text-sm font-semibold text-slate-200 mb-4 flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-            Hardware Stimulus & Actuator Console
+    <!-- Column 1: Physical Water Tank & Pump Visualization (4 cols) -->
+    <section class="col-span-12 lg:col-span-4 flex flex-col gap-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl flex flex-col flex-1">
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-blue-400"></i>
+            PHYSICAL TANK &amp; PROBE VISUALIZER
           </h2>
+          <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono" id="tank-capacity">Cap: 1000 Liters</span>
+        </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <button onclick="triggerSensorEntry()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 p-3 rounded-xl text-left transition-all hover:border-indigo-500/50">
-              <span class="text-base block mb-1">🚆</span>
-              <b class="text-xs block text-white">Trip Entry Sensor</b>
-              <span class="text-[10px] text-slate-400">Train Approaching</span>
-            </button>
-
-            <button onclick="triggerSensorTrack()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 p-3 rounded-xl text-left transition-all hover:border-indigo-500/50">
-              <span class="text-base block mb-1">⚡</span>
-              <b class="text-xs block text-white">Trip Track Sensor</b>
-              <span class="text-[10px] text-slate-400">Occupies Crossing</span>
-            </button>
-
-            <button onclick="triggerSensorExit()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 p-3 rounded-xl text-left transition-all hover:border-indigo-500/50">
-              <span class="text-base block mb-1">🏁</span>
-              <b class="text-xs block text-white">Trip Exit Sensor</b>
-              <span class="text-[10px] text-slate-400">Train Clears Area</span>
-            </button>
-
-            <button onclick="toggleObstacle()" class="bg-red-950/40 hover:bg-red-900/50 border border-red-800/80 text-red-200 p-3 rounded-xl text-left transition-all">
-              <span class="text-base block mb-1">🚨</span>
-              <b class="text-xs block text-red-300">Stalled Obstacle</b>
-              <span class="text-[10px] text-red-400/80">Toggle Track Vehicle</span>
-            </button>
-
-            <button onclick="testInterlockViolation()" class="bg-amber-950/40 hover:bg-amber-900/50 border border-amber-800/80 text-amber-200 p-3 rounded-xl text-left transition-all">
-              <span class="text-base block mb-1">⚠️</span>
-              <b class="text-xs block text-amber-300">Force Gate Open</b>
-              <span class="text-[10px] text-amber-400/80">Test Unit 2 Interlock</span>
-            </button>
-
-            <button onclick="autoRunCycle()" class="bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/50 text-indigo-200 p-3 rounded-xl text-left transition-all">
-              <span class="text-base block mb-1">▶️</span>
-              <b class="text-xs block text-white">Auto Full Cycle</b>
-              <span class="text-[10px] text-indigo-300">Complete automated run</span>
-            </button>
+        <!-- Overhead Water Tank Container -->
+        <div class="relative w-full h-[320px] bg-slate-950/80 rounded-xl border-2 border-slate-700 overflow-hidden flex flex-col justify-end p-2 shadow-inner">
+          
+          <!-- Graduated Level Markings (Right) -->
+          <div class="absolute right-3 top-4 bottom-4 flex flex-col justify-between text-[10px] font-mono text-slate-400 select-none pointer-events-none z-20">
+            <span class="flex items-center gap-1 text-emerald-400">100% ──── HIGH (85%)</span>
+            <span class="text-slate-500">75% ───</span>
+            <span class="text-slate-400">50% ──── MID</span>
+            <span class="flex items-center gap-1 text-red-400">25% ──── LOW (20%)</span>
+            <span class="text-slate-500">0% ──── COM (GND/Vcc)</span>
           </div>
 
-          <div class="mt-4 flex gap-3">
-            <button onclick="triggerManualEmergency()" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-red-600/30">
-              <span>🛑</span>
-              <span>EMERGENCY STOP BUTTON</span>
+          <!-- Physical Conductive Probes Hanging in Tank -->
+          <div class="absolute inset-x-8 top-0 h-full pointer-events-none z-20 flex justify-around">
+            <!-- Common Probe (+5V) -->
+            <div class="flex flex-col items-center h-[90%]">
+              <div class="w-1.5 bg-amber-600 h-full rounded-b shadow"></div>
+              <div class="w-3 h-3 rounded-full bg-amber-500 border border-amber-300 -mt-1 shadow-md"></div>
+              <span class="text-[9px] font-mono text-amber-400 mt-1 font-bold">COM (+5V)</span>
+            </div>
+
+            <!-- Low Probe (L) at 20% mark -->
+            <div class="flex flex-col items-center h-[80%]">
+              <div class="w-1.5 bg-blue-500 h-full rounded-b shadow" id="probe-l-rod"></div>
+              <div class="w-3.5 h-3.5 rounded-full bg-blue-400 border border-blue-200 -mt-1 shadow-md" id="probe-l-tip"></div>
+              <span class="text-[9px] font-mono text-blue-300 mt-1 font-bold">PROBE L (20%)</span>
+            </div>
+
+            <!-- High Probe (H) at 85% mark -->
+            <div class="flex flex-col items-center h-[25%]">
+              <div class="w-1.5 bg-rose-500 h-full rounded-b shadow" id="probe-h-rod"></div>
+              <div class="w-3.5 h-3.5 rounded-full bg-rose-400 border border-rose-200 -mt-1 shadow-md" id="probe-h-tip"></div>
+              <span class="text-[9px] font-mono text-rose-300 mt-1 font-bold">PROBE H (85%)</span>
+            </div>
+          </div>
+
+          <!-- Animated Water Fill -->
+          <div id="water-body" class="w-full bg-gradient-to-t from-blue-700 to-cyan-500 rounded-b-lg relative transition-all duration-300" style="height: 45%;">
+            <!-- Water Wave Surface -->
+            <div class="absolute -top-3 inset-x-0 h-4 bg-cyan-400/80 rounded-full blur-[1px] opacity-75 wave-surface"></div>
+            <!-- Bubbles inside tank -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <span class="text-3xl font-bold font-mono text-white/30 tracking-widest select-none" id="water-volume-label">450 L</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Underground Sump & 12V Submersible Water Pump -->
+        <div class="mt-3 bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="relative w-12 h-12 bg-slate-800 rounded-lg border border-slate-700 flex items-center justify-center">
+              <i class="fa-solid fa-gear text-slate-500 text-xl" id="pump-impeller"></i>
+              <span class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-slate-600" id="pump-indicator-dot"></span>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-white flex items-center gap-2">
+                12V DC SUBMERSIBLE PUMP
+                <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-300" id="pump-status-badge">STANDBY</span>
+              </div>
+              <div class="text-[11px] font-mono text-slate-400 mt-0.5">
+                Flow: <span id="flow-rate-text" class="text-cyan-400 font-semibold">0 L/min</span> | Source: Sump (OK)
+              </div>
+            </div>
+          </div>
+
+          <!-- Water Pipe Schematic -->
+          <div class="flex flex-col items-end">
+            <svg width="60" height="30" viewBox="0 0 60 30" class="overflow-visible">
+              <path d="M 0 25 L 35 25 L 35 5 L 60 5" fill="none" stroke="#475569" stroke-width="6" stroke-linecap="round"/>
+              <path d="M 0 25 L 35 25 L 35 5 L 60 5" id="pipe-flow-water" fill="none" stroke="#06b6d4" stroke-width="3" stroke-linecap="round" class=""/>
+            </svg>
+            <span class="text-[9px] font-mono text-slate-400">Delivery Pipe</span>
+          </div>
+        </div>
+
+        <!-- Simulation Interactive Actuation Sliders -->
+        <div class="mt-3 pt-3 border-t border-slate-800 flex flex-col gap-2.5">
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-300 font-medium"><i class="fa-solid fa-faucet-drip text-cyan-400 mr-1.5"></i>Drain Valve (Consumer Outflow):</span>
+            <span class="font-mono text-cyan-400 font-bold" id="drain-val-label">2.0 L/s</span>
+          </div>
+          <input type="range" id="drain-slider" min="0" max="8" step="0.5" value="2" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-cyan-500">
+
+          <div class="grid grid-cols-2 gap-2 mt-1">
+            <button id="btn-wave-slosh" class="bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/50 text-indigo-200 text-xs py-2 px-3 rounded-lg font-medium flex items-center justify-center gap-2 transition active:scale-95">
+              <i class="fa-solid fa-water"></i>
+              Inject Wave Slosh
             </button>
-            <button onclick="resetSystem()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs">
-              Reset Safe Idle
+            <button id="btn-manual-override" class="bg-amber-600/30 hover:bg-amber-600/50 border border-amber-500/50 text-amber-200 text-xs py-2 px-3 rounded-lg font-medium flex items-center justify-center gap-2 transition active:scale-95">
+              <i class="fa-solid fa-hand"></i>
+              <span id="manual-label">Pump Override</span>
             </button>
           </div>
         </div>
 
       </div>
+    </section>
 
-      <!-- Right Column: Signals, Crossbucks & Live Terminal Log (4 Cols) -->
-      <div class="lg:col-span-4 flex flex-col gap-6">
+    <!-- Column 2: Op-Amp Schmitt Trigger & 555 Timer Logic (5 cols) -->
+    <section class="col-span-12 lg:col-span-5 flex flex-col gap-4">
 
-        <!-- Signal Heads & Warning Indicators -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-          <h2 class="text-sm font-semibold text-slate-200 mb-4">Signal Aspects & Warnings</h2>
-
-          <!-- Road Traffic Signal & Crossbuck Cluster -->
-          <div class="grid grid-cols-2 gap-4">
-            
-            <!-- Road Traffic Light Head -->
-            <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-col items-center">
-              <span class="text-[10px] text-slate-400 uppercase font-mono mb-2">Road Light</span>
-              <div class="w-12 bg-black border-2 border-slate-700 rounded-2xl p-2 flex flex-col gap-2 items-center shadow-inner">
-                <div id="lightRed" class="w-6 h-6 rounded-full bg-red-950 border border-red-900 transition-all"></div>
-                <div id="lightYellow" class="w-6 h-6 rounded-full bg-amber-950 border border-amber-900 transition-all"></div>
-                <div id="lightGreen" class="w-6 h-6 rounded-full bg-emerald-500 border border-emerald-400 shadow-[0_0_12px_#10b981] transition-all"></div>
-              </div>
-            </div>
-
-            <!-- Alternating Crossbuck Wig-Wags -->
-            <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-col items-center justify-between">
-              <span class="text-[10px] text-slate-400 uppercase font-mono mb-2">Crossbuck Flashers</span>
-              <div class="flex gap-3 my-auto">
-                <div id="wigwagLeft" class="w-6 h-6 rounded-full bg-red-950 border border-red-900"></div>
-                <div id="wigwagRight" class="w-6 h-6 rounded-full bg-red-950 border border-red-900"></div>
-              </div>
-              <span id="flasherStatus" class="text-[10px] text-slate-500 font-mono">OFF (IDLE)</span>
-            </div>
-
-          </div>
-
-          <!-- Train Railway Aspect & Pedestrian -->
-          <div class="grid grid-cols-2 gap-4 mt-3">
-            <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-center">
-              <span class="text-[10px] text-slate-400 uppercase font-mono">Pedestrian Signal</span>
-              <div id="pedSignal" class="mt-2 text-xs font-bold text-emerald-400 bg-emerald-950/40 border border-emerald-800/60 py-1 rounded">
-                🚶 WALK
-              </div>
-            </div>
-
-            <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-center">
-              <span class="text-[10px] text-slate-400 uppercase font-mono">Train Signal</span>
-              <div id="trainSignalBox" class="mt-2 text-xs font-bold text-red-400 bg-red-950/40 border border-red-800/60 py-1 rounded">
-                🔴 STOP / HOLD
-              </div>
-            </div>
-          </div>
-
+      <!-- Signal Conditioning & Comparator Section (Units 1, 2, 3) -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl">
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+            <i class="fa-solid fa-microchip text-amber-400"></i>
+            OP-AMP COMPARATOR &amp; SCHMITT HYSTERESIS
+          </h2>
+          <span class="text-xs px-2 py-0.5 rounded bg-amber-950/80 text-amber-400 border border-amber-800/60 font-mono">LM358 IC</span>
         </div>
 
-        <!-- Live Verilog Telemetry Log Stream -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex-1 flex flex-col">
-          <div class="flex items-center justify-between mb-2">
-            <h2 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-              Live Verilog FSM Telemetry
-            </h2>
-            <button onclick="clearLogs()" class="text-[10px] text-slate-400 hover:text-slate-200">Clear</button>
+        <!-- Comparator Real-time Meters -->
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <!-- Low Level Comparator -->
+          <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+            <div class="flex justify-between items-center text-xs mb-1">
+              <span class="text-slate-400 font-medium">Probe L (Low Level):</span>
+              <span class="font-mono text-blue-400 font-bold" id="probe-l-volt">4.88 V</span>
+            </div>
+            <div class="text-[10px] font-mono text-slate-400 flex justify-between">
+              <span>Threshold V_ref1: 1.67 V</span>
+              <span id="comp-l-badge" class="font-bold text-slate-400">SAT LOW</span>
+            </div>
+            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
+              <div id="probe-l-bar" class="bg-blue-500 h-full transition-all" style="width: 95%;"></div>
+            </div>
           </div>
-          <div id="logConsole" class="flex-1 bg-black/90 border border-slate-800 rounded-xl p-3 font-mono text-[11px] text-slate-300 overflow-y-auto max-h-72 space-y-1">
-            <div class="text-slate-500">// System Initialized. Awaiting stimulus.</div>
+
+          <!-- High Level Comparator -->
+          <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+            <div class="flex justify-between items-center text-xs mb-1">
+              <span class="text-slate-400 font-medium">Probe H (High Level):</span>
+              <span class="font-mono text-rose-400 font-bold" id="probe-h-volt">0.05 V</span>
+            </div>
+            <div class="text-[10px] font-mono text-slate-400 flex justify-between">
+              <span>Threshold V_ref2: 3.33 V</span>
+              <span id="comp-h-badge" class="font-bold text-slate-400">SAT LOW</span>
+            </div>
+            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
+              <div id="probe-h-bar" class="bg-rose-500 h-full transition-all" style="width: 2%;"></div>
+            </div>
           </div>
         </div>
 
+        <!-- Schmitt Trigger Hysteresis Dynamic Visualization -->
+        <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+          <div class="flex justify-between items-center text-xs mb-2 font-mono">
+            <span class="text-slate-300 font-semibold">Schmitt Hysteresis Loop (Unit 3):</span>
+            <span class="text-emerald-400">ΔV_H = 1.66 V (UTP: 3.33V | LTP: 1.67V)</span>
+          </div>
+
+          <!-- SVG Visual Representation of Hysteresis State -->
+          <div class="relative w-full h-12 bg-slate-900 rounded border border-slate-800 flex items-center px-4 overflow-hidden">
+            <div class="absolute left-4 text-[9px] font-mono text-slate-500">0.0V</div>
+            <div class="absolute left-[33%] text-[9px] font-mono text-blue-400">LTP (1.67V)</div>
+            <div class="absolute left-[66%] text-[9px] font-mono text-rose-400">UTP (3.33V)</div>
+            <div class="absolute right-4 text-[9px] font-mono text-slate-500">5.0V</div>
+
+            <!-- Operating Point Indicator -->
+            <div id="hysteresis-pointer" class="absolute w-4 h-4 -ml-2 rounded-full bg-amber-400 border-2 border-white shadow-lg transition-all duration-200" style="left: 45%;"></div>
+          </div>
+          <div class="text-[10px] font-mono text-slate-400 text-center mt-1.5" id="hysteresis-status-text">
+            Operating in Stable Deadband (PUMP MAINTAINS STATE)
+          </div>
+        </div>
       </div>
 
-    </main>
-  </div>
+      <!-- 555 Timer Monostable Anti-Slosh & Bistable Controller (Unit 5) -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl">
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+            <i class="fa-solid fa-stopwatch text-purple-400"></i>
+            555 TIMER MONOSTABLE &amp; ANTI-SLOSH DELAY
+          </h2>
+          <span class="text-xs px-2 py-0.5 rounded bg-purple-950/80 text-purple-400 border border-purple-800/60 font-mono">NE555 DIP-8</span>
+        </div>
 
-  <!-- JavaScript Simulator Engine -->
+        <!-- 555 Pin Telemetry & Monostable Timer Progress -->
+        <div class="grid grid-cols-4 gap-2 mb-3 font-mono text-xs text-center">
+          <div class="bg-slate-950 border border-slate-800 p-2 rounded">
+            <span class="text-[10px] text-slate-500 block">Pin 2 (TRIG)</span>
+            <strong id="pin2-val" class="text-slate-300">HIGH</strong>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 p-2 rounded">
+            <span class="text-[10px] text-slate-500 block">Pin 6 (THRESH)</span>
+            <strong id="pin6-val" class="text-slate-300">LOW</strong>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 p-2 rounded">
+            <span class="text-[10px] text-slate-500 block">Pin 4 (RESET)</span>
+            <strong id="pin4-val" class="text-emerald-400">ACTIVE</strong>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 p-2 rounded">
+            <span class="text-[10px] text-slate-500 block">Pin 3 (OUT)</span>
+            <strong id="pin3-val" class="text-slate-400">0.05 V (LOW)</strong>
+          </div>
+        </div>
+
+        <!-- Anti-Slosh Monostable Delay Bar -->
+        <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+          <div class="flex justify-between items-center text-xs mb-1">
+            <span class="text-slate-300 font-semibold flex items-center gap-1.5">
+              <i class="fa-solid fa-shield-halved text-purple-400"></i>
+              Anti-Slosh Blanking Interval:
+            </span>
+            <span class="font-mono text-purple-400 font-bold" id="timer-delay-status">IDLE (0.00s / 5.17s)</span>
+          </div>
+          <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden mt-1.5">
+            <div id="timer-delay-bar" class="bg-purple-500 h-full transition-all duration-100" style="width: 0%;"></div>
+          </div>
+          <p class="text-[10px] text-slate-400 mt-2">
+            <strong>Formula:</strong> \(T = 1.1 \cdot R_A \cdot C_1 = 1.1 \times 100\text{k}\Omega \times 47\mu\text{F} = 5.17\text{ s}\). Disables relay chattering during initial splashing waves.
+          </p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Column 3: Transistor Relay Driver & Live Strip-Chart (3 cols) -->
+    <section class="col-span-12 lg:col-span-3 flex flex-col gap-4">
+
+      <!-- Actuator & Relay Driver Panel -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl">
+        <h2 class="text-sm font-bold text-slate-200 flex items-center gap-2 mb-3">
+          <i class="fa-solid fa-toggle-on text-emerald-400"></i>
+          DRIVER STAGE &amp; RELAY
+        </h2>
+
+        <!-- LED Status Panel -->
+        <div class="grid grid-cols-2 gap-2 mb-3 font-mono text-xs">
+          <div class="bg-slate-950 border border-slate-800 p-2 rounded-lg flex items-center gap-2">
+            <span id="led-low" class="w-3.5 h-3.5 rounded-full bg-red-950 border border-red-800"></span>
+            <div>
+              <span class="text-[9px] text-slate-400 block">LOW LEVEL</span>
+              <strong id="led-low-text" class="text-slate-500">OFF</strong>
+            </div>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 p-2 rounded-lg flex items-center gap-2">
+            <span id="led-high" class="w-3.5 h-3.5 rounded-full bg-emerald-950 border border-emerald-800"></span>
+            <div>
+              <span class="text-[9px] text-slate-400 block">HIGH LEVEL</span>
+              <strong id="led-high-text" class="text-slate-500">OFF</strong>
+            </div>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 p-2 rounded-lg flex items-center gap-2">
+            <span id="led-pump" class="w-3.5 h-3.5 rounded-full bg-blue-950 border border-blue-800"></span>
+            <div>
+              <span class="text-[9px] text-slate-400 block">PUMP RUN</span>
+              <strong id="led-pump-text" class="text-slate-500">IDLE</strong>
+            </div>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 p-2 rounded-lg flex items-center gap-2">
+            <span id="led-buzzer" class="w-3.5 h-3.5 rounded-full bg-amber-950 border border-amber-800"></span>
+            <div>
+              <span class="text-[9px] text-slate-400 block">BUZZER ALARM</span>
+              <strong id="led-buzzer-text" class="text-slate-500">OFF</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Relay Details -->
+        <div class="bg-slate-950 border border-slate-800 rounded-lg p-3 text-[11px] font-mono space-y-1.5">
+          <div class="flex justify-between">
+            <span class="text-slate-400">Driver Transistor:</span>
+            <span class="text-emerald-400 font-bold" id="trans-sat-badge">BC547 (CUTOFF)</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Base Drive I_B:</span>
+            <span class="text-slate-300" id="trans-ib">0.00 mA</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Relay Coil (12V):</span>
+            <span class="text-slate-300" id="relay-coil-state">DE-ENERGIZED</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Diode Snubber:</span>
+            <span class="text-blue-400">1N4007 (Clamped)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-Time Oscilloscope / Chart -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl flex-1 flex flex-col">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-chart-line text-cyan-400"></i>
+            LIVE OSCILLOSCOPE
+          </h2>
+          <span class="text-[9px] font-mono text-slate-500">100ms sample</span>
+        </div>
+
+        <!-- Canvas Chart -->
+        <div class="relative flex-1 bg-slate-950 rounded border border-slate-800 overflow-hidden min-h-[140px]">
+          <canvas id="scopeCanvas" width="340" height="150" class="w-full h-full block"></canvas>
+        </div>
+
+        <div class="flex justify-between text-[9px] font-mono mt-2 text-slate-400">
+          <span class="text-cyan-400 flex items-center gap-1"><span class="w-2 h-2 rounded bg-cyan-400 inline-block"></span> Level (%)</span>
+          <span class="text-amber-400 flex items-center gap-1"><span class="w-2 h-2 rounded bg-amber-400 inline-block"></span> V_sense (V)</span>
+          <span class="text-emerald-400 flex items-center gap-1"><span class="w-2 h-2 rounded bg-emerald-400 inline-block"></span> Pump Relay</span>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer Information -->
+  <footer class="bg-slate-900 border-t border-slate-800 px-6 py-2.5 text-xs text-slate-400 flex flex-wrap justify-between items-center">
+    <div>
+      <strong>Project:</strong> Automatic Water-Level Controller Using Op-Amp and 555 Timer | UE25EC3502
+    </div>
+    <div class="flex items-center gap-4">
+      <span>Group: Vikas K S, Nandan S L, Meghana P, Keerthana R F</span>
+      <span class="text-blue-400 font-mono">GM UNIVERSITY — DAVANAGERE</span>
+    </div>
+  </footer>
+
+  <!-- Simulation JavaScript Engine -->
   <script>
-    // State machine variables matching Verilog RTL
-    let currentState = 'ST_OPEN'; // ST_OPEN, ST_CLOSING, ST_CLOSED, ST_OPENING
-    let gateAngle = 90;
-    let trainApproaching = false;
-    let trainPresent = false;
-    let emergencyActive = false;
-    let obstacleDetected = false;
-    let audioEnabled = false;
+    // State Variables
+    let waterLevel = 45.0; // 0% to 100%
+    let pumpActive = false;
+    let manualOverride = false;
+    let sloshWaveOffset = 0;
+    let antiSloshTimer = 0; // seconds remaining
+    const ANTI_SLOSH_DURATION = 5.17;
+    let audioEnabled = true;
     let audioCtx = null;
-    let buzzerOsc = null;
+    let pumpOsc = null;
+    let pumpGain = null;
 
-    // Web Audio Synthesizer for Railway Chime / Buzzer
+    // Dom Elements
+    const headLevel = document.getElementById('head-level');
+    const headPump = document.getElementById('head-pump');
+    const waterBody = document.getElementById('water-body');
+    const waterVolumeLabel = document.getElementById('water-volume-label');
+    const pumpImpeller = document.getElementById('pump-impeller');
+    const pumpIndicatorDot = document.getElementById('pump-indicator-dot');
+    const pumpStatusBadge = document.getElementById('pump-status-badge');
+    const flowRateText = document.getElementById('flow-rate-text');
+    const pipeFlowWater = document.getElementById('pipe-flow-water');
+    const drainSlider = document.getElementById('drain-slider');
+    const drainValLabel = document.getElementById('drain-val-label');
+    const btnWaveSlosh = document.getElementById('btn-wave-slosh');
+    const btnManualOverride = document.getElementById('btn-manual-override');
+    const manualLabel = document.getElementById('manual-label');
+    const audioToggleBtn = document.getElementById('audio-toggle-btn');
+    const audioIcon = document.getElementById('audio-icon');
+    const audioLabel = document.getElementById('audio-label');
+
+    // Telemetry Elements
+    const probeLVolt = document.getElementById('probe-l-volt');
+    const probeHVolt = document.getElementById('probe-h-volt');
+    const probeLBar = document.getElementById('probe-l-bar');
+    const probeHBar = document.getElementById('probe-h-bar');
+    const compLBadge = document.getElementById('comp-l-badge');
+    const compHBadge = document.getElementById('comp-h-badge');
+    const hysteresisPointer = document.getElementById('hysteresis-pointer');
+    const hysteresisStatusText = document.getElementById('hysteresis-status-text');
+
+    const pin2Val = document.getElementById('pin2-val');
+    const pin6Val = document.getElementById('pin6-val');
+    const pin4Val = document.getElementById('pin4-val');
+    const pin3Val = document.getElementById('pin3-val');
+    const timerDelayStatus = document.getElementById('timer-delay-status');
+    const timerDelayBar = document.getElementById('timer-delay-bar');
+
+    const ledLow = document.getElementById('led-low');
+    const ledLowText = document.getElementById('led-low-text');
+    const ledHigh = document.getElementById('led-high');
+    const ledHighText = document.getElementById('led-high-text');
+    const ledPump = document.getElementById('led-pump');
+    const ledPumpText = document.getElementById('led-pump-text');
+    const ledBuzzer = document.getElementById('led-buzzer');
+    const ledBuzzerText = document.getElementById('led-buzzer-text');
+    const transSatBadge = document.getElementById('trans-sat-badge');
+    const transIb = document.getElementById('trans-ib');
+    const relayCoilState = document.getElementById('relay-coil-state');
+
+    // Oscilloscope Buffer
+    const scopeCanvas = document.getElementById('scopeCanvas');
+    const scopeCtx = scopeCanvas.getContext('2d');
+    const historyData = [];
+    const MAX_HISTORY = 100;
+
+    // Web Audio Setup
     function initAudio() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
     }
 
-    function toggleAudio() {
+    function playRelayClick() {
+      if (!audioEnabled || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.04);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.05);
+      } catch(e){}
+    }
+
+    function playBuzzerAlarm() {
+      if (!audioEnabled || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(2400, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+      } catch(e){}
+    }
+
+    function updatePumpAudio(active) {
+      if (!audioEnabled || !audioCtx) return;
+      try {
+        if (active) {
+          if (!pumpOsc) {
+            pumpOsc = audioCtx.createOscillator();
+            pumpGain = audioCtx.createGain();
+            pumpOsc.type = 'sawtooth';
+            pumpOsc.frequency.setValueAtTime(60, audioCtx.currentTime);
+            pumpGain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            pumpOsc.connect(pumpGain);
+            pumpGain.connect(audioCtx.destination);
+            pumpOsc.start();
+          }
+        } else {
+          if (pumpOsc) {
+            pumpOsc.stop();
+            pumpOsc.disconnect();
+            pumpOsc = null;
+          }
+        }
+      } catch(e){}
+    }
+
+    // Event Listeners
+    audioToggleBtn.addEventListener('click', () => {
       initAudio();
       audioEnabled = !audioEnabled;
-      const btn = document.getElementById('audioBtn');
-      const icon = document.getElementById('audioIcon');
       if (audioEnabled) {
-        btn.classList.add('bg-emerald-900/40', 'border-emerald-700', 'text-emerald-300');
-        icon.textContent = '🔊';
-        logMessage("Audible Railway Buzzer Enabled.");
+        audioIcon.className = 'fa-solid fa-volume-high text-emerald-400';
+        audioLabel.textContent = 'Audio ON';
+        if (pumpActive) updatePumpAudio(true);
       } else {
-        btn.classList.remove('bg-emerald-900/40', 'border-emerald-700', 'text-emerald-300');
-        icon.textContent = '🔇';
-        stopBuzzer();
+        audioIcon.className = 'fa-solid fa-volume-xmark text-slate-500';
+        audioLabel.textContent = 'Audio Muted';
+        updatePumpAudio(false);
       }
-    }
+    });
 
-    function playTone(freq, type = 'square') {
-      if (!audioEnabled || !audioCtx) return;
-      stopBuzzer();
-      buzzerOsc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      buzzerOsc.type = type;
-      buzzerOsc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-      buzzerOsc.connect(gain);
-      gain.connect(audioCtx.destination);
-      buzzerOsc.start();
-    }
+    drainSlider.addEventListener('input', (e) => {
+      drainValLabel.textContent = `${parseFloat(e.target.value).toFixed(1)} L/s`;
+    });
 
-    function stopBuzzer() {
-      if (buzzerOsc) {
-        try { buzzerOsc.stop(); buzzerOsc.disconnect(); } catch (e) {}
-        buzzerOsc = null;
-      }
-    }
+    btnWaveSlosh.addEventListener('click', () => {
+      initAudio();
+      sloshWaveOffset = (Math.random() > 0.5 ? 1 : -1) * 12.0; // +/- 12% wave oscillation
+      playRelayClick();
+    });
 
-    // Login logic
-    function handleLogin(e) {
-      if (e) e.preventDefault();
-      const station = document.getElementById('stationId').value;
-      const role = document.getElementById('operatorRole').value;
-      document.getElementById('displayStation').textContent = station;
-      document.getElementById('displayRole').textContent = role;
-
-      document.getElementById('loginScreen').classList.add('hidden');
-      document.getElementById('dashboardScreen').classList.remove('hidden');
-
-      logMessage(`[SCADA AUTH] Operator logged in: ${role} @ Station ${station}`);
-      logMessage(`[VERILOG RTL] Clock running @ 50MHz. Reset asserted & released.`);
-    }
-
-    function quickLogin(role) {
-      document.getElementById('operatorRole').value = role;
-      handleLogin(null);
-    }
-
-    function handleLogout() {
-      stopBuzzer();
-      document.getElementById('dashboardScreen').classList.add('hidden');
-      document.getElementById('loginScreen').classList.remove('hidden');
-    }
-
-    function logMessage(msg) {
-      const consoleBox = document.getElementById('logConsole');
-      const time = new Date().toLocaleTimeString();
-      const div = document.createElement('div');
-      div.className = "leading-tight";
-      div.innerHTML = `<span class="text-indigo-400">[${time}]</span> ${msg}`;
-      consoleBox.appendChild(div);
-      consoleBox.scrollTop = consoleBox.scrollHeight;
-    }
-
-    function clearLogs() {
-      document.getElementById('logConsole').innerHTML = '';
-    }
-
-    // UI Updates
-    function updateUI() {
-      const badge = document.getElementById('fsmBadge');
-      const teleAngle = document.getElementById('telemetryAngle');
-      const teleRoad = document.getElementById('telemetryRoad');
-      const teleTrain = document.getElementById('telemetryTrain');
-      const teleInterlock = document.getElementById('telemetryInterlock');
-
-      const northArm = document.getElementById('northBarrierArm');
-      const southArm = document.getElementById('southBarrierArm');
-
-      const lRed = document.getElementById('lightRed');
-      const lYellow = document.getElementById('lightYellow');
-      const lGreen = document.getElementById('lightGreen');
-
-      const wigLeft = document.getElementById('wigwagLeft');
-      const wigRight = document.getElementById('wigwagRight');
-      const flasherTxt = document.getElementById('flasherStatus');
-
-      const ped = document.getElementById('pedSignal');
-      const trainSig = document.getElementById('trainSignalBox');
-
-      // Barrier Angles
-      northArm.style.transform = `rotate(${gateAngle}deg)`;
-      southArm.style.transform = `rotate(-${gateAngle}deg)`;
-      teleAngle.textContent = `${gateAngle}°`;
-
-      badge.textContent = `FSM: ${currentState} (${gateAngle}°)`;
-
-      // Traffic Lights
-      if (currentState === 'ST_OPEN' && !trainApproaching && !emergencyActive) {
-        // Safe Idle
-        lRed.className = "w-6 h-6 rounded-full bg-red-950 border border-red-900";
-        lYellow.className = "w-6 h-6 rounded-full bg-amber-950 border border-amber-900";
-        lGreen.className = "w-6 h-6 rounded-full bg-emerald-500 border border-emerald-400 shadow-[0_0_12px_#10b981]";
-        
-        wigLeft.className = "w-6 h-6 rounded-full bg-red-950 border border-red-900";
-        wigRight.className = "w-6 h-6 rounded-full bg-red-950 border border-red-900";
-        flasherTxt.textContent = "OFF (IDLE)";
-
-        teleRoad.textContent = "GREEN (GO)";
-        teleRoad.className = "text-base font-bold text-emerald-400 font-mono";
-
-        ped.textContent = "🚶 WALK";
-        ped.className = "mt-2 text-xs font-bold text-emerald-400 bg-emerald-950/40 border border-emerald-800/60 py-1 rounded";
-      } else if (currentState === 'ST_OPEN' && trainApproaching) {
-        // Warning
-        lRed.className = "w-6 h-6 rounded-full bg-red-950 border border-red-900";
-        lYellow.className = "w-6 h-6 rounded-full bg-amber-400 border border-amber-300 shadow-[0_0_12px_#fbbf24]";
-        lGreen.className = "w-6 h-6 rounded-full bg-emerald-950 border border-emerald-900";
-
-        wigLeft.className = "w-6 h-6 rounded-full bg-red-500 flash-left";
-        wigRight.className = "w-6 h-6 rounded-full bg-red-500 flash-right";
-        flasherTxt.textContent = "FLASHING ACTIVE";
-
-        teleRoad.textContent = "YELLOW (WARN)";
-        teleRoad.className = "text-base font-bold text-amber-400 font-mono";
-
-        ped.textContent = "✋ DON'T WALK";
-        ped.className = "mt-2 text-xs font-bold text-amber-400 bg-amber-950/40 border border-amber-800/60 py-1 rounded";
+    btnManualOverride.addEventListener('click', () => {
+      initAudio();
+      manualOverride = !manualOverride;
+      if (manualOverride) {
+        manualLabel.textContent = 'Auto Control';
+        btnManualOverride.classList.replace('bg-amber-600/30', 'bg-red-600/30');
       } else {
-        // Closed / Closing / Opening / Emergency
-        lRed.className = "w-6 h-6 rounded-full bg-red-600 border border-red-400 shadow-[0_0_12px_#ef4444]";
-        lYellow.className = "w-6 h-6 rounded-full bg-amber-950 border border-amber-900";
-        lGreen.className = "w-6 h-6 rounded-full bg-emerald-950 border border-emerald-900";
-
-        wigLeft.className = "w-6 h-6 rounded-full bg-red-500 flash-left";
-        wigRight.className = "w-6 h-6 rounded-full bg-red-500 flash-right";
-        flasherTxt.textContent = "FLASHING ACTIVE";
-
-        teleRoad.textContent = "SOLID RED (STOP)";
-        teleRoad.className = "text-base font-bold text-red-500 font-mono";
-
-        ped.textContent = "⛔ HOLD / DANGER";
-        ped.className = "mt-2 text-xs font-bold text-red-400 bg-red-950/40 border border-red-800/60 py-1 rounded";
+        manualLabel.textContent = 'Pump Override';
+        btnManualOverride.classList.replace('bg-red-600/30', 'bg-amber-600/30');
       }
+    });
 
-      // Train Aspect (Railway rule: GREEN ONLY IF GATE IS 0° AND NO OBSTACLE)
-      if (gateAngle === 0 && !obstacleDetected && !emergencyActive) {
-        teleTrain.textContent = "GREEN (PROCEED)";
-        teleTrain.className = "text-base font-bold text-emerald-400 font-mono";
-        trainSig.textContent = "🟢 CLEAR TO PASS";
-        trainSig.className = "mt-2 text-xs font-bold text-emerald-400 bg-emerald-950/40 border border-emerald-800/60 py-1 rounded";
+    // Main Simulation Loop (Runs at 20 Hz = every 50ms)
+    setInterval(() => {
+      const dt = 0.05; // 50ms timestep
+
+      // Decay wave slosh
+      if (Math.abs(sloshWaveOffset) > 0.1) {
+        sloshWaveOffset = -sloshWaveOffset * 0.88; // damped harmonic slosh
       } else {
-        teleTrain.textContent = "RED (HALT)";
-        teleTrain.className = "text-base font-bold text-red-400 font-mono";
-        trainSig.textContent = "🔴 DANGER / HOLD";
-        trainSig.className = "mt-2 text-xs font-bold text-red-400 bg-red-950/40 border border-red-800/60 py-1 rounded";
+        sloshWaveOffset = 0;
       }
 
-      // Interlock status
-      if (emergencyActive || trainPresent || trainApproaching) {
-        teleInterlock.textContent = "LOCKED (FAILSAFE)";
-        teleInterlock.className = "text-base font-bold text-red-400 font-mono";
+      const effectiveLevel = Math.max(0, Math.min(100, waterLevel + sloshWaveOffset));
+
+      // Calculate Probe voltages based on effective physical height
+      // Low probe at 20%, High probe at 85%
+      const lowProbeImmersed = effectiveLevel >= 20.0;
+      const highProbeImmersed = effectiveLevel >= 85.0;
+
+      const vL = lowProbeImmersed ? (4.85 + Math.random()*0.05) : (0.05 + Math.random()*0.02);
+      const vH = highProbeImmersed ? (4.85 + Math.random()*0.05) : (0.05 + Math.random()*0.02);
+
+      // Decrement 555 monostable delay timer
+      if (antiSloshTimer > 0) {
+        antiSloshTimer -= dt;
+        if (antiSloshTimer < 0) antiSloshTimer = 0;
+      }
+
+      // Controller Logic
+      let nextPumpState = pumpActive;
+
+      if (manualOverride) {
+        nextPumpState = true;
       } else {
-        teleInterlock.textContent = "ARMED & SAFE";
-        teleInterlock.className = "text-base font-bold text-emerald-400 font-mono";
-      }
-    }
-
-    // Stimulus Handlers
-    function triggerSensorEntry() {
-      if (trainApproaching) return;
-      trainApproaching = true;
-      document.getElementById('sensorEntryLed').classList.replace('bg-slate-700', 'bg-emerald-400');
-      logMessage(`[SENSOR 1] Inbound train detected. Asserting 'train_approaching'.`);
-      logMessage(`[GATE CTRL] Pre-closure yellow warning initiated. Buzzer pulse ON.`);
-      playTone(550, 'triangle');
-      updateUI();
-
-      // Lower barrier after warning delay
-      setTimeout(() => {
-        if (!trainApproaching && !emergencyActive) return;
-        currentState = 'ST_CLOSING';
-        logMessage(`[GATE MOTOR] Descending barrier arms (90° -> 0°).`);
-        updateUI();
-
-        let step = setInterval(() => {
-          if (gateAngle > 0) {
-            gateAngle -= 18;
-            updateUI();
-          } else {
-            clearInterval(step);
-            gateAngle = 0;
-            currentState = 'ST_CLOSED';
-            logMessage(`[GATE CTRL] Barrier fully locked at 0°. Train Signal set to GREEN.`);
-            updateUI();
+        // Automatic Schmitt / 555 control
+        if (!lowProbeImmersed) {
+          // Below low level: Trigger Monostable & Set Pump ON
+          if (!pumpActive && antiSloshTimer === 0) {
+            antiSloshTimer = ANTI_SLOSH_DURATION; // 5.17s debounce window
+            nextPumpState = true;
+            playRelayClick();
+          } else if (!pumpActive && antiSloshTimer > 0) {
+            nextPumpState = true;
           }
-        }, 300);
-      }, 1500);
-    }
-
-    function triggerSensorTrack() {
-      trainPresent = true;
-      document.getElementById('sensorTrackLed').classList.replace('bg-slate-700', 'bg-red-500');
-      const train = document.getElementById('trainEntity');
-      train.style.transform = "translateX(450px)";
-      logMessage(`[SENSOR 2] Train occupying level crossing zone. Hardware interlock clamping barrier.`);
-      updateUI();
-    }
-
-    function triggerSensorExit() {
-      document.getElementById('sensorExitLed').classList.replace('bg-slate-700', 'bg-emerald-400');
-      logMessage(`[SENSOR 3] Train clearing crossing.`);
-      
-      const train = document.getElementById('trainEntity');
-      train.style.transform = "translateX(900px)";
-
-      setTimeout(() => {
-        trainApproaching = false;
-        trainPresent = false;
-        document.getElementById('sensorEntryLed').classList.replace('bg-emerald-400', 'bg-slate-700');
-        document.getElementById('sensorTrackLed').classList.replace('bg-red-500', 'bg-slate-700');
-        document.getElementById('sensorExitLed').classList.replace('bg-emerald-400', 'bg-slate-700');
-        train.style.transform = "translateX(-150%)";
-
-        logMessage(`[GATE CTRL] Train cleared! Post-clear buffer expiring. Reopening barrier...`);
-        currentState = 'ST_OPENING';
-        updateUI();
-
-        let step = setInterval(() => {
-          if (gateAngle < 90) {
-            gateAngle += 18;
-            updateUI();
-          } else {
-            clearInterval(step);
-            gateAngle = 90;
-            currentState = 'ST_OPEN';
-            stopBuzzer();
-            logMessage(`[GATE CTRL] Barrier fully open (90°). Road traffic light restored to GREEN.`);
-            updateUI();
+        } else if (highProbeImmersed) {
+          // Reached high level: Reset Pump OFF
+          if (pumpActive) {
+            nextPumpState = false;
+            playRelayClick();
+            playBuzzerAlarm();
           }
-        }, 300);
-      }, 1800);
-    }
-
-    function toggleObstacle() {
-      obstacleDetected = !obstacleDetected;
-      const obs = document.getElementById('obstacleEntity');
-      if (obstacleDetected) {
-        obs.classList.remove('hidden');
-        emergencyActive = true;
-        playTone(880, 'sawtooth');
-        logMessage(`[ALERT] Track LiDAR detected stalled car! Priority emergency engaged.`);
-        logMessage(`[INTERLOCK] Train signal FORCED RED! Safe emergency braking command sent.`);
-      } else {
-        obs.classList.add('hidden');
-        emergencyActive = false;
-        stopBuzzer();
-        logMessage(`[INFO] Stalled car removed from tracks. Emergency alarm cleared.`);
+        }
+        // Between 20% and 85%: Bistable latch retains previous pumpActive state!
       }
-      updateUI();
-    }
 
-    function triggerManualEmergency() {
-      emergencyActive = !emergencyActive;
-      if (emergencyActive) {
-        playTone(950, 'sawtooth');
-        logMessage(`[EMERGENCY] Manual emergency stop button pressed! Absolute priority.`);
-      } else {
-        stopBuzzer();
-        logMessage(`[EMERGENCY] Manual emergency button released.`);
+      if (nextPumpState !== pumpActive) {
+        pumpActive = nextPumpState;
+        updatePumpAudio(pumpActive);
       }
-      updateUI();
-    }
 
-    function testInterlockViolation() {
-      logMessage(`[TAMPER TEST] Attempting to force open gate while train occupies tracks!`);
-      if (trainPresent || trainApproaching || emergencyActive) {
-        logMessage(`[INTERLOCK BLOCKED] Gate Safety Interlock (Unit 2 Gate-Level) DENIED open!`);
-        logMessage(`[ALARM] Hardware security violation alarm asserted!`);
-        alert("SECURITY INTERLOCK INTERCEPTION:\nGate cannot be opened while danger condition exists! Built-in primitive gate logic blocked the actuator command.");
+      // Physics integration: tank water level update
+      const drainRate = parseFloat(drainSlider.value) * 0.12; // drain per step
+      const pumpRate = pumpActive ? 0.95 : 0.0; // inflow per step
+
+      waterLevel = waterLevel + (pumpRate - drainRate) * dt * 4.0;
+      waterLevel = Math.max(0, Math.min(100, waterLevel));
+
+      // Update GUI Elements
+      const liters = Math.round((waterLevel / 100) * 1000);
+      waterVolumeLabel.textContent = `${liters} L`;
+      headLevel.textContent = `${Math.round(waterLevel)}% (${liters} L)`;
+      waterBody.style.height = `${waterLevel}%`;
+
+      if (pumpActive) {
+        headPump.textContent = 'RUNNING (12V)';
+        headPump.className = 'text-emerald-400 font-bold';
+        pumpImpeller.classList.add('pump-spinning', 'text-cyan-400');
+        pumpIndicatorDot.style.backgroundColor = '#10b981';
+        pumpStatusBadge.textContent = 'PUMPING';
+        pumpStatusBadge.className = 'text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-800';
+        flowRateText.textContent = '15.0 L/min';
+        pipeFlowWater.classList.add('pipe-water-active');
       } else {
-        logMessage(`[INFO] System is already in safe idle state.`);
+        headPump.textContent = 'OFF (STANDBY)';
+        headPump.className = 'text-slate-400 font-bold';
+        pumpImpeller.classList.remove('pump-spinning', 'text-cyan-400');
+        pumpIndicatorDot.style.backgroundColor = '#475569';
+        pumpStatusBadge.textContent = 'STANDBY';
+        pumpStatusBadge.className = 'text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-400';
+        flowRateText.textContent = '0.0 L/min';
+        pipeFlowWater.classList.remove('pipe-water-active');
       }
+
+      // Voltages
+      probeLVolt.textContent = `${vL.toFixed(2)} V`;
+      probeHVolt.textContent = `${vH.toFixed(2)} V`;
+      probeLBar.style.width = `${(vL / 5.0) * 100}%`;
+      probeHBar.style.width = `${(vH / 5.0) * 100}%`;
+
+      compLBadge.textContent = vL > 1.67 ? 'SAT HIGH (OK)' : 'SAT LOW (LOW LEVEL)';
+      compLBadge.className = vL > 1.67 ? 'font-bold text-emerald-400' : 'font-bold text-red-400';
+
+      compHBadge.textContent = vH > 3.33 ? 'SAT HIGH (TANK FULL)' : 'SAT LOW (NORMAL)';
+      compHBadge.className = vH > 3.33 ? 'font-bold text-emerald-400' : 'font-bold text-slate-400';
+
+      // Schmitt Hysteresis Pointer
+      const hysteresisPercent = Math.max(5, Math.min(95, (effectiveLevel / 100) * 100));
+      hysteresisPointer.style.left = `${hysteresisPercent}%`;
+
+      if (effectiveLevel < 20) {
+        hysteresisStatusText.textContent = 'State: BELOW LTP (1.67V) -> PUMP MUST TURN ON';
+        hysteresisStatusText.className = 'text-[10px] font-mono text-red-400 text-center mt-1.5 font-bold';
+      } else if (effectiveLevel > 85) {
+        hysteresisStatusText.textContent = 'State: ABOVE UTP (3.33V) -> PUMP CUTOFF (FULL)';
+        hysteresisStatusText.className = 'text-[10px] font-mono text-emerald-400 text-center mt-1.5 font-bold';
+      } else {
+        hysteresisStatusText.textContent = pumpActive ? 'State: HYSTERESIS BAND (FILLING IN PROGRESS)' : 'State: HYSTERESIS BAND (DRAINING IN PROGRESS)';
+        hysteresisStatusText.className = 'text-[10px] font-mono text-cyan-300 text-center mt-1.5';
+      }
+
+      // 555 Pin Telemetry
+      pin2Val.textContent = lowProbeImmersed ? 'HIGH (4.8V)' : 'LOW (0.1V)';
+      pin2Val.className = lowProbeImmersed ? 'text-slate-300' : 'text-red-400 font-bold';
+      pin6Val.textContent = highProbeImmersed ? 'HIGH (4.8V)' : 'LOW (0.1V)';
+      pin6Val.className = highProbeImmersed ? 'text-emerald-400 font-bold' : 'text-slate-300';
+      pin3Val.textContent = pumpActive ? '3.80 V (HIGH)' : '0.05 V (LOW)';
+      pin3Val.className = pumpActive ? 'text-emerald-400 font-bold' : 'text-slate-400';
+
+      // Anti-slosh progress
+      if (antiSloshTimer > 0) {
+        timerDelayStatus.textContent = `LOCKOUT ACTIVE (${antiSloshTimer.toFixed(2)}s / 5.17s)`;
+        timerDelayStatus.className = 'font-mono text-purple-400 font-bold animate-pulse';
+        timerDelayBar.style.width = `${(antiSloshTimer / ANTI_SLOSH_DURATION) * 100}%`;
+      } else {
+        timerDelayStatus.textContent = 'IDLE / FILTER STABLE';
+        timerDelayStatus.className = 'font-mono text-slate-500 font-bold';
+        timerDelayBar.style.width = '0%';
+      }
+
+      // LED Indicators
+      if (!lowProbeImmersed) {
+        ledLow.className = 'w-3.5 h-3.5 rounded-full bg-red-500 led-glow-red';
+        ledLowText.textContent = 'ACTIVE';
+        ledLowText.className = 'text-red-400 font-bold';
+      } else {
+        ledLow.className = 'w-3.5 h-3.5 rounded-full bg-red-950 border border-red-800';
+        ledLowText.textContent = 'OFF';
+        ledLowText.className = 'text-slate-500';
+      }
+
+      if (highProbeImmersed) {
+        ledHigh.className = 'w-3.5 h-3.5 rounded-full bg-emerald-500 led-glow-green';
+        ledHighText.textContent = 'FULL';
+        ledHighText.className = 'text-emerald-400 font-bold';
+        ledBuzzer.className = 'w-3.5 h-3.5 rounded-full bg-amber-500 led-glow-amber';
+        ledBuzzerText.textContent = 'ALARM BEEP';
+        ledBuzzerText.className = 'text-amber-400 font-bold';
+      } else {
+        ledHigh.className = 'w-3.5 h-3.5 rounded-full bg-emerald-950 border border-emerald-800';
+        ledHighText.textContent = 'OFF';
+        ledHighText.className = 'text-slate-500';
+        ledBuzzer.className = 'w-3.5 h-3.5 rounded-full bg-amber-950 border border-amber-800';
+        ledBuzzerText.textContent = 'OFF';
+        ledBuzzerText.className = 'text-slate-500';
+      }
+
+      if (pumpActive) {
+        ledPump.className = 'w-3.5 h-3.5 rounded-full bg-blue-500 led-glow-blue';
+        ledPumpText.textContent = 'PUMPING';
+        ledPumpText.className = 'text-blue-400 font-bold';
+        transSatBadge.textContent = 'BC547 (SATURATED)';
+        transSatBadge.className = 'text-emerald-400 font-bold';
+        transIb.textContent = '2.90 mA';
+        relayCoilState.textContent = 'ENERGIZED (12V)';
+        relayCoilState.className = 'text-emerald-400 font-bold';
+      } else {
+        ledPump.className = 'w-3.5 h-3.5 rounded-full bg-blue-950 border border-blue-800';
+        ledPumpText.textContent = 'IDLE';
+        ledPumpText.className = 'text-slate-500';
+        transSatBadge.textContent = 'BC547 (CUTOFF)';
+        transSatBadge.className = 'text-slate-400 font-bold';
+        transIb.textContent = '0.00 mA';
+        relayCoilState.textContent = 'DE-ENERGIZED';
+        relayCoilState.className = 'text-slate-400';
+      }
+
+      // Push history and render Oscilloscope
+      historyData.push({
+        level: waterLevel,
+        vSense: (vL + vH) / 2.0,
+        pump: pumpActive ? 80 : 10
+      });
+      if (historyData.length > MAX_HISTORY) historyData.shift();
+
+      renderScope();
+    }, 50);
+
+    // Oscilloscope renderer
+    function renderScope() {
+      const w = scopeCanvas.width;
+      const h = scopeCanvas.height;
+      scopeCtx.fillStyle = '#020617';
+      scopeCtx.fillRect(0, 0, w, h);
+
+      // Grid
+      scopeCtx.strokeStyle = '#1e293b';
+      scopeCtx.lineWidth = 1;
+      scopeCtx.beginPath();
+      for (let x = 0; x < w; x += 40) {
+        scopeCtx.moveTo(x, 0); scopeCtx.lineTo(x, h);
+      }
+      for (let y = 0; y < h; y += 30) {
+        scopeCtx.moveTo(0, y); scopeCtx.lineTo(w, y);
+      }
+      scopeCtx.stroke();
+
+      if (historyData.length < 2) return;
+
+      const stepX = w / (MAX_HISTORY - 1);
+
+      // Channel 1: Water Level (Cyan)
+      scopeCtx.strokeStyle = '#06b6d4';
+      scopeCtx.lineWidth = 2;
+      scopeCtx.beginPath();
+      for (let i = 0; i < historyData.length; i++) {
+        const x = i * stepX;
+        const y = h - (historyData[i].level / 100) * (h - 20) - 10;
+        if (i === 0) scopeCtx.moveTo(x, y);
+        else scopeCtx.lineTo(x, y);
+      }
+      scopeCtx.stroke();
+
+      // Channel 2: Sensed Voltage (Amber)
+      scopeCtx.strokeStyle = '#f59e0b';
+      scopeCtx.lineWidth = 1.5;
+      scopeCtx.beginPath();
+      for (let i = 0; i < historyData.length; i++) {
+        const x = i * stepX;
+        const y = h - (historyData[i].vSense / 5.0) * (h - 20) - 10;
+        if (i === 0) scopeCtx.moveTo(x, y);
+        else scopeCtx.lineTo(x, y);
+      }
+      scopeCtx.stroke();
+
+      // Channel 3: Pump State (Emerald)
+      scopeCtx.strokeStyle = '#10b981';
+      scopeCtx.lineWidth = 2;
+      scopeCtx.beginPath();
+      for (let i = 0; i < historyData.length; i++) {
+        const x = i * stepX;
+        const y = h - (historyData[i].pump / 100) * (h - 20) - 10;
+        if (i === 0) scopeCtx.moveTo(x, y);
+        else scopeCtx.lineTo(x, y);
+      }
+      scopeCtx.stroke();
     }
-
-    function autoRunCycle() {
-      logMessage(`>>> STARTING AUTOMATED FULL CYCLE SIMULATION <<<`);
-      resetSystem();
-      setTimeout(triggerSensorEntry, 600);
-      setTimeout(triggerSensorTrack, 3500);
-      setTimeout(triggerSensorExit, 6500);
-    }
-
-    function resetSystem() {
-      stopBuzzer();
-      currentState = 'ST_OPEN';
-      gateAngle = 90;
-      trainApproaching = false;
-      trainPresent = false;
-      emergencyActive = false;
-      obstacleDetected = false;
-
-      document.getElementById('obstacleEntity').classList.add('hidden');
-      document.getElementById('trainEntity').style.transform = "translateX(-150%)";
-      document.getElementById('sensorEntryLed').className = "w-4 h-4 rounded-full bg-slate-700 border border-slate-600 transition-colors";
-      document.getElementById('sensorTrackLed').className = "w-4 h-4 rounded-full bg-slate-700 border border-slate-600 transition-colors";
-      document.getElementById('sensorExitLed').className = "w-4 h-4 rounded-full bg-slate-700 border border-slate-600 transition-colors";
-
-      logMessage(`[RESET] System reset to baseline. Road Green, Gate 90°, Train Aspect Red.`);
-      updateUI();
-    }
-
-    // Initialize
-    updateUI();
   </script>
 </body>
 </html>

@@ -1,312 +1,142 @@
-# 🛠️ Physical Hardware Prototype Construction Guide
-### Railway Level Crossing & Train Traffic Controller
-**Course Code:** UE25EC2302 | **GM University, Davanagere** | **Semester 3 PBL**
+# 🛠️ Physical Hardware Implementation & Construction Guide
+### Automatic Water-Level Controller Using Op-Amp and 555 Timer
+**Course Code:** UE25EC3502 (Linear Integrated Circuits with Practice)  
+**Institution:** GM University, Davanagere | **Semester:** 3rd | **Total Marks:** 40
 
 ---
 
-## 1. 🛒 Complete Bill of Materials (Component Checklist)
+## 1. 🛒 Complete Bill of Materials (BOM & Component Checklist)
 
-All these components are standard, inexpensive, and readily available on **Robu.in**, **Amazon.in**, or local electronics shops (SP Road Bangalore / Davanagere):
+All components listed below are standard electronic parts readily available from **Robu.in**, **Amazon.in**, or local electronics vendors in Davanagere / SP Road, Bengaluru.
 
-| Sl. No. | Component Description | Specifications / Part No. | Qty | Approx. Price (INR ₹) | Purpose in Model |
-|:---:|:---|:---|:---:|:---:|:---|
-| **1** | **Main Controller Board** | **Option A:** Basys 3 / Cyclone IV FPGA <br>*(OR)*<br> **Option B:** Arduino Uno R3 / Mega 2560 | 1 | ₹450 (Arduino) / Lab FPGA | Executes the Level Crossing FSM controller logic |
-| **2** | **Servo Motors (Gate Barrier)** | TowerPro SG90 (9g Micro Servo) | 2 | ₹120 each (₹240) | Motorized mechanical arms rotating 0° (closed) to 90° (open) |
-| **3** | **IR Proximity Sensor Modules** | TCRT5000 / LM393 Active-Low Infrared Obstacle Detector (Adjustable Range 2–30 cm) | 4 | ₹40 each (₹160) | • Sensor 1: Entry Sensor (Inbound)<br>• Sensor 2: Track Occupancy<br>• Sensor 3: Exit Sensor (Outbound)<br>• Sensor 4: Road Track Obstacle |
-| **4** | **Road Traffic Light Module** | Mini 3-Color Traffic Light LED Module (or 5mm discrete LEDs: Red, Yellow, Green) | 2 | ₹35 each (₹70) | Signals for road traffic on both sides of the crossing |
-| **5** | **Crossbuck Warning LEDs** | 5mm High-Brightness Diffused Red LEDs | 4 | ₹2 each (₹8) | Alternating wig-wag hazard flasher lights |
-| **6** | **Pedestrian Crossing LEDs** | 5mm Green (Walk) & Red (Don't Walk) LEDs | 2 pairs | ₹2 each (₹8) | Visual crossing status for pedestrians |
-| **7** | **Train Aspect Signal LEDs** | 5mm Bi-color or Red/Green LEDs | 2 | ₹5 each (₹10) | Signals facing locomotive on tracks |
-| **8** | **Audible Warning Buzzer** | 5V Active Piezo Buzzer (Continuous/Pulsed) | 1 | ₹25 | Emits warning chime during descent and high-pitch emergency siren |
-| **9** | **Emergency Push Button** | 12mm Tactile Push-to-Make Button with Cap | 2 | ₹10 each (₹20) | Manual Emergency Stop & Gate Interlock Tamper Test |
-| **10** | **Current Limiting Resistors** | 220Ω / 330Ω, 1/4W Resistors | 15 | ₹1 each (₹15) | Prevents LED burnout |
-| **11** | **Pull-down / Pull-up Resistors**| 10kΩ Resistors | 4 | ₹1 each (₹4) | Stabilizes button inputs |
-| **12** | **Breadboard & Jumper Wires** | 830-Point MB-102 Breadboard + 65 Male-to-Male & Male-to-Female Jumper Wires | 1 set | ₹150 | Solderless rapid prototyping & wire routing |
-| **13** | **Power Supply** | 5V 2A DC Power Adapter / 9V Hi-Watt Battery with DC Barrel Jack & 5V Buck Module | 1 | ₹120 | Powers the controller, servos, and sensors |
-| **14** | **Diorama Base & Tracks** | Foam Board / 5mm Sunboard Sheet (30x45 cm), Toy Train Tracks / 3D Printed Rails, Toy Car | 1 set | ₹150–250 | Aesthetic physical demonstration diorama |
-| **15** | **Barrier Arms Crafting** | Ice-cream wooden sticks / 3mm acrylic strips painted with Red & White hazard stripes | 2 | ₹20 | Lightweight physical barrier arms glued to servo horns |
-| **TOTAL** | — | — | — | **~₹1,100 – ₹1,500** | *(Complete hardware budget)* |
-
----
-
-## 2. 🔌 Circuit Schematic & Wiring Pinout Table
-
-### Pin Connection Mapping (Arduino / FPGA GPIO)
-
-```
-                     +---------------------------------------+
-                     |           CONTROLLER BOARD            |
-                     |         (Arduino Uno / FPGA)          |
-                     +---------------------------------------+
-                        |        |        |        |        |
-         +--------------+        |        |        |        +---------------+
-         |                       |        |        |                        |
-         v                       v        v        v                        v
-  [TRACK SENSORS]             [SERVOS] [TRAFFIC] [BUZZER]             [EMERGENCY BTNS]
-  • Pin 2: Entry Sensor (S1)  • Pin 9  • Pin 4:  • Pin 8: 5V Active   • Pin A0: Manual
-  • Pin 3: Track Sensor (S2)    North    Red       Buzzer (+)           Stop Button
-  • Pin 7: Exit Sensor  (S3)  • Pin 10 • Pin 5:  • GND:    GND        • Pin A1: Track
-  • Pin 6: Track Obstacle       South    Yellow                         Obstacle Switch
-                                         • Pin 6:
-                                           Green
-```
-
-### Complete Pin Assignment Table:
-
-| Subsystem | Component Pin | Controller Pin (Arduino Uno) | FPGA Board Pin (Basys 3 / Spartan) | Notes / Wiring Instructions |
-|:---|:---|:---:|:---:|:---|
-| **Entry Sensor (S1)** | `OUT` pin | **Pin 2** (Interrupt) | `V17` (SW0 or PMOD JA1) | Active-Low / High when train passes |
-| **Track Sensor (S2)** | `OUT` pin | **Pin 3** (Interrupt) | `V16` (SW1 or PMOD JA2) | Located directly on level crossing |
-| **Exit Sensor (S3)** | `OUT` pin | **Pin 7** | `W16` (SW2 or PMOD JA3) | Located 15–20 cm after crossing |
-| **Obstacle Sensor** | `OUT` pin | **Pin A1** (or D11) | `W17` (SW3 or PMOD JA4) | Optical sensor facing the roadway track area |
-| **Manual Emergency Btn**| One terminal | **Pin A0** | `U18` (Center Push Button) | Connect with 10kΩ pull-down resistor to GND |
-| **Gate Servo 1 (North)**| Signal wire (Orange/Yellow) | **Pin 9** (PWM) | `J1` (PMOD JB1 - PWM pulse) | Connect Red wire to 5V, Brown wire to GND |
-| **Gate Servo 2 (South)**| Signal wire (Orange/Yellow) | **Pin 10** (PWM) | `L2` (PMOD JB2 - PWM pulse) | Move in tandem with Servo 1 |
-| **Road RED Light** | Anode (+) via 220Ω | **Pin 4** | `U16` (LD0) | High when gate closing/closed |
-| **Road YELLOW Light** | Anode (+) via 220Ω | **Pin 5** | `E19` (LD1) | High during early warning pre-closure |
-| **Road GREEN Light** | Anode (+) via 220Ω | **Pin 6** | `U19` (LD2) | High ONLY when gate is 90° open & safe |
-| **Crossbuck Flasher L** | Anode (+) via 220Ω | **Pin 12** | `V19` (LD3) | Alternates with Flasher R |
-| **Crossbuck Flasher R** | Anode (+) via 220Ω | **Pin 13** | `W18` (LD4) | Alternates with Flasher L |
-| **Train Signal GREEN** | Anode (+) via 220Ω | **Pin A2** | `U15` (LD5) | Train aspect: Green ONLY if gate = 0° |
-| **Train Signal RED** | Anode (+) via 220Ω | **Pin A3** | `U14` (LD6) | Train aspect: Red if gate open/obstacle |
-| **Audible Buzzer** | Positive (+) pin | **Pin 8** | `V14` (LD7 / Piezo) | Ground negative pin to common GND |
-| **Power Distribution** | VCC & GND | **5V & GND Rails** | **5V & GND Pins** | Tie all grounds together! |
-
-> [!IMPORTANT]
-> **Power Tip for Servos:** Two SG90 micro-servos can draw up to 500mA–800mA peak when moving. Do **not** power both servos from the Arduino 5V pin alone (as it can cause the board to brown-out reset). Power the servo VCC lines from an external 5V 1A/2A DC power supply and ensure the **GND of the external power supply is connected to the Arduino/FPGA GND** (Common Ground).
+| Sl. No. | Component Name | Description / Part No. | Package | Qty | Approx. Price (INR ₹) | Function in Hardware Circuit |
+|:---:|:---|:---|:---:|:---:|:---:|:---|
+| **1** | **Operational Amplifier IC** | **LM358** (Dual Low-Power Op-Amp) | DIP-8 | 1 | ₹18 | Dual comparators & Schmitt trigger threshold detection |
+| **2** | **Precision Timer IC** | **NE555 / LM555** | DIP-8 | 1 | ₹15 | Monostable slosh-debounce delay & bistable flip-flop latch |
+| **3** | **Voltage Regulator IC** | **LM7805** (+5.0V, 1.0A Positive Regulator) | TO-220 | 1 | ₹15 | Stable +5V DC power rail for LIC control circuitry |
+| **4** | **Power Relay** | **12V SPDT Relay** (Songle SRD-12VDC-SL-C) | 5-Pin PCB | 1 | ₹35 | Electrical isolation & high-power switching for pump motor |
+| **5** | **Driver Transistor** | **BC547B** (or 2N2222) NPN BJT | TO-92 | 2 | ₹4 each (₹8) | Transistor saturated switch driving relay coil & buzzer |
+| **6** | **Flyback Clamp Diode** | **1N4007** (1000V, 1A Rectifier) | DO-41 | 2 | ₹2 each (₹4) | Suppresses inductive coil collapse voltage spikes (\(-L \frac{di}{dt}\)) |
+| **7** | **Submersible Mini Pump** | 12V / 5V DC Mini Water Pump (3W, 240 L/H) | Submersible | 1 | ₹160 | Lifts water from underground sump to overhead tank |
+| **8** | **Flexible Vinyl Tubing** | 6mm Inner Diameter Food-Grade PVC Hose | 1 Meter | 1 | ₹25 | Connects pump discharge nozzle to overhead tank inlet |
+| **9** | **Water Sensor Probes** | SS304 Stainless Steel Screws / Rods (or Carbon) | Screws M4 | 3 | ₹15 | Corrosion-resistant conductive probes (COM, LOW, HIGH) |
+| **10** | **Indicator LEDs** | 5mm Diffused (Red, Green, Blue, Amber) | Radial | 4 | ₹2 each (₹8) | Status: Low Water (Red), High (Green), Pump ON (Blue) |
+| **11** | **Audible Piezo Buzzer** | 5V Continuous Active Electronic Buzzer | 2-Pin Radial| 1 | ₹20 | High-water overflow and dry-run audible alarm |
+| **12** | **Decoupling Capacitors** | 0.33 µF (Input) & 0.1 µF (Output & Noise filter) | Ceramic Disc| 5 | ₹2 each (₹10) | 7805 RF stability, noise filtering across sensing probes |
+| **13** | **Timing & Filter Caps** | 47 µF / 25V (Monostable) & 10 µF / 25V (Electrolytic)| Radial Can | 2 | ₹5 each (₹10) | Determines 5.17-second monostable debounce delay |
+| **14** | **Precision Resistors** | 10 kΩ 1/4W 1% Metal Film | Axial | 4 | ₹1 each (₹4) | Precision 3-resistor potential divider (\(V_{ref1}, V_{ref2}\)) |
+| **15** | **Biasing & Pull-down Resistors**| 100 kΩ 1/4W 5% Carbon Film | Axial | 2 | ₹1 each (₹2) | Pull-down resistors across Low and High sensing probes |
+| **16** | **Hysteresis Resistor** | 470 kΩ 1/4W 5% Carbon Film | Axial | 1 | ₹1 | Positive feedback resistor for LM358 Schmitt trigger |
+| **17** | **Base Drive & Current Limit** | 1 kΩ (Base) & 330 Ω (LED Ballast) | Axial | 5 | ₹1 each (₹5) | Drives transistor into saturation & prevents LED burnout |
+| **18** | **Solderless Breadboard**| MB-102 (830 Tie-Points with Power Rails) | Standard | 1 | ₹140 | Prototype assembly and circuit interconnects |
+| **19** | **Jumper Wires** | Male-to-Male & Male-to-Female Rainbow Jumper Wires| 20 cm | 1 Set (40 pcs)| ₹75 | Breadboard routing and off-board sensor interfacing |
+| **20** | **DC Power Adapter** | 12V 1.0A Regulated SMPS Wall Adapter with DC Jack | 2.1mm Pin | 1 | ₹180 | Main DC source powering 7805 regulator and 12V pump |
+| **21** | **Diorama Water Tanks** | Transparent 500 mL Plastic Containers (Sump & Overhead)| Acrylic/PET | 2 | ₹40 | Physical demonstration model displaying water level |
+| **TOTAL** | — | — | — | — | **~₹770 – ₹850** | *(Full hardware budget for 4-student group)* |
 
 ---
 
-## 3. 🏗️ Step-by-Step Diorama & Physical Model Construction
+## 2. 🔌 Breadboard Pinout & Wiring Connection Table
 
-### Step 1: Baseboard Layout
-1. Take a 30 cm × 45 cm Sunboard or MDF sheet.
-2. Paint or draw a two-lane asphalt roadway intersecting a two-track railway line at a $90^\circ$ cross-angle in the center.
+### Master Interconnect Wiring List:
 
-### Step 2: Track & Sensor Placement
-1. **Sensor 1 (Entry / Up-Line):** Mount 20 cm before the crossing on the left side of the track. Adjust the potentiometer screw so it triggers when a toy train or wagon passes within 3–5 cm.
-2. **Sensor 2 (Track Occupancy):** Mount directly inside the level crossing between the rails facing upwards or across the rails.
-3. **Sensor 3 (Exit / Outbound):** Mount 20 cm past the crossing on the right side.
-4. **Obstacle Sensor:** Mount across the road lane pointing at the railway track zone to detect stalled cars.
-
-### Step 3: Motorized Barrier Arms Assembly
-1. Take two wooden craft sticks (or white acrylic strips). Paint red diagonal stripes at $45^\circ$ angles using red marker/tape.
-2. Screw the craft stick to the single-arm horn supplied with the SG90 servo.
-3. Glue the SG90 servo motor body vertically on the road curb so the arm sits at $90^\circ$ (vertical) when open and drops to $0^\circ$ (horizontal across the road) when closed.
-
-### Step 4: Signal Lights & Poles
-1. Use a drinking straw or wooden skewer painted black as a signal mast.
-2. Mount the Red, Yellow, and Green LEDs on a small piece of perforated dot-board or stiff paper at the top of the mast.
-3. Place crossbuck red LEDs at a $45^\circ$ angle at the crossing entrance.
-
----
-
-## 4. 💻 Hardware Driver Code (Arduino Demonstration Companion)
-
-If presenting a physical prototype demo while submitting the Verilog HDL code, the following Arduino sketch implements the **exact same 4-state FSM and safety interlocking logic** as your Verilog model:
-
-```cpp
-/*
- * GM UNIVERSITY - DEPARTMENT OF ECE (UE25EC2302)
- * Hardware Implementation of Railway Level Crossing Controller
- * FSM & Hardware Interlocking Logic matching Verilog HDL model
- */
-
-#include <Servo.h>
-
-// Pin Definitions
-const int PIN_SENSOR_ENTRY    = 2;  // S1 (Inbound)
-const int PIN_SENSOR_TRACK    = 3;  // S2 (Crossing Zone)
-const int PIN_SENSOR_EXIT     = 7;  // S3 (Outbound)
-const int PIN_SENSOR_OBSTACLE = A1; // Track Obstacle LiDAR/IR
-const int PIN_EMG_BUTTON      = A0; // Manual Emergency Button
-
-const int PIN_ROAD_RED        = 4;
-const int PIN_ROAD_YELLOW     = 5;
-const int PIN_ROAD_GREEN      = 6;
-
-const int PIN_FLASHER_LEFT    = 12;
-const int PIN_FLASHER_RIGHT   = 13;
-const int PIN_BUZZER          = 8;
-
-const int PIN_TRAIN_GREEN     = A2;
-const int PIN_TRAIN_RED       = A3;
-
-const int PIN_SERVO_NORTH     = 9;
-const int PIN_SERVO_SOUTH     = 10;
-
-Servo servoNorth;
-Servo servoSouth;
-
-// FSM States (identical to Verilog localparams)
-enum GateState { ST_OPEN, ST_CLOSING, ST_CLOSED, ST_OPENING };
-GateState currentState = ST_OPEN;
-
-int gateAngle = 90; // 90 = Open, 0 = Closed
-unsigned long stateTimer = 0;
-bool flasherPhase = false;
-unsigned long lastFlasherTime = 0;
-
-void setup() {
-  Serial.begin(115200);
-
-  pinMode(PIN_SENSOR_ENTRY, INPUT_PULLUP);
-  pinMode(PIN_SENSOR_TRACK, INPUT_PULLUP);
-  pinMode(PIN_SENSOR_EXIT,  INPUT_PULLUP);
-  pinMode(PIN_SENSOR_OBSTACLE, INPUT_PULLUP);
-  pinMode(PIN_EMG_BUTTON, INPUT_PULLUP);
-
-  pinMode(PIN_ROAD_RED, OUTPUT);
-  pinMode(PIN_ROAD_YELLOW, OUTPUT);
-  pinMode(PIN_ROAD_GREEN, OUTPUT);
-
-  pinMode(PIN_FLASHER_LEFT, OUTPUT);
-  pinMode(PIN_FLASHER_RIGHT, OUTPUT);
-  pinMode(PIN_BUZZER, OUTPUT);
-
-  pinMode(PIN_TRAIN_GREEN, OUTPUT);
-  pinMode(PIN_TRAIN_RED, OUTPUT);
-
-  servoNorth.attach(PIN_SERVO_NORTH);
-  servoSouth.attach(PIN_SERVO_SOUTH);
-
-  // Initial Safe State: Barriers Up (90 deg)
-  servoNorth.write(90);
-  servoSouth.write(90);
-
-  Serial.println("==================================================");
-  Serial.println("  GM UNIVERSITY - LEVEL CROSSING CONTROLLER       ");
-  Serial.println("  Verilog Hardware Model Initialized in SAFE IDLE ");
-  Serial.println("==================================================");
-}
-
-void loop() {
-  // Read active-low sensors (LM393 IR modules output LOW on detection)
-  bool trainApproaching = (digitalRead(PIN_SENSOR_ENTRY) == LOW);
-  bool trainPresent     = (digitalRead(PIN_SENSOR_TRACK) == LOW);
-  bool trainCleared     = (digitalRead(PIN_SENSOR_EXIT)  == LOW);
-  bool obstacleDetected = (digitalRead(PIN_SENSOR_OBSTACLE) == LOW);
-  bool manualEmergency  = (digitalRead(PIN_EMG_BUTTON) == LOW);
-
-  bool emergencyActive = obstacleDetected || manualEmergency;
-
-  // Flasher timer (every 400ms)
-  if (millis() - lastFlasherTime > 400) {
-    lastFlasherTime = millis();
-    flasherPhase = !flasherPhase;
-  }
-
-  // =========================================================================
-  // FSM State Machine Execution (Unit 3 Behavioural Modelling in Silicon)
-  // =========================================================================
-  switch (currentState) {
-    case ST_OPEN:
-      gateAngle = 90;
-      setRoadLight(LOW, LOW, HIGH); // Road GREEN
-      setTrainLight(HIGH, LOW);     // Train RED (Stop)
-      setFlashers(false);
-      noTone(PIN_BUZZER);
-
-      if (trainApproaching || emergencyActive) {
-        Serial.println("[FSM] Train Approaching! Pre-closure Yellow Warning.");
-        currentState = ST_CLOSING;
-        stateTimer = millis();
-      }
-      break;
-
-    case ST_CLOSING:
-      setRoadLight(LOW, HIGH, LOW); // Road YELLOW Caution
-      setTrainLight(HIGH, LOW);     // Train RED (Stop)
-      setFlashers(true);
-      tone(PIN_BUZZER, emergencyActive ? 1200 : 600); // Warning Tone
-
-      // Step servo downwards from 90 to 0
-      if (millis() - stateTimer > 1500) { // 1.5s warning lead time
-        for (int a = 90; a >= 0; a -= 5) {
-          servoNorth.write(a);
-          servoSouth.write(180 - a);
-          delay(40);
-        }
-        gateAngle = 0;
-        currentState = ST_CLOSED;
-        Serial.println("[FSM] Barrier fully LOCKED at 0°. Train Aspect GREEN.");
-      }
-      break;
-
-    case ST_CLOSED:
-      gateAngle = 0;
-      setRoadLight(HIGH, LOW, LOW); // Road solid RED (Stop)
-      setFlashers(true);
-
-      // Gate-Level Safety Interlock Rule (Unit 2):
-      // Train receives GREEN ONLY IF gate is 0° AND no obstacle on tracks!
-      if (!emergencyActive) {
-        setTrainLight(LOW, HIGH); // Train GREEN (Clear to Proceed)
-        noTone(PIN_BUZZER);
-      } else {
-        setTrainLight(HIGH, LOW); // Train FORCED RED on obstacle
-        tone(PIN_BUZZER, 1400);   // Emergency siren
-      }
-
-      // Check if train has departed and safety delay satisfied
-      if (trainCleared && !trainPresent && !emergencyActive) {
-        Serial.println("[FSM] Train completely departed. Preparing to open.");
-        delay(1000); // Post-clear buffer delay
-        currentState = ST_OPENING;
-      }
-      break;
-
-    case ST_OPENING:
-      setRoadLight(HIGH, LOW, LOW); // Hold road RED during transit
-      setTrainLight(HIGH, LOW);     // Train RED
-      setFlashers(false);
-      noTone(PIN_BUZZER);
-
-      // Step servo upwards from 0 to 90
-      for (int a = 0; a <= 90; a += 5) {
-        servoNorth.write(a);
-        servoSouth.write(180 - a);
-        delay(40);
-      }
-      gateAngle = 90;
-      currentState = ST_OPEN;
-      Serial.println("[FSM] Barrier restored to 90°. Road restored to GREEN.");
-      break;
-  }
-
-  delay(20);
-}
-
-// Helper Functions
-void setRoadLight(bool r, bool y, bool g) {
-  digitalWrite(PIN_ROAD_RED, r);
-  digitalWrite(PIN_ROAD_YELLOW, y);
-  digitalWrite(PIN_ROAD_GREEN, g);
-}
-
-void setTrainLight(bool r, bool g) {
-  digitalWrite(PIN_TRAIN_RED, r);
-  digitalWrite(PIN_TRAIN_GREEN, g);
-}
-
-void setFlashers(bool active) {
-  if (active) {
-    digitalWrite(PIN_FLASHER_LEFT, flasherPhase ? HIGH : LOW);
-    digitalWrite(PIN_FLASHER_RIGHT, flasherPhase ? LOW : HIGH);
-  } else {
-    digitalWrite(PIN_FLASHER_LEFT, LOW);
-    digitalWrite(PIN_FLASHER_RIGHT, LOW);
-  }
-}
-```
+| From Component & Pin | To Component & Pin | Wire Color Code | Functional Purpose |
+|:---|:---|:---:|:---|
+| **12V Adapter (+)** | Breadboard Top Red Rail (`+12V`) | Red | Primary 12V DC input bus |
+| **12V Adapter (–)** | Breadboard Bottom Blue Rail (`GND`) | Black | Common circuit ground reference |
+| **+12V Rail** | **IC 7805 Pin 1 (IN)** | Red | Unregulated DC input to voltage regulator |
+| **GND Rail** | **IC 7805 Pin 2 (GND)** | Black | Regulator ground pin |
+| **IC 7805 Pin 3 (OUT)** | Breadboard Inner Red Rail (`+5V V_CC`) | Orange | Regulated +5.0V power bus for LICs |
+| **+12V to Pin 1** | **0.33 µF Ceramic Cap** to GND | Yellow | Input high-frequency bypass (prevents oscillation) |
+| **+5V to Pin 3** | **0.1 µF Ceramic Cap** to GND | Yellow | Output transient stabilization |
+| **+5V V_CC** | **R1 (10 kΩ)** to Node A | Brown | Top arm of reference potential divider |
+| **Node A (V_ref_high)** | **R2 (10 kΩ)** to Node B & **LM358 Pin 6 (2IN-)** | Purple | Preset \(V_{ref2} = 3.33\ \text{V}\) for High Level Cutoff |
+| **Node B (V_ref_low)** | **R3 (10 kΩ)** to GND & **LM358 Pin 2 (1IN-)** | Blue | Preset \(V_{ref1} = 1.67\ \text{V}\) for Low Level Pump Trigger |
+| **Overhead Tank COM Probe** | **+5V V_CC Rail** | Orange | Injects +5V into water electrolyte |
+| **Overhead Tank LOW Probe** | **Node C** (100 kΩ pull-down to GND + 0.1 µF cap)| Cyan | Conductive path for minimum water level detection |
+| **Node C** | **10 kΩ \(R_{in}\)** to **LM358 Pin 3 (1IN+)** | Cyan | Input to Low-Level Schmitt Trigger Comparator |
+| **LM358 Pin 1 (1OUT)** | **470 kΩ \(R_f\)** back to **LM358 Pin 3 (1IN+)** | White | Positive feedback creating 78 mV hysteresis band |
+| **LM358 Pin 1 (1OUT)** | **NE555 Pin 2 (TRIGGER)** | Green | Triggers monostable timer & latches pump ON when water is low |
+| **Overhead Tank HIGH Probe**| **Node D** (100 kΩ pull-down to GND + 0.1 µF cap)| Violet | Conductive path for maximum water level detection |
+| **Node D** | **LM358 Pin 5 (2IN+)** | Violet | Non-inverting input to High-Level Comparator |
+| **LM358 Pin 7 (2OUT)** | **NE555 Pin 4 (RESET)** & **Pin 6 (THRESHOLD)** | Gray | Resets latch & shuts pump OFF when water touches high probe |
+| **NE555 Pin 8 (VCC)** | **+5V V_CC Rail** | Orange | 555 Supply voltage |
+| **NE555 Pin 1 (GND)** | **GND Rail** | Black | 555 Ground |
+| **NE555 Pin 5 (CTRL)** | **0.01 µF Ceramic Cap** to GND | Yellow | Noise decoupling for internal potential divider |
+| **NE555 Pin 7 & 6** | **100 kΩ \(R_A\)** to +5V & **47 µF Cap** to GND | Brown | Monostable timing network: \(T = 1.1 \cdot R_A \cdot C = 5.17\ \text{s}\) |
+| **NE555 Pin 3 (OUTPUT)** | **1 kΩ Base Resistor \(R_B\)** to **BC547 Base** | Blue | Saturated drive signal for relay switching |
+| **BC547 Emitter** | **GND Rail** | Black | Common-emitter grounding |
+| **BC547 Collector** | **12V Relay Coil (Pin 1)** & **1N4007 Anode** | Blue | Low-side switched collector output |
+| **+12V Rail** | **12V Relay Coil (Pin 2)** & **1N4007 Cathode** | Red | Antiparallel inductive flyback clamp connection |
+| **+12V Rail** | **Relay Common Contact (COM)** | Red | Power source for pump actuator |
+| **Relay Normally Open (NO)**| **12V Mini Submersible Pump (+)** wire | Red | Power fed to pump only when relay is energized |
+| **Pump (–) Wire** | **GND Rail** | Black | Return path for motor pump current |
+| **BC547 Collector (2nd)** | **5V Buzzer (–)** (Buzzer (+) tied to +5V) | Gray | Audible alarm for tank full/overflow |
 
 ---
 
-## 5. 🎯 Tips for Scoring Full 40/40 Marks in College Demonstration
+## 3. 🧪 Probe Design & Electrolysis Mitigation Techniques
 
-1. **Demonstrate Unit 2 Gate-Level Interlock:**
-   - While the train is passing on the track (Sensor 2 covered), try pressing an external button to force open the gate. Show the examiner that the system **refuses to open the gate** and sounds the violation alarm. Mention: *"Sir, this is enforced by pure structural gate primitives (`and`, `or`, `not`) in `gate_safety_interlock.v`!"*
-2. **Demonstrate Obstacle Emergency Priority:**
-   - Put a toy car on the track sensor while the train is inbound. Show that the train aspect signal instantly flips from **Green to RED**, proving that the controller prevents collisions.
-3. **Show the Live Waveform on Screen:**
-   - Keep GTKWave or the Web Dashboard (`http://localhost:3000`) open on your laptop alongside the physical model to show real-time synchronization between the hardware model and software telemetry.
+A frequent failure mode in student water-level controller projects is **probe galvanic corrosion (electrolysis)**: when a continuous DC current passes through ordinary copper jumper wires immersed in tap water, the anode undergoes rapid oxidation (\(\text{Cu} \to \text{Cu}^{2+} + 2e^-\)), depositing green copper carbonate sludge within 48 to 72 hours and eroding the sensor wire.
+
+### Academic Solutions Implemented in this Design:
+1. **SS304 Stainless Steel Electrodes:** Using marine-grade 304 stainless steel screws or bicycle spoke segments. Stainless steel forms a self-healing passive chromium oxide (\(\text{Cr}_2\text{O}_3\)) film, preventing ionic degradation.
+2. **Microampere Conduction Limiting:** By utilizing a large \(100\ \text{k}\Omega\) pull-down resistor and buffering the voltage through the ultra-high input impedance of the LM358 op-amp (\(R_{in} > 2\ \text{M}\Omega\)), the probe conduction current is strictly confined to:
+   \[
+   I_{probe} = \frac{V_{CC}}{R_{water} + R_{pulldown}} \approx \frac{5\ \text{V}}{2.5\ \text{k}\Omega + 100\ \text{k}\Omega} = 48.7\ \mu\text{A}
+   \]
+   At less than 50 microamperes, ionic transfer is negligible, extending probe lifespan to several years without requiring complex AC excitation generators.
+3. **Electrode Insulation:** Heat-shrink tubing is shrunk over the entire length of the probe wires, exposing only the bottom 2 mm stainless steel tip. This eliminates false conduction from splashes clinging to the wire sides.
+
+---
+
+## 4. 📝 Step-by-Step Assembly & Testing Protocol
+
+### Phase 1: Power Supply Subsystem Verification
+1. Insert the **LM7805** regulator into the breadboard.
+2. Connect \(0.33\ \mu\text{F}\) ceramic capacitor directly across Pin 1 (IN) and Pin 2 (GND).
+3. Connect \(0.1\ \mu\text{F}\) ceramic capacitor across Pin 3 (OUT) and Pin 2 (GND).
+4. Apply +12V DC from the wall adapter.
+5. **DMM Check:** Measure voltage between Pin 3 and GND. Verify steady reading: **\(5.00\ \text{V} \pm 0.1\ \text{V}\)**. If voltage is erratic or IC warms up, immediately disconnect and check pin orientations.
+
+### Phase 2: Precision Potential Divider & LM358 Op-Amp Comparators
+1. Place three \(10\ \text{k}\Omega\) resistors in series between +5V and GND.
+2. Verify node voltages using a Digital Multimeter:
+   - Node between R1 and R2: **\(3.33\ \text{V}\)** (\(V_{ref2}\))
+   - Node between R2 and R3: **\(1.67\ \text{V}\)** (\(V_{ref1}\))
+3. Insert the **LM358** IC. Connect Pin 8 to +5V and Pin 4 to GND.
+4. Route \(V_{ref1}\) (1.67V) to Pin 2 (Inverting Input 1) and \(V_{ref2}\) (3.33V) to Pin 6 (Inverting Input 2).
+5. Add \(10\ \text{k}\Omega\) input resistor and \(470\ \text{k}\Omega\) feedback resistor across Pin 1 and Pin 3 to complete the Schmitt trigger.
+6. Connect temporary jumper wires from +5V to the probe inputs and monitor Pin 1 and Pin 7 with DMM/LEDs to verify clean comparator switching.
+
+### Phase 3: NE555 Monostable Timing & Bistable Latch Assembly
+1. Insert the **NE555** IC. Connect Pin 8 to +5V, Pin 1 to GND, and Pin 5 through \(0.01\ \mu\text{F}\) capacitor to GND.
+2. Connect \(100\ \text{k}\Omega\) resistor \(R_A\) from Pin 8 (+5V) to Pin 6/7, and \(47\ \mu\text{F}\) capacitor from Pin 6/7 to GND.
+3. Connect LM358 Pin 1 (Low Level Comparator) to NE555 Pin 2 (TRIGGER).
+4. Connect LM358 Pin 7 (High Level Comparator) to NE555 Pin 4 (RESET).
+5. Connect a temporary test LED with \(330\ \Omega\) resistor to Pin 3 (OUTPUT).
+6. **Timing Test:** Ground Pin 2 momentarily. The test LED will illuminate and hold for **\(5.17 \pm 0.3\ \text{seconds}\)** before turning off, proving monostable debounce operation!
+
+### Phase 4: Relay Driver Stage & Submersible Pump Actuation
+1. Insert **BC547** transistor. Connect Emitter to GND.
+2. Route NE555 Pin 3 through a \(1\ \text{k}\Omega\) base resistor to the BC547 Base.
+3. Connect the **12V SPDT Relay** coil between +12V rail and BC547 Collector.
+4. **CRITICAL:** Insert **1N4007 diode** across the relay coil pins with the silver cathode band facing the +12V rail.
+5. Connect Relay COM contact to +12V rail, and NO contact to the submersible pump positive (red) wire. Connect pump negative (black) wire to GND.
+6. Submerge the pump in the lower sump container and secure the outlet tube into the upper tank.
+7. Fill the tank gradually:
+   - When water drops below Low Probe: Pump must engage with a firm mechanical relay "click".
+   - When water rises between Low and High Probes: Pump must remain energised.
+   - When water touches High Probe: Pump must immediately cut off and buzzer should emit a brief notification tone!
+
+---
+
+## 5. 🔍 Troubleshooting & Diagnostic Matrix
+
+| Symptom / Observation | Probable Root Cause | Corrective Diagnostic Action |
+|:---|:---|:---|
+| **7805 Regulator becomes excessively hot to the touch** | DC pump or relay connected to +5V rail instead of +12V rail | Check wiring: High-current loads (pump & relay coil) must be powered directly from the +12V unregulated line, NOT the 7805 output. |
+| **Relay chatters continuously when water touches probe** | Missing Schmitt trigger positive feedback resistor (\(R_f\)) or slosh delay capacitor | Verify that \(470\ \text{k}\Omega\) resistor is placed between LM358 Pin 1 and Pin 3, and ensure \(47\ \mu\text{F}\) capacitor is connected to 555 Pin 6/7. |
+| **Pump does not turn ON when tank is empty** | Base drive current insufficient or BC547 oriented backwards | Check transistor pinout (Flat side facing you: Left=Collector, Center=Base, Right=Emitter for standard Indian TO-92 BC547). Ensure \(V_{BE} \approx 0.7\ \text{V}\). |
+| **BC547 driver burns out after a few switching cycles** | 1N4007 flyback diode missing or inserted with reversed polarity | Inspect 1N4007 across relay coil: Silver cathode stripe MUST connect to +12V rail. Reverse polarity shorts the transistor to ground. |
+| **Comparator does not detect water immersion** | Water resistance too high (distilled water) or pull-down resistor value too low | Add a pinch of table salt to simulate tap mineral conductivity, or increase pull-down resistor from \(100\ \text{k}\Omega\) to \(220\ \text{k}\Omega\). |

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 480" width="100%" height="100%">
+  <defs>
+    <filter id="waveShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <rect width="860" height="480" fill="#ffffff" rx="8"/>
+  <rect x="10" y="10" width="840" height="460" fill="none" stroke="#e2e8f0" stroke-width="1.5" rx="6"/>
+
+  <!-- Title -->
+  <text x="430" y="38" font-family="'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="700" text-anchor="middle" fill="#0f172a">
+    ANTI-SLOSH TIMING DIAGRAM: WAVE DEBOUNCING VIA 555 MONOSTABLE
+  </text>
+  <text x="430" y="56" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="500" text-anchor="middle" fill="#64748b">
+    Comparison of Raw Comparator Chattering vs. 555 Timer Monostable Stabilization
+  </text>
+
+  <!-- Timeline Grid -->
+  <!-- Track 1: Water Surface Elevation -->
+  <rect x="30" y="80" width="800" height="85" fill="#f8fafc" stroke="#e2e8f0" rx="4"/>
+  <text x="45" y="105" font-family="sans-serif" font-size="11" font-weight="700" fill="#0284c7">1. Physical Water Level with Slosh Waves</text>
+  <line x1="180" y1="130" x2="810" y2="130" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <text x="170" y="133" font-family="sans-serif" font-size="9" text-anchor="end" fill="#dc2626">Low Sensor Tip (Threshold)</text>
+  <!-- Wave curve: Drops below sensor, then sloshes up and down before falling fully -->
+  <path d="M 200 115 L 260 120 L 300 128 L 320 138 L 340 125 L 360 137 L 380 127 L 400 136 L 420 130 L 460 148 L 520 152 L 600 152 L 650 135 L 680 120 L 720 110" 
+        fill="none" stroke="#0284c7" stroke-width="2.5"/>
+  <text x="360" y="100" font-family="sans-serif" font-size="8.5" fill="#d97706" font-weight="700">← Turbulent Splashing Waves Across Sensor Tip →</text>
+
+  <!-- Track 2: Raw Comparator Output (Severe Chatter) -->
+  <rect x="30" y="175" width="800" height="75" fill="#fff1f2" stroke="#fecdd3" rx="4"/>
+  <text x="45" y="198" font-family="sans-serif" font-size="11" font-weight="700" fill="#be123c">2. Raw Op-Amp Comparator Output (Unfiltered)</text>
+  <!-- Oscillating pulses -->
+  <path d="M 200 230 L 320 230 L 320 195 L 340 195 L 340 230 L 360 230 L 360 195 L 380 195 L 380 230 L 400 230 L 400 195 L 420 195 L 420 230 L 430 230 L 430 195 L 650 195 L 650 230 L 800 230"
+        fill="none" stroke="#e11d48" stroke-width="2"/>
+  <rect x="320" y="200" width="110" height="30" fill="#fda4af" opacity="0.3"/>
+  <text x="375" y="220" font-family="sans-serif" font-size="9" font-weight="700" fill="#9f1239" text-anchor="middle">
+    Rapid Chattering Hazard!
+  </text>
+
+  <!-- Track 3: 555 Monostable Debounce Delay (Pin 3) -->
+  <rect x="30" y="260" width="800" height="75" fill="#f5f3ff" stroke="#ddd6fe" rx="4"/>
+  <text x="45" y="283" font-family="sans-serif" font-size="11" font-weight="700" fill="#6d28d9">3. 555 Timer Monostable Timing Pulse (Pin 3)</text>
+  <path d="M 200 315 L 320 315 L 320 280 L 480 280 L 480 315 L 800 315"
+        fill="none" stroke="#7c3aed" stroke-width="2.5"/>
+  <line x1="320" y1="270" x2="480" y2="270" stroke="#6d28d9" stroke-width="1.5" stroke-dasharray="2,2"/>
+  <text x="400" y="266" font-family="sans-serif" font-size="9.5" font-weight="700" fill="#5b21b6" text-anchor="middle">
+    Monostable Delay T = 1.1 × R × C = 5.17s (Anti-Slosh Blanking Window)
+  </text>
+
+  <!-- Track 4: Relay Coil Drive & Water Pump State -->
+  <rect x="30" y="345" width="800" height="75" fill="#ecfdf5" stroke="#a7f3d0" rx="4"/>
+  <text x="45" y="368" font-family="sans-serif" font-size="11" font-weight="700" fill="#047857">4. Final Relay Driver &amp; Water Pump State</text>
+  <path d="M 200 400 L 320 400 L 320 365 L 660 365 L 660 400 L 800 400"
+        fill="none" stroke="#059669" stroke-width="3"/>
+  <text x="260" y="415" font-family="sans-serif" font-size="9.5" font-weight="700" fill="#64748b">PUMP OFF</text>
+  <text x="490" y="380" font-family="sans-serif" font-size="11" font-weight="800" fill="#065f46">PUMP ON (Completely Stable &amp; Chatter-Free!)</text>
+  <text x="730" y="415" font-family="sans-serif" font-size="9.5" font-weight="700" fill="#64748b">PUMP OFF (Tank Filled)</text>
+
+  <!-- Time Axis at Bottom -->
+  <line x1="200" y1="440" x2="800" y2="440" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="200" y="455" font-family="sans-serif" font-size="9" fill="#475569">t = 0s</text>
+  <text x="320" y="455" font-family="sans-serif" font-size="9" fill="#475569">t1: Low Water</text>
+  <text x="480" y="455" font-family="sans-serif" font-size="9" fill="#475569">t2: 555 Lockout Ends</text>
+  <text x="660" y="455" font-family="sans-serif" font-size="9" fill="#475569">t3: High Sensor Reached</text>
+  <text x="800" y="455" font-family="sans-serif" font-size="9" fill="#475569">Time (s) →</text>
+</svg>
