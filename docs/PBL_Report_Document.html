@@ -6,16 +6,16 @@
 <style>
   @page {
     size: A4;
-    margin: 15mm 15mm 15mm 15mm;
+    margin: 14mm 15mm 14mm 15mm;
     @bottom-right {
-      content: "Page " counter(page);
+      content: "Page " counter(page) " of 12";
       font-size: 8pt;
       font-family: 'Liberation Sans', 'Helvetica Neue', Arial, sans-serif;
       color: #64748b;
       font-weight: bold;
     }
     @bottom-left {
-      content: "GM University, Davanagere | Dept of ECE | UE25EC3502: Linear Integrated Circuits with Practice";
+      content: "GM University, Davanagere | Dept of ECE | Course: UE25EC3502 (LIC with Practice)";
       font-size: 7.5pt;
       font-family: 'Liberation Sans', 'Helvetica Neue', Arial, sans-serif;
       color: #64748b;
@@ -32,8 +32,8 @@
   * { box-sizing: border-box; }
   body {
     font-family: 'Liberation Serif', Georgia, 'Times New Roman', serif;
-    font-size: 9pt;
-    line-height: 1.4;
+    font-size: 8.8pt;
+    line-height: 1.36;
     color: #0f172a;
     margin: 0;
     padding: 0;
@@ -47,7 +47,7 @@
 
   .cover-page {
     page-break-after: always;
-    padding: 22mm 18mm 18mm 18mm;
+    padding: 20mm 18mm 16mm 18mm;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -67,46 +67,46 @@
   }
 
   h1.report-title {
-    font-size: 18pt;
+    font-size: 17.5pt;
     font-weight: 800;
     color: #1e3a8a;
-    margin: 10px 0 6px 0;
+    margin: 8px 0 5px 0;
     line-height: 1.25;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   h2.section-title {
-    font-size: 10.5pt;
+    font-size: 10pt;
     font-weight: 700;
     color: #1e3a8a;
     border-bottom: 1.5px solid #cbd5e1;
     padding-bottom: 2px;
-    margin-top: 8px;
+    margin-top: 6px;
     margin-bottom: 4px;
     text-transform: uppercase;
     letter-spacing: 0.4px;
   }
 
   h3.sub-title {
-    font-size: 9pt;
+    font-size: 8.8pt;
     font-weight: 700;
     color: #334155;
-    margin-top: 5px;
+    margin-top: 4px;
     margin-bottom: 2px;
   }
 
   p {
-    margin: 0 0 5px 0;
+    margin: 0 0 4px 0;
     text-align: justify;
   }
 
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 7.5pt;
-    margin: 5px 0 6px 0;
-    line-height: 1.25;
+    font-size: 7.2pt;
+    margin: 4px 0 5px 0;
+    line-height: 1.22;
   }
 
   th {
@@ -114,12 +114,12 @@
     color: #ffffff;
     font-weight: 700;
     text-align: left;
-    padding: 3.5px 5px;
+    padding: 3px 5px;
     border: 0.5px solid #0f172a;
   }
 
   td {
-    padding: 3px 5px;
+    padding: 2.5px 5px;
     border: 0.5px solid #cbd5e1;
     vertical-align: top;
   }
@@ -129,20 +129,20 @@
   .callout {
     border-left: 3.5px solid #2563eb;
     background-color: #eff6ff;
-    padding: 5px 8px;
+    padding: 4px 7px;
     margin: 4px 0;
-    font-size: 8pt;
+    font-size: 7.8pt;
     border-radius: 0 4px 4px 0;
   }
 
   .formula-box {
     border: 1px solid #cbd5e1;
     background-color: #f8fafc;
-    padding: 5px 8px;
-    margin: 4px 0;
+    padding: 4px 6px;
+    margin: 3px 0;
     text-align: center;
     font-family: 'Liberation Serif', serif;
-    font-size: 9pt;
+    font-size: 8.5pt;
     font-weight: bold;
     color: #1e3a8a;
     border-radius: 4px;
@@ -154,7 +154,7 @@
     padding: 3px;
     background-color: #ffffff;
     text-align: center;
-    margin: 4px 0;
+    margin: 3px 0;
   }
 
   .diagram-container img {
@@ -165,7 +165,7 @@
   }
 
   ul, ol {
-    margin: 0 0 5px 16px;
+    margin: 0 0 4px 15px;
     padding: 0;
   }
 
@@ -178,7 +178,7 @@
 <body>
 
   <!-- ========================================== -->
-  <!-- PAGE 1: COVER PAGE                         -->
+  <!-- PAGE 1: 1. COVER PAGE                      -->
   <!-- ========================================== -->
   <div class="cover-page">
     <div>
@@ -188,13 +188,13 @@
       <div style="font-size: 8.5pt; font-weight: 600; color: #475569; margin-top: 1px;">
         P.B. ROAD, DAVANAGERE – 577 006, KARNATAKA, INDIA
       </div>
-      <div style="font-size: 9pt; font-weight: 700; color: #334155; margin-top: 4px; text-transform: uppercase;">
+      <div style="font-size: 9pt; font-weight: 700; color: #334155; margin-top: 3px; text-transform: uppercase;">
         FACULTY OF ENGINEERING &amp; TECHNOLOGY | SCHOOL OF ENGINEERING
       </div>
       <div style="font-size: 8.5pt; font-weight: 700; color: #0284c7; text-transform: uppercase;">
         DEPARTMENT OF ELECTRONICS &amp; COMMUNICATION ENGINEERING
       </div>
-      <div style="width: 75%; height: 2px; background: #1e3a8a; margin: 10px auto;"></div>
+      <div style="width: 75%; height: 2px; background: #1e3a8a; margin: 8px auto;"></div>
     </div>
 
     <div>
@@ -204,7 +204,7 @@
       <h1 class="report-title">
         AUTOMATIC WATER-LEVEL CONTROLLER USING OP-AMP AND 555 TIMER
       </h1>
-      <div style="font-size: 9.5pt; font-weight: 700; color: #0f172a; margin-top: 6px;">
+      <div style="font-size: 9.5pt; font-weight: 700; color: #0f172a; margin-top: 5px;">
         Course Code: UE25EC3502 — Linear Integrated Circuits with Practice
       </div>
       <div style="font-size: 8.5pt; color: #475569; margin-top: 2px;">
@@ -214,10 +214,10 @@
 
     <!-- Student Team Table -->
     <div>
-      <div style="font-size: 9pt; font-weight: 700; color: #1e3a8a; margin-bottom: 4px; text-transform: uppercase;">
-        Submitted By: Team 04 (Electronics &amp; Communication)
+      <div style="font-size: 8.5pt; font-weight: 700; color: #1e3a8a; margin-bottom: 4px; text-transform: uppercase;">
+        Submitted By: Team 04 (Electronics &amp; Communication Engineering)
       </div>
-      <table style="width: 100%; font-size: 8pt; margin: 0 auto;">
+      <table style="width: 100%; font-size: 7.8pt; margin: 0 auto;">
         <thead>
           <tr>
             <th style="width: 8%; text-align: center;">Sl.</th>
@@ -262,35 +262,35 @@
 
     <!-- Faculty Signatures -->
     <div>
-      <div style="width: 100%; display: flex; justify-content: space-between; font-size: 8pt; color: #0f172a; margin-top: 15px;">
+      <div style="width: 100%; display: flex; justify-content: space-between; font-size: 8pt; color: #0f172a; margin-top: 10px;">
         <div style="width: 32%; text-align: center;">
-          <div style="margin-bottom: 25px;">___________________________</div>
+          <div style="margin-bottom: 22px;">___________________________</div>
           <div><strong>Mr. Samapth Kumar B</strong></div>
           <div style="color: #64748b; font-size: 7.5pt;">Course Coordinator</div>
         </div>
         <div style="width: 32%; text-align: center;">
-          <div style="margin-bottom: 25px;">___________________________</div>
+          <div style="margin-bottom: 22px;">___________________________</div>
           <div><strong>Dr. Praveen J</strong></div>
           <div style="color: #64748b; font-size: 7.5pt;">Head of Department, ECE</div>
         </div>
         <div style="width: 32%; text-align: center;">
-          <div style="margin-bottom: 25px;">___________________________</div>
+          <div style="margin-bottom: 22px;">___________________________</div>
           <div><strong>Dr. Praveen J</strong></div>
           <div style="color: #64748b; font-size: 7.5pt;">Director, School of Engg.</div>
         </div>
       </div>
-      <div style="font-size: 7.5pt; color: #64748b; margin-top: 10px;">
+      <div style="font-size: 7.5pt; color: #64748b; margin-top: 8px;">
         Academic Year 2026–2027 | Davanagere, Karnataka, India
       </div>
     </div>
   </div>
 
   <!-- ========================================== -->
-  <!-- PAGE 2: ABSTRACT & SYLLABUS MATRIX         -->
+  <!-- PAGE 2: 2. ABSTRACT                        -->
   <!-- ========================================== -->
   <div class="page-break"></div>
 
-  <h2 class="section-title">1. Abstract</h2>
+  <h2 class="section-title">2. Abstract</h2>
   <p>
     Automated water storage management in residential, commercial, and agricultural infrastructures requires dependable regulation of pumps to prevent dry-running, overflow wastage of treated water, and premature failure caused by rapid relay switching. This project delivers the complete design, mathematical modeling, breadboard prototyping, and verification of an <strong>Automatic Water-Level Controller</strong> constructed strictly with linear integrated circuits (LICs)—the <strong>LM358 Dual Operational Amplifier</strong>, the <strong>NE555 Precision Timer</strong>, and the <strong>LM7805 Voltage Regulator</strong>—without relying on microcontrollers or software firmware.
   </p>
@@ -302,10 +302,10 @@
   </p>
 
   <div class="callout">
-    <strong>Key Deliverables Summary:</strong> Working breadboard prototype model; complete analytical SPICE-equivalent Python simulation; interactive HTML5/Web Audio SCADA cockpit; 4-page printable hardware wiring manual; and an IEEE-standard 12-page comprehensive report fulfilling all 40 marks evaluation rubrics.
+    <strong>Key Deliverables Summary:</strong> Working breadboard prototype model; complete analytical SPICE-equivalent Python simulation; interactive HTML5/Web Audio SCADA cockpit; 4-page printable hardware wiring manual; and an official 12-page comprehensive report fulfilling all 40 marks evaluation rubrics.
   </div>
 
-  <h2 class="section-title">Syllabus Units Implementation Matrix</h2>
+  <h2 class="section-title">Course Syllabus Units Coverage Matrix</h2>
   <table>
     <thead>
       <tr>
@@ -356,11 +356,11 @@
   </table>
 
   <!-- ========================================== -->
-  <!-- PAGE 3: INTRODUCTION & PROBLEM STATEMENT   -->
+  <!-- PAGE 3: 3. INTRODUCTION & 4. PROBLEM STMT  -->
   <!-- ========================================== -->
   <div class="page-break"></div>
 
-  <h2 class="section-title">2. Introduction</h2>
+  <h2 class="section-title">3. Introduction</h2>
   <p>
     In domestic, municipal, and commercial water distribution networks, the automated filling of overhead storage tanks (OHT) from underground sumps is vital to modern infrastructure. Manual pump operation is fundamentally flawed: human oversight leads to severe tank overflows, wasting electricity and potable water, or allows pumps to run dry when the sump depletes, burning out pump impellers and motor stator windings within minutes.
   </p>
@@ -373,13 +373,13 @@
     <li><strong>Low System Cost &amp; High Serviceability:</strong> Standard 8-pin DIP packages (LM358, NE555) cost less than ₹20 each and can be repaired or replaced by any qualified field technician without firmware programming tools.</li>
   </ul>
 
-  <h2 class="section-title">3. Problem Statement &amp; Course Objectives</h2>
-  <h3 class="sub-title">3.1 Problem Definition</h3>
+  <h2 class="section-title">4. Problem Statement &amp; Course Objectives</h2>
+  <h3 class="sub-title">4.1 Problem Definition</h3>
   <p>
     Design and implement an automatic water-level controller using an op-amp comparator and 555 timer. The system must continuously monitor the liquid elevation in an overhead storage tank, automatically turning the water pump ON when the liquid drops below a preset minimum level, and switching it OFF when the liquid reaches the preset maximum level. The design must incorporate visual LED indicators, an audible alarm buzzer, Schmitt trigger hysteresis, an anti-slosh time delay to filter temporary liquid fluctuations, and an IC 7805 regulated power supply.
   </p>
 
-  <h3 class="sub-title">3.2 Technical Course Learning Objectives</h3>
+  <h3 class="sub-title">4.2 Technical Course Learning Objectives</h3>
   <ul>
     <li><strong>CO2:</strong> Apply operational amplifier fundamentals, input offset characteristics, and open-loop comparator concepts to sensor signal conditioning.</li>
     <li><strong>CO4:</strong> Design and analyze positive-feedback Schmitt trigger circuits to establish noise-immune switching hysteresis bands.</li>
@@ -387,7 +387,7 @@
     <li><strong>CO6:</strong> Apply linear voltage regulator principles (IC 7805), flyback inductive suppression, and transistor switching saturation to build a dependable hardware prototype.</li>
   </ul>
 
-  <h3 class="sub-title">3.3 14-Week PBL Timeline &amp; Milestone Roadmap</h3>
+  <h3 class="sub-title">4.3 14-Week PBL Timeline &amp; Milestone Roadmap</h3>
   <table>
     <thead>
       <tr>
@@ -436,16 +436,16 @@
   </table>
 
   <!-- ========================================== -->
-  <!-- PAGE 4: METHODOLOGY & ARCHITECTURE         -->
+  <!-- PAGE 4: 5. METHODOLOGY / DESIGN (PART 1)   -->
   <!-- ========================================== -->
   <div class="page-break"></div>
 
-  <h2 class="section-title">4. Methodology &amp; System Architecture</h2>
+  <h2 class="section-title">5. Methodology / Design — Architecture &amp; Sensor Conditioning</h2>
   <div class="diagram-container">
     <img src="system_block_diagram.svg" style="width: 100%; max-height: 90mm;" alt="Architecture Diagram">
   </div>
 
-  <h3 class="sub-title">4.1 Subsystem Functional Partitioning</h3>
+  <h3 class="sub-title">5.1 Subsystem Functional Partitioning</h3>
   <ol>
     <li><strong>Signal Acquisition Subsystem (Unit 1):</strong> Three SS304 stainless-steel electrodes (COM, LOW, HIGH) immersed in the overhead tank interface with 100 k&Omega; pull-down resistors, converting water conductivity into clean analog voltage levels.</li>
     <li><strong>Precision Voltage Reference Subsystem (Unit 2):</strong> A 3-resistor potential divider network biased from the regulated +5V rail establishes reference thresholds: V<sub>ref_low</sub> = 1.67 V (1/3 V<sub>CC</sub>) and V<sub>ref_high</sub> = 3.33 V (2/3 V<sub>CC</sub>).</li>
@@ -455,7 +455,7 @@
     <li><strong>Regulated DC Power Supply Subsystem (Unit 5):</strong> An IC 7805 regulator steps down unregulated +12V DC to a stable +5.00V DC rail for sensitive analog and timing circuits.</li>
   </ol>
 
-  <h3 class="sub-title">4.2 Unit 1: Water Conduction &amp; Op-Amp Characteristics</h3>
+  <h3 class="sub-title">5.2 Unit 1: Water Conduction &amp; Op-Amp Characteristics</h3>
   <p>
     Tap water has a finite electrical conductivity due to mineral ions (&kappa; &approx; 100 to 500 &mu;S/cm). When immersed, the resistance between probes is R<sub>water</sub> &approx; 1 k&Omega; to 10 k&Omega;, whereas dry probes in air present an open circuit (&gt; 10 M&Omega;).
   </p>
@@ -470,12 +470,12 @@
   </p>
 
   <!-- ========================================== -->
-  <!-- PAGE 5: COMPARATOR DESIGN (UNIT 2)         -->
+  <!-- PAGE 5: 5. METHODOLOGY / DESIGN (PART 2)   -->
   <!-- ========================================== -->
   <div class="page-break"></div>
 
-  <h2 class="section-title">5. Op-Amp Comparator Design (Unit 2 Coverage)</h2>
-  <h3 class="sub-title">5.1 Reference Voltage Network Derivation</h3>
+  <h2 class="section-title">5. Methodology / Design — Comparators &amp; Reference Network</h2>
+  <h3 class="sub-title">5.3 Unit 2: Reference Voltage Network Derivation</h3>
   <p>
     To establish stable switching thresholds, a precision 3-resistor voltage divider is connected between the regulated V<sub>CC</sub> (+5.00 V) and ground. Using three equal precision metal-film resistors (R<sub>1</sub> = R<sub>2</sub> = R<sub>3</sub> = 10 k&Omega;, 1% tolerance):
   </p>
@@ -491,7 +491,7 @@
     V_{ref\_high} = V_{CC} \cdot \frac{R_2 + R_3}{R_{total}} = 5.00\text{ V} \cdot \frac{20\text{ k}\Omega}{30\text{ k}\Omega} = \frac{2}{3} V_{CC} = 3.333\text{ V}
   </div>
 
-  <h3 class="sub-title">5.2 Dual Comparator Architecture (LM358)</h3>
+  <h3 class="sub-title">Dual Comparator Architecture (LM358)</h3>
   <p>
     The LM358 contains two independent, high-gain operational amplifiers in a single 8-pin package:
   </p>
@@ -506,7 +506,7 @@
     </li>
   </ul>
 
-  <h3 class="sub-title">5.3 Open-Loop Gain and Saturation Characteristics</h3>
+  <h3 class="sub-title">Open-Loop Gain and Saturation Characteristics</h3>
   <p>
     Operating open-loop, the differential transfer characteristic is governed by:
   </p>
@@ -522,21 +522,21 @@
   </ul>
 
   <!-- ========================================== -->
-  <!-- PAGE 6: SCHMITT TRIGGER HYSTERESIS (UNIT 3)-->
+  <!-- PAGE 6: 5. METHODOLOGY / DESIGN (PART 3)   -->
   <!-- ========================================== -->
   <div class="page-break"></div>
 
-  <h2 class="section-title">6. Schmitt Trigger Hysteresis Design (Unit 3)</h2>
+  <h2 class="section-title">5. Methodology / Design — Schmitt Trigger Hysteresis</h2>
   <div class="diagram-container">
     <img src="schmitt_trigger_hysteresis.svg" style="width: 100%; max-height: 85mm;" alt="Schmitt Trigger Transfer Characteristics">
   </div>
 
-  <h3 class="sub-title">6.1 The Noise Chattering Problem</h3>
+  <h3 class="sub-title">5.4 Unit 3: The Noise Chattering Problem</h3>
   <p>
     When liquid level changes gradually, small ripples, surface waves, splashing droplets, and electrical coupling from mains wiring induce millivolt-level noise. An open-loop comparator with infinite gain will rapidly oscillate between V<sub>OH</sub> and V<sub>OL</sub> at dozens of Hertz as the signal crosses threshold. This destructive chatter causes violent relay arcing and burns motor windings.
   </p>
 
-  <h3 class="sub-title">6.2 Positive Feedback Derivation (UTP &amp; LTP)</h3>
+  <h3 class="sub-title">Positive Feedback Derivation (UTP &amp; LTP)</h3>
   <p>
     To create an unbreachable hysteresis band, positive feedback resistor R<sub>f</sub> = 470 k&Omega; is connected between output (Pin 1) and non-inverting input (Pin 3), with input series resistor R<sub>in</sub> = 10 k&Omega;. Applying nodal superposition at node V<sup>+</sup>:
   </p>
@@ -559,16 +559,16 @@
   </p>
 
   <!-- ========================================== -->
-  <!-- PAGE 7: 555 TIMER MONOSTABLE (UNIT 5)      -->
+  <!-- PAGE 7: 5. METHODOLOGY / DESIGN (PART 4)   -->
   <!-- ========================================== -->
   <div class="page-break"></div>
 
-  <h2 class="section-title">7. 555 Timer Monostable &amp; Anti-Slosh Latch (Unit 5)</h2>
+  <h2 class="section-title">5. Methodology / Design — 555 Monostable &amp; Latch</h2>
   <div class="diagram-container">
     <img src="timing_slosh_waveform.svg" style="width: 100%; max-height: 85mm;" alt="Anti-Slosh Timing Diagram">
   </div>
 
-  <h3 class="sub-title">7.1 Monostable Timing Derivation (T = 1.1 &middot; R<sub>A</sub> &middot; C<sub>1</sub>)</h3>
+  <h3 class="sub-title">5.5 Unit 5: Monostable Timing Derivation (T = 1.1 &middot; R<sub>A</sub> &middot; C<sub>1</sub>)</h3>
   <p>
     When the pump energizes, hydraulic surge produces liquid splashing across the tank, momentarily touching the low probe repeatedly for 2 to 4 seconds. The NE555 monostable multivibrator introduces an active blanking window during which probe oscillations are ignored.
   </p>
@@ -591,7 +591,7 @@
     T_{delay} = 1.1 \cdot (100 \times 10^3\ \Omega) \cdot (47 \times 10^{-6}\ \text{F}) = 5.17\text{ seconds}
   </div>
 
-  <h3 class="sub-title">7.2 Internal Bistable RS Memory Latch Action</h3>
+  <h3 class="sub-title">Internal Bistable RS Memory Latch Action</h3>
   <p>
     The internal RS flip-flop of the NE555 provides bistable memory:
   </p>
@@ -602,17 +602,17 @@
   </ul>
 
   <!-- ========================================== -->
-  <!-- PAGE 8: VOLTAGE REGULATION (UNIT 5)        -->
+  <!-- PAGE 8: 5. METHODOLOGY / DESIGN (PART 5)   -->
   <!-- ========================================== -->
   <div class="page-break"></div>
 
-  <h2 class="section-title">8. Regulated Power Supply &amp; Biasing (Unit 5)</h2>
-  <h3 class="sub-title">8.1 Linear Regulation Principles (IC 7805)</h3>
+  <h2 class="section-title">5. Methodology / Design — Voltage Regulation (IC 7805)</h2>
+  <h3 class="sub-title">5.6 Unit 5: Linear Regulation Principles (IC 7805)</h3>
   <p>
     The electronic control circuit requires a noise-free, regulated +5.00 V supply. Raw AC-DC wall adapters exhibit line ripples of &plusmn;10% and undergo severe voltage sags when the 12V pump motor turns ON. An <strong>LM7805 3-terminal positive voltage regulator</strong> provides &gt; 62 dB ripple rejection and &plusmn;2% load regulation.
   </p>
 
-  <h3 class="sub-title">8.2 Thermal Dissipation &amp; Heatsink Analysis</h3>
+  <h3 class="sub-title">Thermal Dissipation &amp; Heatsink Analysis</h3>
   <p>
     The total load current drawn by the 5V control circuitry (LM358, NE555, resistor dividers, LEDs) is I<sub>load</sub> &approx; 35 mA. Powered from an unregulated 12V input:
   </p>
@@ -629,7 +629,7 @@
     Because T<sub>J</sub> = 44.8 &deg;C is well below the maximum silicon rating of 125 &deg;C, the regulator operates safely in free air without a heatsink.
   </p>
 
-  <h3 class="sub-title">8.3 Capacitor Decoupling &amp; Stability Engineering</h3>
+  <h3 class="sub-title">Capacitor Decoupling &amp; Stability Engineering</h3>
   <table>
     <thead>
       <tr>
@@ -674,16 +674,16 @@
   </table>
 
   <!-- ========================================== -->
-  <!-- PAGE 9: IMPLEMENTATION & CIRCUIT SCHEMATIC -->
+  <!-- PAGE 9: 6. IMPLEMENTATION (PART 1)         -->
   <!-- ========================================== -->
   <div class="page-break"></div>
 
-  <h2 class="section-title">9. Implementation &amp; Hardware Prototyping</h2>
+  <h2 class="section-title">6. Implementation &amp; Hardware Prototyping</h2>
   <div class="diagram-container">
     <img src="water_level_circuit_diagram.svg" style="width: 100%; max-height: 120mm;" alt="Master Circuit Schematic">
   </div>
 
-  <h3 class="sub-title">9.1 Bill of Materials (BOM) &amp; Economic Sourcing</h3>
+  <h3 class="sub-title">6.1 Bill of Materials (BOM) &amp; Economic Sourcing</h3>
   <table>
     <thead>
       <tr>
@@ -780,12 +780,12 @@
   </table>
 
   <!-- ========================================== -->
-  <!-- PAGE 10: DRIVER & ELECTROLYSIS             -->
+  <!-- PAGE 10: 6. IMPLEMENTATION (PART 2)        -->
   <!-- ========================================== -->
   <div class="page-break"></div>
 
-  <h2 class="section-title">10. Driver Saturation &amp; Electrolysis Mitigation</h2>
-  <h3 class="sub-title">10.1 Transistor Deep Saturation Engineering</h3>
+  <h2 class="section-title">6. Implementation — Driver Stage &amp; Electrolysis Prevention</h2>
+  <h3 class="sub-title">6.2 Transistor Deep Saturation Engineering</h3>
   <p>
     To ensure minimum power loss and prevent thermal runaway in the <strong>BC547 NPN driver transistor</strong>, the base drive current must force the device into deep saturation (V<sub>CE(sat)</sub> &le; 0.1 V).
   </p>
@@ -810,7 +810,7 @@
     The overdrive factor is <strong>I<sub>B</sub> / I<sub>B(min)</sub> = 10.7&times;</strong>, guaranteeing rock-solid saturation and zero heating.
   </p>
 
-  <h3 class="sub-title">10.2 Flyback Diode Inductive Protection</h3>
+  <h3 class="sub-title">6.3 Flyback Diode Inductive Protection</h3>
   <p>
     When the BC547 switches OFF, the relay coil's magnetic field collapses rapidly. In accordance with Lenz's law, an inductive back-EMF spike of magnitude:
   </p>
@@ -821,7 +821,7 @@
     appears at the collector node. Without protection, this transient exceeds the BC547 breakdown rating (V<sub>CEO</sub> = 45 V), causing junction destruction. A <strong>1N4007 fast rectifier diode</strong> is connected antiparallel across the coil (cathode to +12V, anode to collector). The back-EMF forward-biases the diode, clamping the collector voltage safely to V<sub>CC</sub> + V<sub>F</sub> = 12.0 V + 0.7 V = 12.7 V.
   </p>
 
-  <h3 class="sub-title">10.3 Probe Electrolysis Prevention Analysis</h3>
+  <h3 class="sub-title">6.4 Probe Electrolysis Prevention Analysis</h3>
   <p>
     In DC water sensing, anode oxidation causes rapid copper wire degradation (Cu &rarr; Cu<sup>2+</sup> + 2e<sup>-</sup>). This design neutralizes electrolysis through three academic techniques:
   </p>
@@ -837,12 +837,12 @@
   </ol>
 
   <!-- ========================================== -->
-  <!-- PAGE 11: RESULTS & EXPERIMENTAL DATA       -->
+  <!-- PAGE 11: 7. RESULTS & DISCUSSION           -->
   <!-- ========================================== -->
   <div class="page-break"></div>
 
-  <h2 class="section-title">11. Results &amp; Discussion</h2>
-  <h3 class="sub-title">11.1 Analytical Calculations vs. Multimeter Experimental Data</h3>
+  <h2 class="section-title">7. Results &amp; Discussion</h2>
+  <h3 class="sub-title">7.1 Analytical Calculations vs. Multimeter Experimental Data</h3>
   <table>
     <thead>
       <tr>
@@ -910,7 +910,7 @@
     </tbody>
   </table>
 
-  <h3 class="sub-title">11.2 State Transition Verification Table</h3>
+  <h3 class="sub-title">7.2 System State Truth Table</h3>
   <table>
     <thead>
       <tr>
@@ -958,31 +958,31 @@
     </tbody>
   </table>
 
-  <h3 class="sub-title">11.3 Interactive Web SCADA Dashboard</h3>
+  <h3 class="sub-title">7.3 Interactive Web SCADA Dashboard</h3>
   <p>
     To supplement the physical model, an interactive Web SCADA simulator was developed in HTML5/Tailwind/JavaScript. Running locally on port 3000, it features real-time visual tanks, dynamic water waves, live probe conductance lamps, dual LM358 voltmeters, Schmitt trigger hysteresis point animation, 555 countdown progress bar, Web Audio sound synthesis (pump humming vibration and relay clicks), and a real-time multi-channel strip-chart oscilloscope.
   </p>
 
   <!-- ========================================== -->
-  <!-- PAGE 12: CONCLUSION, REFS & RUBRICS        -->
+  <!-- PAGE 12: 8. CONCLUSION, 9. REFS & RUBRICS  -->
   <!-- ========================================== -->
   <div class="page-break"></div>
 
-  <h2 class="section-title">12. Conclusion &amp; Future Scope</h2>
-  <h3 class="sub-title">12.1 Conclusion</h3>
+  <h2 class="section-title">8. Conclusion &amp; Future Scope</h2>
+  <h3 class="sub-title">8.1 Conclusion</h3>
   <p>
     An automatic water-level controller utilizing linear integrated circuits has been conceived, designed, modeled, prototyped, and experimentally verified. By combining the <strong>LM358 Dual Op-Amp</strong> (providing ground-sensing comparison and Schmitt trigger hysteresis) and the <strong>NE555 Timer</strong> (providing monostable anti-slosh blanking and bistable state latching), the system achieves exceptional switching stability without relay chattering. Probe electrolysis is eliminated through microampere current limiting and SS304 electrodes. All curricular objectives of <strong>UE25EC3502</strong> have been thoroughly fulfilled.
   </p>
 
-  <h3 class="sub-title">12.2 Future Scope</h3>
+  <h3 class="sub-title">8.2 Future Scope</h3>
   <ul>
     <li><strong>AC Probe Excitation:</strong> Incorporating a 555 astable oscillator (1 kHz AC) to achieve zero net DC ionic transfer across electrodes.</li>
     <li><strong>Ultrasonic Non-Contact Level Sensing:</strong> Adding HC-SR04 ultrasonic sensors for corrosive or industrial wastewater tanks.</li>
     <li><strong>IoT Telemetry:</strong> Interfacing an ESP32 microcontroller with an MQTT / Blynk cloud dashboard for smartphone monitoring.</li>
   </ul>
 
-  <h2 class="section-title">13. References</h2>
-  <ol style="font-size: 7.5pt; line-height: 1.25;">
+  <h2 class="section-title">9. References</h2>
+  <ol style="font-size: 7.2pt; line-height: 1.2;">
     <li>D. Roy Choudhury and Shail B. Jain, <em>Linear Integrated Circuits</em>, 4th ed., New Age International Publishers, 2018.</li>
     <li>Ramakant A. Gayakwad, <em>Op-Amps and Linear Integrated Circuits</em>, 4th ed., Pearson Education, 2015.</li>
     <li>Texas Instruments, <em>LM358 Dual Low Power Operational Amplifiers Datasheet</em>, Revised 2021.</li>
@@ -990,15 +990,15 @@
     <li>Robert F. Coughlin and Frederick F. Driscoll, <em>Operational Amplifiers and Linear Integrated Circuits</em>, 6th ed., Prentice Hall, 2001.</li>
   </ol>
 
-  <h2 class="section-title">14. Evaluation Rubrics Breakdown (40 Marks Total)</h2>
+  <h2 class="section-title">Individual Contribution Declaration &amp; Rubrics</h2>
   <table>
     <thead>
       <tr>
-        <th style="width: 32%;">Rubric Criteria</th>
+        <th style="width: 30%;">Evaluation Component</th>
         <th style="width: 10%; text-align: center;">Marks</th>
         <th style="width: 10%; text-align: center;">CO</th>
-        <th style="width: 20%;">Student Lead</th>
-        <th style="width: 28%;">Evaluation Highlights</th>
+        <th style="width: 22%;">Student Lead</th>
+        <th style="width: 28%;">Evaluation Focus Area</th>
       </tr>
     </thead>
     <tbody>
@@ -1067,7 +1067,7 @@
     </tbody>
   </table>
 
-  <h3 class="sub-title" style="margin-top: 6px;">Individual Contribution Declaration Table</h3>
+  <h3 class="sub-title" style="margin-top: 4px;">Student Contribution Declaration Table</h3>
   <table>
     <thead>
       <tr>
@@ -1110,7 +1110,7 @@
     </tbody>
   </table>
 
-  <div style="margin-top: 10px; text-align: center; font-size: 7.5pt; color: #64748b; font-family: 'Liberation Sans', sans-serif;">
+  <div style="margin-top: 6px; text-align: center; font-size: 7.2pt; color: #64748b; font-family: 'Liberation Sans', sans-serif;">
     — End of Official Project Based Learning Report —
   </div>
 
