@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NI Multisim Circuit Schematic &amp; Complete Connection Guide - Automatic Water Level Controller</title>
+<style>
+  :root {
+    --primary: #1e3a8a;
+    --primary-light: #eff6ff;
+    --accent: #dc2626;
+    --success: #16a34a;
+    --warning: #d97706;
+    --border: #cbd5e1;
+    --bg-card: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #f8fafc;
+    color: var(--text-main);
+    line-height: 1.5;
+    padding: 24px;
+  }
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    color: #ffffff;
+    padding: 24px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+    margin-bottom: 24px;
+  }
+  header h1 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  header p {
+    font-size: 13px;
+    color: #bfdbfe;
+    font-weight: 500;
+  }
+  .badge-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary);
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .diagram-container {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: auto;
+    padding: 12px;
+    text-align: center;
+  }
+  .diagram-container img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    margin-bottom: 12px;
+  }
+  th {
+    background: #1e3a8a;
+    color: #ffffff;
+    text-align: left;
+    padding: 8px 10px;
+    font-weight: 600;
+  }
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  tr:nth-child(even) td {
+    background: #f8fafc;
+  }
+  tr:hover td {
+    background: #eff6ff;
+  }
+  code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    background: #f1f5f9;
+    color: #b91c1c;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    border: 1px solid #e2e8f0;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 900px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+  .highlight-box {
+    background: #eff6ff;
+    border-left: 4px solid #2563eb;
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 14px 0;
+    font-size: 13px;
+  }
+  .key-pill {
+    display: inline-block;
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #f87171;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 11px;
+    font-family: monospace;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>NI Multisim Circuit Schematic &amp; Full Connections Manual</h1>
+    <p>Automatic Water-Level Controller Using Op-Amp (LM358) and 555 Timer | Course: UE25EC3502 (LIC with Practice)</p>
+    <div class="badge-row">
+      <span class="badge">GM UNIVERSITY</span>
+      <span class="badge">NI MULTISIM 14.x READY</span>
+      <span class="badge">INTERACTIVE SPICE SIMULATION</span>
+      <span class="badge">40 MARKS PBL</span>
+    </div>
+  </header>
+
+  <!-- Section 1: Visual Schematic Diagram -->
+  <div class="card">
+    <div class="card-title">
+      <span>📐 1. Master NI Multisim Full Circuit Schematic Diagram</span>
+    </div>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+      The vector schematic diagram below details all 6 functional blocks with Multisim reference designators, pin assignments, node numbers, and virtual oscilloscope / multimeter test connections.
+    </p>
+    <div class="diagram-container">
+      <img src="multisim_circuit_diagram.svg" alt="NI Multisim Water Level Controller Circuit Diagram">
+    </div>
+  </div>
+
+  <!-- Section 2: Multisim Component Database Navigation -->
+  <div class="card">
+    <div class="card-title">
+      <span>🗄️ 2. Multisim Component Selection &amp; Database Location Table</span>
+    </div>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+      Use shortcut <code>Ctrl + W</code> or click <b>Place &gt; Component</b>. Ensure database is set to <b>Master Database</b>.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 12%;">Designator</th>
+          <th style="width: 20%;">Component Name</th>
+          <th style="width: 15%;">Database Group</th>
+          <th style="width: 18%;">Family</th>
+          <th style="width: 20%;">Component Model</th>
+          <th style="width: 15%;">Value / Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>V1</code></td>
+          <td>DC Power Source</td>
+          <td>Sources</td>
+          <td>POWER_SOURCES</td>
+          <td><b>DC_POWER</b></td>
+          <td>12.0 V</td>
+        </tr>
+        <tr>
+          <td><code>GND</code></td>
+          <td>Ground Reference</td>
+          <td>Sources</td>
+          <td>POWER_SOURCES</td>
+          <td><b>GROUND</b></td>
+          <td>0 V (Required for SPICE)</td>
+        </tr>
+        <tr>
+          <td><code>U3</code></td>
+          <td>Voltage Regulator</td>
+          <td>Power</td>
+          <td>VOLTAGE_REGULATOR</td>
+          <td><b>LM7805CT</b></td>
+          <td>+5.0 V Output</td>
+        </tr>
+        <tr>
+          <td><code>U1:A, U1:B</code></td>
+          <td>Dual Op-Amp</td>
+          <td>Analog</td>
+          <td>OPAMP</td>
+          <td><b>LM358N</b></td>
+          <td>Sections A &amp; B (Pin 8=5V, Pin 4=0V)</td>
+        </tr>
+        <tr>
+          <td><code>U2</code></td>
+          <td>Precision Timer</td>
+          <td>Mixed / Analog</td>
+          <td>TIMER</td>
+          <td><b>LM555CM / NE555</b></td>
+          <td>8-Pin DIP Package</td>
+        </tr>
+        <tr>
+          <td><code>Q1</code></td>
+          <td>Driver Transistor</td>
+          <td>Transistors</td>
+          <td>BJT_NPN</td>
+          <td><b>BC547B / 2N2222A</b></td>
+          <td>Ib &gt; 2.5 mA Saturation</td>
+        </tr>
+        <tr>
+          <td><code>D1</code></td>
+          <td>Flyback Diode</td>
+          <td>Diodes</td>
+          <td>DIODE</td>
+          <td><b>1N4007</b></td>
+          <td>1000V, 1A Reverse Clamp</td>
+        </tr>
+        <tr>
+          <td><code>K1</code></td>
+          <td>Power Relay</td>
+          <td>Basic</td>
+          <td>RELAY</td>
+          <td><b>RELAY_SPDT</b></td>
+          <td>12V Coil, 400 &Omega;</td>
+        </tr>
+        <tr>
+          <td><code>M1</code></td>
+          <td>DC Pump Motor</td>
+          <td>Electro-Mechanical</td>
+          <td>MOTORS</td>
+          <td><b>DC_MOTOR</b> (or LAMP)</td>
+          <td>12V DC, 3W Load</td>
+        </tr>
+        <tr>
+          <td><code>S_LOW, S_HIGH</code></td>
+          <td>Water Level Probes</td>
+          <td>Basic</td>
+          <td>SWITCH</td>
+          <td><b>SPDT / SPST</b></td>
+          <td>Keys: <span class="key-pill">L</span> and <span class="key-pill">H</span></td>
+        </tr>
+        <tr>
+          <td><code>R1, R2, R3</code></td>
+          <td>Reference Divider</td>
+          <td>Basic</td>
+          <td>RESISTOR</td>
+          <td><b>10k</b> (1%)</td>
+          <td>1.67V &amp; 3.33V Setpoints</td>
+        </tr>
+        <tr>
+          <td><code>Rw1, Rw2</code></td>
+          <td>Water Conductivity</td>
+          <td>Basic</td>
+          <td>RESISTOR</td>
+          <td><b>2.5k</b></td>
+          <td>Tap water ionic conduction</td>
+        </tr>
+        <tr>
+          <td><code>Rpd1, Rpd2</code></td>
+          <td>Pull-Down Resistors</td>
+          <td>Basic</td>
+          <td>RESISTOR</td>
+          <td><b>100k</b></td>
+          <td>Microampere current limit</td>
+        </tr>
+        <tr>
+          <td><code>Rin, Rf</code></td>
+          <td>Schmitt Hysteresis</td>
+          <td>Basic</td>
+          <td>RESISTOR</td>
+          <td><b>10k / 470k</b></td>
+          <td>Hysteresis &Delta;V = 78.1 mV</td>
+        </tr>
+        <tr>
+          <td><code>RA, C_time</code></td>
+          <td>555 Timing Network</td>
+          <td>Basic</td>
+          <td>RESISTOR / CAP_ELECT</td>
+          <td><b>100k / 47uF</b></td>
+          <td>Debounce T = 5.17 seconds</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section 3: Full Interconnect Wiring List -->
+  <div class="card">
+    <div class="card-title">
+      <span>🔌 3. Complete Pin-to-Pin Wire Connection List</span>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <h4 style="color: var(--primary); margin-bottom: 8px;">Subsystem A: Power &amp; Sensed Inputs</h4>
+        <table>
+          <thead>
+            <tr><th>Origin Terminal</th><th>Destination Terminal</th><th>Wire Color</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>V1 (+)</code> [12V]</td><td><code>U3 Pin 1 (IN)</code> &amp; Relay Coil</td><td><b style="color:#dc2626;">Red (+12V)</b></td></tr>
+            <tr><td><code>V1 (-)</code> [0V]</td><td><code>GROUND (0V)</code></td><td><b style="color:#2563eb;">Blue (GND)</b></td></tr>
+            <tr><td><code>U3 Pin 3 (OUT)</code></td><td>LM358 Pin 8, 555 Pin 8, R1 top</td><td><b style="color:#ea580c;">Orange (+5V)</b></td></tr>
+            <tr><td><code>Divider Node A (R1-R2)</code></td><td><code>LM358 Pin 6 (2IN-)</code></td><td><b>Purple (3.33V)</b></td></tr>
+            <tr><td><code>Divider Node B (R2-R3)</code></td><td><code>LM358 Pin 2 (1IN-)</code></td><td><b>Blue (1.67V)</b></td></tr>
+            <tr><td><code>S_LOW</code> Output &gt; Rw1</td><td><code>LM358 Pin 3 (1IN+)</code> via Rin</td><td><b>Cyan</b></td></tr>
+            <tr><td><code>S_HIGH</code> Output &gt; Rw2</td><td><code>LM358 Pin 5 (2IN+)</code> direct</td><td><b>Green</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div>
+        <h4 style="color: var(--primary); margin-bottom: 8px;">Subsystem B: Op-Amp, 555 &amp; Relay Output</h4>
+        <table>
+          <thead>
+            <tr><th>Origin Terminal</th><th>Destination Terminal</th><th>Wire Color</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>LM358 Pin 1 (1OUT)</code></td><td><code>Rf (470k)</code> &gt; Pin 3 &amp; <code>555 Pin 2</code></td><td><b style="color:#7c3aed;">Purple (Trig)</b></td></tr>
+            <tr><td><code>LM358 Pin 7 (2OUT)</code></td><td><code>555 Pin 4 (RESET)</code> &amp; Buzzer</td><td><b>Gray (Reset)</b></td></tr>
+            <tr><td><code>555 Pin 6 &amp; 7</code></td><td>Node between RA (100k) &amp; C_time (47u)</td><td><b>Brown (RC)</b></td></tr>
+            <tr><td><code>555 Pin 5 (CTRL)</code></td><td>0.01 &mu;F Capacitor &gt; GND</td><td><b>Yellow</b></td></tr>
+            <tr><td><code>555 Pin 3 (OUT)</code></td><td><code>RB (1k)</code> &gt; BC547 Base</td><td><b>Cyan</b></td></tr>
+            <tr><td><code>BC547 Collector</code></td><td>Relay Coil Pin A2 &amp; 1N4007 Anode</td><td><b>Dark Blue</b></td></tr>
+            <tr><td><code>Relay NO Contact</code></td><td>DC Motor Pump (+) Lead</td><td><b style="color:#dc2626;">Red (+12V)</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <strong>⚠️ Critical Multisim Check:</strong> Ensure the <strong>1N4007 clamp diode (D1)</strong> is oriented with its silver cathode line tied directly to the <code>+12V</code> bus and its anode to the <code>BC547 Collector</code>. If placed backwards, it will short-circuit the 12V supply to ground during transistor conduction.
+    </div>
+  </div>
+
+  <!-- Section 4: Interactive Simulation Protocol -->
+  <div class="card">
+    <div class="card-title">
+      <span>🧪 4. Step-by-Step Multisim Simulation Testing Protocol</span>
+    </div>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+      Press <b>F5</b> to run the simulation, then toggle the switches on your keyboard to observe the 4 tank operating states:
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Cycle Step</th>
+          <th>Tank Water Level</th>
+          <th>S_LOW <span class="key-pill">L</span></th>
+          <th>S_HIGH <span class="key-pill">H</span></th>
+          <th>LM358 Pin 1 (Low)</th>
+          <th>LM358 Pin 7 (High)</th>
+          <th>555 Pin 3</th>
+          <th>Relay Status</th>
+          <th>Pump Motor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>1</b></td>
+          <td><b>Tank Empty (Below Low Probe)</b></td>
+          <td>OPEN</td>
+          <td>OPEN</td>
+          <td>LOW (~0.05V)</td>
+          <td>LOW (~0.05V)</td>
+          <td>HIGH (~3.6V)</td>
+          <td><b style="color:#16a34a;">ENERGIZED</b></td>
+          <td><b style="color:#16a34a;">RUNNING (ON)</b></td>
+        </tr>
+        <tr>
+          <td><b>2</b></td>
+          <td><b>Tank Filling (Between Low &amp; High)</b></td>
+          <td>CLOSED</td>
+          <td>OPEN</td>
+          <td>HIGH (~3.8V)</td>
+          <td>LOW (~0.05V)</td>
+          <td>HIGH (Latched)</td>
+          <td><b style="color:#16a34a;">ENERGIZED</b></td>
+          <td><b style="color:#16a34a;">RUNNING (ON)</b></td>
+        </tr>
+        <tr>
+          <td><b>3</b></td>
+          <td><b>Tank Full (Touches High Probe)</b></td>
+          <td>CLOSED</td>
+          <td>CLOSED</td>
+          <td>HIGH (~3.8V)</td>
+          <td>HIGH (~3.8V)</td>
+          <td>LOW (~0.1V)</td>
+          <td><b style="color:#dc2626;">DE-ENERGIZED</b></td>
+          <td><b style="color:#dc2626;">STOPPED (OFF)</b></td>
+        </tr>
+        <tr>
+          <td><b>4</b></td>
+          <td><b>Tank Draining (Water Level Falling)</b></td>
+          <td>CLOSED</td>
+          <td>OPEN</td>
+          <td>HIGH (~3.8V)</td>
+          <td>LOW (~0.05V)</td>
+          <td>LOW (Latched)</td>
+          <td><b style="color:#dc2626;">DE-ENERGIZED</b></td>
+          <td><b style="color:#dc2626;">STOPPED (OFF)</b></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>
