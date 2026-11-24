@@ -1,0 +1,673 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1020" width="100%" height="100%">
+  <defs>
+    <!-- Multisim Grid Pattern -->
+    <pattern id="multisimGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="0.75" fill="#cbd5e1" />
+    </pattern>
+    <filter id="boxShadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.10"/>
+    </filter>
+    <style>
+      .wire-12v { stroke: #dc2626; stroke-width: 2.4; fill: none; stroke-linecap: round; }
+      .wire-5v  { stroke: #ea580c; stroke-width: 2.2; fill: none; stroke-linecap: round; }
+      .wire-gnd { stroke: #2563eb; stroke-width: 2.4; fill: none; stroke-linecap: round; }
+      .wire-sig { stroke: #1e293b; stroke-width: 2.0; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .wire-low { stroke: #0284c7; stroke-width: 2.0; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .wire-high{ stroke: #16a34a; stroke-width: 2.0; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .wire-hyst{ stroke: #9333ea; stroke-width: 2.0; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .wire-trig{ stroke: #e11d48; stroke-width: 2.0; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .wire-rst { stroke: #475569; stroke-width: 2.0; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .wire-out { stroke: #059669; stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      
+      .comp-box { fill: #ffffff; stroke: #1e3a8a; stroke-width: 2; rx: 4px; }
+      .comp-chip{ fill: #f8fafc; stroke: #1e3a8a; stroke-width: 2.2; rx: 5px; }
+      .panel-box{ fill: rgba(255, 255, 255, 0.94); stroke: #94a3b8; stroke-width: 1.5; stroke-dasharray: 6,4; rx: 6px; }
+      
+      .dot-k { fill: #0f172a; }
+      .dot-r { fill: #dc2626; }
+      .dot-b { fill: #2563eb; }
+      .dot-o { fill: #ea580c; }
+      .dot-p { fill: #9333ea; }
+      .dot-g { fill: #16a34a; }
+      
+      .t-title  { font-family: 'Segoe UI', Arial, sans-serif; font-weight: 800; fill: #1e3a8a; }
+      .t-sec    { font-family: 'Segoe UI', Arial, sans-serif; font-weight: 700; font-size: 11.5px; fill: #1e3a8a; }
+      .t-desig  { font-family: 'Consolas', 'Courier New', monospace; font-weight: 700; font-size: 11px; fill: #b91c1c; }
+      .t-val    { font-family: 'Segoe UI', Arial, sans-serif; font-size: 10px; font-weight: 600; fill: #334155; }
+      .t-pin    { font-family: 'Consolas', monospace; font-size: 9px; font-weight: 700; fill: #475569; }
+      .t-note   { font-family: 'Segoe UI', Arial, sans-serif; font-size: 9.5px; fill: #64748b; }
+      .t-wirelbl{ font-family: 'Consolas', monospace; font-size: 9px; font-weight: 700; }
+    </style>
+  </defs>
+
+  <!-- Sheet Background with Multisim Grid Dots -->
+  <rect width="1600" height="1020" fill="#fdfdfd"/>
+  <rect width="1600" height="1020" fill="url(#multisimGrid)"/>
+  
+  <!-- Outer Title Border Frame -->
+  <rect x="14" y="14" width="1572" height="992" fill="none" stroke="#1e3a8a" stroke-width="2.5" rx="8"/>
+  <rect x="20" y="20" width="1560" height="980" fill="none" stroke="#94a3b8" stroke-width="1" rx="6"/>
+
+  <!-- Master Header Block -->
+  <rect x="20" y="20" width="1560" height="68" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="40" y="46" class="t-title" font-size="18px">NI MULTISIM COMPLETE CIRCUIT SCHEMATIC: AUTOMATIC WATER-LEVEL CONTROLLER</text>
+  <text x="40" y="66" font-family="'Segoe UI', Arial, sans-serif" font-size="12px" font-weight="600" fill="#475569">
+    GM UNIVERSITY | DEPT OF ECE | COURSE: UE25EC3502 (LINEAR INTEGRATED CIRCUITS WITH PRACTICE) | BREADBOARD &amp; SIMULATION MASTER NETLIST
+  </text>
+  <rect x="1290" y="27" width="275" height="52" fill="#eff6ff" stroke="#3b82f6" rx="5"/>
+  <text x="1427" y="47" font-family="'Segoe UI', Arial, sans-serif" font-size="12px" font-weight="800" fill="#1e3a8a" text-anchor="middle">MULTISIM WORKSPACE SETUP</text>
+  <text x="1427" y="65" font-family="'Segoe UI', Arial, sans-serif" font-size="10px" font-weight="600" fill="#2563eb" text-anchor="middle">Interactive Transient Mode [Press F5]</text>
+
+
+  <!-- ========================================================================= -->
+  <!-- POWER BUS DISTRIBUTION BARS (TOP & BOTTOM) -->
+  <!-- ========================================================================= -->
+  <!-- Top +12V DC Rail -->
+  <line x1="60" y1="105" x2="1530" y2="105" class="wire-12v"/>
+  <rect x="60" y="94" width="90" height="20" fill="#fef2f2" stroke="#dc2626" rx="3"/>
+  <text x="105" y="108" class="t-desig" fill="#dc2626" font-size="10px" text-anchor="middle">+12V DC BUS</text>
+
+  <!-- Top +5V Regulated VCC Rail -->
+  <line x1="280" y1="135" x2="1530" y2="135" class="wire-5v"/>
+  <rect x="280" y="124" width="95" height="20" fill="#fff7ed" stroke="#ea580c" rx="3"/>
+  <text x="327" y="138" class="t-desig" fill="#ea580c" font-size="10px" text-anchor="middle">+5V VCC BUS</text>
+
+  <!-- Bottom Common GND Rail (0V) -->
+  <line x1="60" y1="760" x2="1530" y2="760" class="wire-gnd"/>
+  <rect x="60" y="750" width="90" height="20" fill="#eff6ff" stroke="#2563eb" rx="3"/>
+  <text x="105" y="764" class="t-desig" fill="#2563eb" font-size="10px" text-anchor="middle">GROUND (0V)</text>
+
+
+  <!-- ========================================================================= -->
+  <!-- BLOCK 1: POWER SUPPLY & LM7805 VOLTAGE REGULATOR -->
+  <!-- ========================================================================= -->
+  <rect x="35" y="160" width="225" height="230" class="panel-box" filter="url(#boxShadow)"/>
+  <text x="48" y="180" class="t-sec">1. POWER SUPPLY (IC 7805)</text>
+  <text x="48" y="193" class="t-note">Power &gt; VOLTAGE_REGULATOR &gt; LM7805CT</text>
+
+  <!-- V1 12V DC Source -->
+  <rect x="55" y="240" width="34" height="48" rx="3" fill="#ffffff" stroke="#0f172a" stroke-width="1.8"/>
+  <text x="72" y="260" class="t-desig" text-anchor="middle">V1</text>
+  <text x="72" y="275" class="t-val" text-anchor="middle">12V</text>
+  <line x1="72" y1="105" x2="72" y2="240" class="wire-12v"/>
+  <circle cx="72" cy="105" r="3.5" class="dot-r"/>
+  <line x1="72" y1="288" x2="72" y2="760" class="wire-gnd"/>
+  <circle cx="72" cy="760" r="3.5" class="dot-b"/>
+
+  <!-- U3 LM7805 Regulator Chip -->
+  <rect x="125" y="225" width="85" height="65" class="comp-chip" filter="url(#boxShadow)"/>
+  <text x="167" y="250" class="t-title" font-size="13px" text-anchor="middle">LM7805</text>
+  <text x="167" y="266" class="t-val" text-anchor="middle">+5V Reg</text>
+  <text x="130" y="240" class="t-pin">1(IN)</text>
+  <text x="180" y="240" class="t-pin">3(OUT)</text>
+  <text x="167" y="283" class="t-pin" text-anchor="middle">2(GND)</text>
+
+  <!-- 12V In to Pin 1 -->
+  <line x1="72" y1="235" x2="125" y2="235" class="wire-12v"/>
+  <circle cx="72" cy="235" r="3.5" class="dot-r"/>
+
+  <!-- Pin 3 Out to +5V Bus -->
+  <line x1="210" y1="235" x2="245" y2="235" class="wire-5v"/>
+  <line x1="245" y1="235" x2="245" y2="135" class="wire-5v"/>
+  <line x1="245" y1="135" x2="280" y2="135" class="wire-5v"/>
+  <circle cx="280" cy="135" r="3.5" class="dot-o"/>
+
+  <!-- Pin 2 GND -->
+  <line x1="167" y1="290" x2="167" y2="760" class="wire-gnd"/>
+  <circle cx="167" cy="760" r="3.5" class="dot-b"/>
+
+  <!-- Filter Capacitors C1 (0.33u) & C2 (0.1u) -->
+  <g transform="translate(100, 310)">
+    <rect x="-8" y="0" width="16" height="22" class="comp-box"/>
+    <line x1="0" y1="-75" x2="0" y2="0" class="wire-12v"/>
+    <circle cx="0" cy="-75" r="3" class="dot-r"/>
+    <line x1="0" y1="22" x2="0" y2="450" class="wire-gnd"/>
+    <text x="12" y="10" class="t-desig">C1</text>
+    <text x="12" y="21" class="t-val">0.33µF</text>
+  </g>
+  <g transform="translate(230, 310)">
+    <rect x="-8" y="0" width="16" height="22" class="comp-box"/>
+    <line x1="0" y1="-75" x2="0" y2="0" class="wire-5v"/>
+    <circle cx="0" cy="-75" r="3" class="dot-o"/>
+    <line x1="0" y1="22" x2="0" y2="450" class="wire-gnd"/>
+    <text x="12" y="10" class="t-desig">C2</text>
+    <text x="12" y="21" class="t-val">0.1µF</text>
+  </g>
+
+
+  <!-- ========================================================================= -->
+  <!-- BLOCK 2: REFERENCE VOLTAGE DIVIDER (R1, R2, R3) -->
+  <!-- ========================================================================= -->
+  <rect x="275" y="160" width="170" height="230" class="panel-box" filter="url(#boxShadow)"/>
+  <text x="288" y="180" class="t-sec">2. REFERENCE DIVIDER</text>
+  <text x="288" y="193" class="t-note">Basic &gt; RESISTOR (1% Metal Film)</text>
+
+  <!-- R1 10k -->
+  <line x1="360" y1="135" x2="360" y2="215" class="wire-5v"/>
+  <circle cx="360" cy="135" r="3.5" class="dot-o"/>
+  <rect x="352" y="215" width="16" height="26" class="comp-box"/>
+  <text x="375" y="228" class="t-desig">R1</text>
+  <text x="375" y="239" class="t-val">10 kΩ</text>
+
+  <!-- Node A (V_ref2 = 3.33V) -->
+  <line x1="360" y1="241" x2="360" y2="275" class="wire"/>
+  <circle cx="360" cy="258" r="4" class="dot-p"/>
+  <rect x="285" y="250" width="68" height="18" fill="#faf5ff" stroke="#9333ea" rx="3"/>
+  <text x="319" y="263" class="t-wirelbl" fill="#9333ea" text-anchor="middle">V_ref2=3.33V</text>
+
+  <!-- R2 10k -->
+  <rect x="352" y="275" width="16" height="26" class="comp-box"/>
+  <text x="375" y="288" class="t-desig">R2</text>
+  <text x="375" y="299" class="t-val">10 kΩ</text>
+
+  <!-- Node B (V_ref1 = 1.67V) -->
+  <line x1="360" y1="301" x2="360" y2="335" class="wire"/>
+  <circle cx="360" cy="318" r="4" class="dot-b"/>
+  <rect x="285" y="310" width="68" height="18" fill="#eff6ff" stroke="#2563eb" rx="3"/>
+  <text x="319" y="323" class="t-wirelbl" fill="#2563eb" text-anchor="middle">V_ref1=1.67V</text>
+
+  <!-- R3 10k -->
+  <rect x="352" y="335" width="16" height="26" class="comp-box"/>
+  <text x="375" y="348" class="t-desig">R3</text>
+  <text x="375" y="359" class="t-val">10 kΩ</text>
+
+  <!-- To GND -->
+  <line x1="360" y1="361" x2="360" y2="760" class="wire-gnd"/>
+  <circle cx="360" cy="760" r="3.5" class="dot-b"/>
+
+
+  <!-- ========================================================================= -->
+  <!-- BLOCK 3: WATER SENSOR PROBES SIMULATION (SWITCHES S_LOW & S_HIGH) -->
+  <!-- ========================================================================= -->
+  <rect x="35" y="415" width="410" height="325" class="panel-box" filter="url(#boxShadow)"/>
+  <text x="48" y="435" class="t-sec">3. WATER PROBE SIMULATOR (SWITCHES)</text>
+  <text x="48" y="448" class="t-note">Basic &gt; SWITCH &gt; SPDT / SPST | Interactive Hotkeys: [L] and [H]</text>
+
+  <!-- LOW PROBE CHANNEL (S_LOW) -->
+  <g transform="translate(45, 470)">
+    <!-- Switch S_LOW -->
+    <line x1="0" y1="20" x2="25" y2="20" class="wire-5v"/>
+    <circle cx="0" cy="20" r="3.5" class="dot-o"/>
+    <rect x="25" y="5" width="55" height="30" rx="3" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.8"/>
+    <text x="52" y="20" class="t-desig" fill="#0369a1" text-anchor="middle">S_LOW</text>
+    <text x="52" y="31" font-family="'Segoe UI', sans-serif" font-size="8.5px" font-weight="700" fill="#dc2626" text-anchor="middle">[Key = L]</text>
+
+    <!-- Water Conduction Resistance Rw1 2.5k -->
+    <line x1="80" y1="20" x2="105" y2="20" class="wire-low"/>
+    <rect x="105" y="12" width="28" height="16" class="comp-box"/>
+    <text x="119" y="8" class="t-desig" text-anchor="middle">Rw1</text>
+    <text x="119" y="38" class="t-val" text-anchor="middle">2.5kΩ</text>
+
+    <!-- Node C (Low Sensed Input) -->
+    <line x1="133" y1="20" x2="190" y2="20" class="wire-low"/>
+    <circle cx="190" cy="20" r="4" class="dot-k"/>
+    <rect x="160" y="3" width="60" height="15" fill="#f8fafc" stroke="#64748b" rx="2"/>
+    <text x="190" y="14" class="t-pin" text-anchor="middle">NODE C</text>
+
+    <!-- Pull-Down Rpd1 100k & Cap C3 0.1u -->
+    <line x1="190" y1="20" x2="190" y2="55" class="wire"/>
+    <rect x="182" y="55" width="16" height="26" class="comp-box"/>
+    <text x="204" y="68" class="t-desig">Rpd1</text>
+    <text x="204" y="79" class="t-val">100 kΩ</text>
+    <line x1="190" y1="81" x2="190" y2="290" class="wire-gnd"/>
+
+    <line x1="240" y1="20" x2="240" y2="55" class="wire"/>
+    <line x1="190" y1="20" x2="240" y2="20" class="wire-low"/>
+    <circle cx="240" cy="20" r="3.5" class="dot-k"/>
+    <rect x="232" y="55" width="16" height="22" class="comp-box"/>
+    <text x="254" y="68" class="t-desig">C3</text>
+    <text x="254" y="79" class="t-val">0.1 µF</text>
+    <line x1="240" y1="77" x2="240" y2="290" class="wire-gnd"/>
+
+    <!-- Schmitt Input Resistor Rin 10k -->
+    <line x1="240" y1="20" x2="290" y2="20" class="wire-low"/>
+    <rect x="290" y="12" width="28" height="16" class="comp-box"/>
+    <text x="304" y="8" class="t-desig" text-anchor="middle">Rin</text>
+    <text x="304" y="38" class="t-val" text-anchor="middle">10 kΩ</text>
+    <!-- Wire heading to LM358 Pin 3 -->
+    <line x1="318" y1="20" x2="380" y2="20" class="wire-low"/>
+    <circle cx="380" cy="20" r="3.5" class="dot-k"/>
+    <text x="340" y="14" class="t-wirelbl" fill="#0284c7">&gt;&gt; To Pin 3</text>
+  </g>
+
+  <!-- HIGH PROBE CHANNEL (S_HIGH) -->
+  <g transform="translate(45, 600)">
+    <!-- Switch S_HIGH -->
+    <line x1="0" y1="20" x2="25" y2="20" class="wire-5v"/>
+    <circle cx="0" cy="20" r="3.5" class="dot-o"/>
+    <rect x="25" y="5" width="55" height="30" rx="3" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.8"/>
+    <text x="52" y="20" class="t-desig" fill="#15803d" text-anchor="middle">S_HIGH</text>
+    <text x="52" y="31" font-family="'Segoe UI', sans-serif" font-size="8.5px" font-weight="700" fill="#dc2626" text-anchor="middle">[Key = H]</text>
+
+    <!-- Water Conduction Resistance Rw2 2.5k -->
+    <line x1="80" y1="20" x2="105" y2="20" class="wire-high"/>
+    <rect x="105" y="12" width="28" height="16" class="comp-box"/>
+    <text x="119" y="8" class="t-desig" text-anchor="middle">Rw2</text>
+    <text x="119" y="38" class="t-val" text-anchor="middle">2.5kΩ</text>
+
+    <!-- Node D (High Sensed Input) -->
+    <line x1="133" y1="20" x2="190" y2="20" class="wire-high"/>
+    <circle cx="190" cy="20" r="4" class="dot-k"/>
+    <rect x="160" y="3" width="60" height="15" fill="#f8fafc" stroke="#64748b" rx="2"/>
+    <text x="190" y="14" class="t-pin" text-anchor="middle">NODE D</text>
+
+    <!-- Pull-Down Rpd2 100k & Cap C4 0.1u -->
+    <line x1="190" y1="20" x2="190" y2="55" class="wire"/>
+    <rect x="182" y="55" width="16" height="26" class="comp-box"/>
+    <text x="204" y="68" class="t-desig">Rpd2</text>
+    <text x="204" y="79" class="t-val">100 kΩ</text>
+    <line x1="190" y1="81" x2="190" y2="160" class="wire-gnd"/>
+
+    <line x1="240" y1="20" x2="240" y2="55" class="wire"/>
+    <line x1="190" y1="20" x2="240" y2="20" class="wire-high"/>
+    <circle cx="240" cy="20" r="3.5" class="dot-k"/>
+    <rect x="232" y="55" width="16" height="22" class="comp-box"/>
+    <text x="254" y="68" class="t-desig">C4</text>
+    <text x="254" y="79" class="t-val">0.1 µF</text>
+    <line x1="240" y1="77" x2="240" y2="160" class="wire-gnd"/>
+
+    <!-- Direct Wire heading to LM358 Pin 5 -->
+    <line x1="240" y1="20" x2="380" y2="20" class="wire-high"/>
+    <circle cx="380" cy="20" r="3.5" class="dot-k"/>
+    <text x="320" y="14" class="t-wirelbl" fill="#16a34a">&gt;&gt; To Pin 5</text>
+  </g>
+
+
+  <!-- ========================================================================= -->
+  <!-- BLOCK 4: LM358 DUAL OP-AMP COMPARATORS (U1:A & U1:B) -->
+  <!-- ========================================================================= -->
+  <rect x="475" y="160" width="310" height="580" class="panel-box" filter="url(#boxShadow)"/>
+  <text x="490" y="180" class="t-sec">4. OP-AMP COMPARATORS (LM358N)</text>
+  <text x="490" y="193" class="t-note">Analog &gt; OPAMP &gt; LM358N [Dual DIP-8]</text>
+
+  <!-- Section 4.1: U1:A Low Level Schmitt Trigger Comparator -->
+  <g transform="translate(500, 220)">
+    <polygon points="50,20 140,65 50,110" fill="#ffffff" stroke="#1e3a8a" stroke-width="2.2" filter="url(#boxShadow)"/>
+    <text x="68" y="50" class="t-title" font-size="14px">U1:A</text>
+    <text x="68" y="85" class="t-val">LM358</text>
+    <text x="56" y="42" font-size="16px" font-weight="bold" fill="#2563eb">−</text>
+    <text x="56" y="94" font-size="16px" font-weight="bold" fill="#dc2626">+</text>
+    
+    <text x="25" y="40" class="t-pin">2(IN-)</text>
+    <text x="25" y="92" class="t-pin">3(IN+)</text>
+    <text x="146" y="60" class="t-pin">1(OUT)</text>
+
+    <!-- Pin 2 tied to V_ref1 (1.67V) -->
+    <line x1="10" y1="38" x2="50" y2="38" class="wire-sig"/>
+    <line x1="10" y1="38" x2="10" y2="98" class="wire-sig"/>
+    <line x1="10" y1="98" x2="-140" y2="98" class="wire-sig"/>
+    <circle cx="-140" cy="98" r="4" class="dot-b"/>
+
+    <!-- Pin 3 tied to Low Probe Input via Rin -->
+    <line x1="-75" y1="270" x2="-20" y2="270" class="wire-low"/>
+    <line x1="-20" y1="270" x2="-20" y2="90" class="wire-low"/>
+    <line x1="-20" y1="90" x2="50" y2="90" class="wire-low"/>
+    <circle cx="-20" cy="90" r="4" class="dot-k"/>
+
+    <!-- Output Pin 1 -->
+    <line x1="140" y1="65" x2="200" y2="65" class="wire-trig"/>
+    <circle cx="175" cy="65" r="4" class="dot-p"/>
+
+    <!-- Feedback Resistor Rf 470k (Schmitt Trigger Hysteresis) -->
+    <line x1="175" y1="65" x2="175" y2="135" class="wire-hyst"/>
+    <line x1="175" y1="135" x2="115" y2="135" class="wire-hyst"/>
+    <rect x="85" y="127" width="30" height="16" class="comp-box"/>
+    <text x="100" y="123" class="t-desig" text-anchor="middle">Rf</text>
+    <text x="100" y="153" class="t-val" text-anchor="middle">470 kΩ</text>
+    <line x1="85" y1="135" x2="20" y2="135" class="wire-hyst"/>
+    <line x1="20" y1="135" x2="20" y2="90" class="wire-hyst"/>
+    <line x1="20" y1="90" x2="50" y2="90" class="wire-hyst"/>
+    <circle cx="20" cy="90" r="4" class="dot-p"/>
+
+    <rect x="40" y="160" width="165" height="18" fill="#faf5ff" stroke="#9333ea" rx="3"/>
+    <text x="122" y="173" class="t-wirelbl" fill="#9333ea" text-anchor="middle">Hysteresis: ΔV = 78.1 mV</text>
+  </g>
+
+  <!-- Section 4.2: U1:B High Level Comparator -->
+  <g transform="translate(500, 480)">
+    <polygon points="50,20 140,65 50,110" fill="#ffffff" stroke="#1e3a8a" stroke-width="2.2" filter="url(#boxShadow)"/>
+    <text x="68" y="50" class="t-title" font-size="14px">U1:B</text>
+    <text x="68" y="85" class="t-val">LM358</text>
+    <text x="56" y="42" font-size="16px" font-weight="bold" fill="#2563eb">−</text>
+    <text x="56" y="94" font-size="16px" font-weight="bold" fill="#dc2626">+</text>
+    
+    <text x="25" y="40" class="t-pin">6(IN-)</text>
+    <text x="25" y="92" class="t-pin">5(IN+)</text>
+    <text x="146" y="60" class="t-pin">7(OUT)</text>
+
+    <!-- Pin 6 tied to V_ref2 (3.33V) -->
+    <line x1="10" y1="38" x2="50" y2="38" class="wire-sig"/>
+    <line x1="10" y1="38" x2="10" y2="-222" class="wire-sig"/>
+    <line x1="10" y1="-222" x2="-140" y2="-222" class="wire-sig"/>
+    <circle cx="-140" cy="-222" r="4" class="dot-p"/>
+
+    <!-- Pin 5 tied to High Probe Input -->
+    <line x1="-75" y1="140" x2="10" y2="140" class="wire-high"/>
+    <line x1="10" y1="140" x2="10" y2="90" class="wire-high"/>
+    <line x1="10" y1="90" x2="50" y2="90" class="wire-high"/>
+
+    <!-- Output Pin 7 -->
+    <line x1="140" y1="65" x2="260" y2="65" class="wire-rst"/>
+    <circle cx="140" cy="65" r="3.5" class="dot-k"/>
+  </g>
+
+  <!-- LM358 Power Supply Pins Box -->
+  <rect x="510" y="680" width="240" height="42" fill="#eff6ff" stroke="#3b82f6" rx="4"/>
+  <text x="630" y="697" class="t-sec" font-size="10.5px" text-anchor="middle">LM358 POWER CONNECTIONS</text>
+  <text x="530" y="713" class="t-pin">Pin 8 (VCC) &gt; +5V Rail</text>
+  <text x="655" y="713" class="t-pin">Pin 4 (GND) &gt; 0V GND</text>
+
+
+  <!-- ========================================================================= -->
+  <!-- BLOCK 5: NE555 TIMER SLOSH DEBOUNCE & MEMORY LATCH -->
+  <!-- ========================================================================= -->
+  <rect x="815" y="160" width="280" height="580" class="panel-box" filter="url(#boxShadow)"/>
+  <text x="830" y="180" class="t-sec">5. 555 TIMER SLOSH DEBOUNCE &amp; LATCH</text>
+  <text x="830" y="193" class="t-note">Mixed &gt; TIMER &gt; LM555CM / NE555 [DIP-8]</text>
+
+  <!-- U2 NE555 IC Body -->
+  <rect x="860" y="230" width="185" height="260" class="comp-chip" filter="url(#boxShadow)"/>
+  <text x="952" y="258" class="t-title" font-size="16px" text-anchor="middle">NE555 / LM555</text>
+  <text x="952" y="276" class="t-val" text-anchor="middle">Monostable &amp; Latch</text>
+
+  <!-- Left Pins -->
+  <!-- Pin 4 RESET -->
+  <line x1="760" y1="545" x2="800" y2="545" class="wire-rst"/>
+  <line x1="800" y1="545" x2="800" y2="300" class="wire-rst"/>
+  <line x1="800" y1="300" x2="860" y2="300" class="wire-rst"/>
+  <text x="866" y="304" class="t-pin">4(RESET)</text>
+  <circle cx="800" cy="545" r="4" class="dot-k"/>
+
+  <!-- Pin 2 TRIGGER -->
+  <line x1="700" y1="285" x2="860" y2="285" class="wire-trig"/>
+  <text x="866" y="289" class="t-pin">2(TRIG)</text>
+  <circle cx="700" cy="285" r="4" class="dot-p"/>
+
+  <!-- Pin 6 THRESHOLD -->
+  <line x1="830" y1="380" x2="860" y2="380" class="wire"/>
+  <text x="866" y="384" class="t-pin">6(THRES)</text>
+
+  <!-- Pin 7 DISCHARGE -->
+  <line x1="830" y1="420" x2="860" y2="420" class="wire"/>
+  <text x="866" y="424" class="t-pin">7(DISCH)</text>
+  <!-- Tie Pin 6 and Pin 7 together -->
+  <line x1="830" y1="380" x2="830" y2="420" class="wire"/>
+  <circle cx="830" cy="400" r="4" class="dot-k"/>
+
+  <!-- Right Pins -->
+  <!-- Pin 8 VCC -->
+  <line x1="1045" y1="300" x2="1080" y2="300" class="wire-5v"/>
+  <line x1="1080" y1="300" x2="1080" y2="135" class="wire-5v"/>
+  <circle cx="1080" cy="135" r="3.5" class="dot-o"/>
+  <text x="1005" y="304" class="t-pin">8(VCC)</text>
+
+  <!-- Pin 3 OUTPUT -->
+  <line x1="1045" y1="350" x2="1125" y2="350" class="wire-out"/>
+  <text x="995" y="354" class="t-pin">3(OUT)</text>
+  <circle cx="1075" cy="350" r="4" class="dot-g"/>
+
+  <!-- Pin 5 CONTROL -->
+  <line x1="1045" y1="400" x2="1075" y2="400" class="wire"/>
+  <text x="995" y="404" class="t-pin">5(CTRL)</text>
+  <rect x="1067" y="420" width="16" height="22" class="comp-box"/>
+  <line x1="1075" y1="400" x2="1075" y2="420" class="wire"/>
+  <line x1="1075" y1="442" x2="1075" y2="760" class="wire-gnd"/>
+  <text x="1088" y="433" class="t-desig">C5</text>
+  <text x="1088" y="444" class="t-val">0.01µF</text>
+
+  <!-- Pin 1 GND -->
+  <line x1="1045" y1="450" x2="1075" y2="450" class="wire-gnd"/>
+  <line x1="1075" y1="450" x2="1075" y2="760" class="wire-gnd"/>
+  <circle cx="1075" cy="760" r="3.5" class="dot-b"/>
+  <text x="1005" y="454" class="t-pin">1(GND)</text>
+
+  <!-- Monostable Debounce Timing Network (RA 100k & C_time 47uF) -->
+  <g transform="translate(850, 520)">
+    <rect x="0" y="0" width="220" height="150" fill="#f8fafc" stroke="#cbd5e1" rx="4"/>
+    <text x="110" y="20" class="t-sec" font-size="10.5px" text-anchor="middle">ANTI-SLOSH MONOSTABLE TIMING</text>
+    <text x="110" y="34" class="t-val" text-anchor="middle">T = 1.1 × RA × C_time = 5.17 s</text>
+
+    <!-- RA 100k to +5V -->
+    <line x1="70" y1="42" x2="70" y2="52" class="wire-5v"/>
+    <rect x="62" y="52" width="16" height="26" class="comp-box"/>
+    <text x="85" y="65" class="t-desig">RA</text>
+    <text x="85" y="76" class="t-val">100 kΩ</text>
+
+    <!-- Timing Node -->
+    <line x1="70" y1="78" x2="70" y2="105" class="wire"/>
+    <circle cx="70" cy="92" r="4" class="dot-k"/>
+    <line x1="70" y1="92" x2="-20" y2="92" class="wire"/>
+    <line x1="-20" y1="92" x2="-20" y2="-120" class="wire"/>
+
+    <!-- C_time 47uF -->
+    <rect x="62" y="105" width="16" height="24" class="comp-box"/>
+    <text x="85" y="117" class="t-desig">C_time</text>
+    <text x="85" y="128" class="t-val">47 µF</text>
+    <line x1="70" y1="129" x2="70" y2="240" class="wire-gnd"/>
+  </g>
+
+
+  <!-- ========================================================================= -->
+  <!-- BLOCK 6: ACTUATOR DRIVER & 12V RELAY PUMP STAGE -->
+  <!-- ========================================================================= -->
+  <rect x="1120" y="160" width="410" height="580" class="panel-box" filter="url(#boxShadow)"/>
+  <text x="1135" y="180" class="t-sec">6. RELAY DRIVER &amp; 12V PUMP MOTOR</text>
+  <text x="1135" y="193" class="t-note">Basic &gt; RELAY &gt; RELAY_SPDT (12V Coil) | Transistors &gt; BJT_NPN &gt; BC547B</text>
+
+  <!-- Base Drive Resistor RB 1k -->
+  <line x1="1075" y1="350" x2="1145" y2="350" class="wire-out"/>
+  <rect x="1145" y="342" width="30" height="16" class="comp-box"/>
+  <text x="1160" y="338" class="t-desig" text-anchor="middle">RB</text>
+  <text x="1160" y="369" class="t-val" text-anchor="middle">1 kΩ</text>
+  <line x1="1175" y1="350" x2="1205" y2="350" class="wire-out"/>
+
+  <!-- Q1 BC547B NPN Transistor -->
+  <g transform="translate(1205, 325)">
+    <circle cx="25" cy="25" r="22" fill="#ffffff" stroke="#1e3a8a" stroke-width="2"/>
+    <line x1="0" y1="25" x2="15" y2="25" class="wire-out"/>
+    <line x1="15" y1="12" x2="15" y2="38" stroke="#0f172a" stroke-width="3"/>
+    <!-- Collector -->
+    <line x1="15" y1="18" x2="32" y2="5" class="wire"/>
+    <line x1="32" y1="5" x2="32" y2="-40" class="wire"/>
+    <!-- Emitter -->
+    <line x1="15" y1="32" x2="32" y2="45" class="wire"/>
+    <polygon points="27,37 32,45 22,44" fill="#0f172a"/>
+    <line x1="32" y1="45" x2="32" y2="435" class="wire-gnd"/>
+    <circle cx="32" cy="435" r="3.5" class="dot-b"/>
+
+    <text x="42" y="16" class="t-desig">Q1</text>
+    <text x="42" y="28" class="t-val">BC547B</text>
+    <text x="42" y="40" class="t-pin">Ib=2.9mA</text>
+  </g>
+
+  <!-- K1 12V SPDT Relay & 1N4007 Diode -->
+  <g transform="translate(1200, 200)">
+    <!-- Relay Body Frame -->
+    <rect x="0" y="0" width="135" height="95" rx="5" fill="#fef2f2" stroke="#b91c1c" stroke-width="2.2" filter="url(#boxShadow)"/>
+    <text x="67" y="18" class="t-desig" fill="#b91c1c" text-anchor="middle">K1: RELAY_SPDT</text>
+    <text x="67" y="32" class="t-val" text-anchor="middle">Coil: 12VDC, 400 Ω</text>
+
+    <!-- Coil Ports -->
+    <rect x="15" y="42" width="30" height="42" fill="#ffffff" stroke="#dc2626"/>
+    <text x="30" y="65" font-family="monospace" font-size="9px" font-weight="bold" fill="#dc2626" text-anchor="middle">COIL</text>
+    <circle cx="30" cy="42" r="3.5" class="dot-r"/>
+    <circle cx="30" cy="84" r="3.5" class="dot-k"/>
+    <text x="10" y="38" class="t-pin">+12V</text>
+    <text x="10" y="93" class="t-pin">Q1:C</text>
+
+    <!-- Switch Contacts COM, NO, NC -->
+    <circle cx="85" cy="65" r="3.5" class="dot-k"/>
+    <text x="75" y="62" class="t-pin">COM</text>
+    <circle cx="118" cy="48" r="3.5" class="dot-k"/>
+    <text x="105" y="46" class="t-pin">NC</text>
+    <circle cx="118" cy="80" r="3.5" class="dot-r"/>
+    <text x="105" y="87" class="t-pin">NO</text>
+    <line x1="85" y1="65" x2="114" y2="78" stroke="#b91c1c" stroke-width="2.5"/>
+
+    <!-- Antiparallel Diode 1N4007 -->
+    <g transform="translate(-40, 42)">
+      <line x1="15" y1="0" x2="15" y2="42" class="wire"/>
+      <polygon points="9,30 21,30 15,12" fill="#334155"/>
+      <line x1="9" y1="12" x2="21" y2="12" stroke="#0f172a" stroke-width="2.5"/>
+      <text x="-12" y="20" class="t-desig">D1</text>
+      <text x="-18" y="32" class="t-val">1N4007</text>
+      <!-- Tie Diode Cathode to +12V -->
+      <line x1="15" y1="0" x2="55" y2="0" class="wire-12v"/>
+      <!-- Tie Diode Anode to Collector -->
+      <line x1="15" y1="42" x2="55" y2="42" class="wire"/>
+    </g>
+  </g>
+
+  <!-- Tie Relay Coil & COM to +12V Rail -->
+  <line x1="1230" y1="200" x2="1230" y2="105" class="wire-12v"/>
+  <circle cx="1230" cy="105" r="3.5" class="dot-r"/>
+  <line x1="1285" y1="265" x2="1285" y2="105" class="wire-12v"/>
+  <circle cx="1285" cy="105" r="3.5" class="dot-r"/>
+
+  <!-- Tie Relay NO to 12V Pump Motor -->
+  <line x1="1318" y1="280" x2="1370" y2="280" class="wire-12v"/>
+  <circle cx="1318" cy="280" r="3.5" class="dot-r"/>
+
+  <!-- M1 12V DC Pump Motor -->
+  <g transform="translate(1370, 255)">
+    <circle cx="35" cy="35" r="28" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5" filter="url(#boxShadow)"/>
+    <text x="35" y="32" class="t-title" font-size="14px" text-anchor="middle">M1</text>
+    <text x="35" y="49" class="t-val" text-anchor="middle">12V PUMP</text>
+    <!-- Positive wire from Relay NO -->
+    <line x1="0" y1="25" x2="7" y2="25" class="wire-12v"/>
+    <!-- Negative return to GND -->
+    <line x1="35" y1="63" x2="35" y2="505" class="wire-gnd"/>
+    <circle cx="35" cy="505" r="3.5" class="dot-b"/>
+    <text x="45" y="80" class="t-desig">Submersible 3W</text>
+    <text x="45" y="93" class="t-val">240 Liters/Hour</text>
+  </g>
+
+  <!-- Status Indicator: Blue LED (Pump Active) -->
+  <g transform="translate(1135, 430)">
+    <rect x="0" y="0" width="230" height="50" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="12" y="20" class="t-desig" fill="#0284c7">D2: LED_BLUE (Pump Running)</text>
+    <text x="12" y="36" class="t-val">Series: 330 Ω ballast tied to 555 Pin 3</text>
+  </g>
+
+  <!-- Alarm Indicator: Piezo Buzzer (Tank Full Alert) -->
+  <g transform="translate(1135, 495)">
+    <rect x="0" y="0" width="230" height="50" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="12" y="20" class="t-desig" fill="#b91c1c">BZ1: 5V BUZZER (Tank Full Alarm)</text>
+    <text x="12" y="36" class="t-val">Triggered when LM358 Pin 7 outputs HIGH</text>
+  </g>
+
+
+  <!-- ========================================================================= -->
+  <!-- BLOCK 7: MULTISIM VIRTUAL OSCILLOSCOPE (XSC1) & PROBE POINTS -->
+  <!-- ========================================================================= -->
+  <rect x="35" y="790" width="765" height="195" class="panel-box" filter="url(#boxShadow)"/>
+  <text x="50" y="812" class="t-sec">7. VIRTUAL INSTRUMENT: 4-CHANNEL OSCILLOSCOPE (XSC1)</text>
+  <text x="50" y="826" class="t-note">Multisim Right Toolbar &gt; Instruments &gt; 4-Channel Oscilloscope</text>
+
+  <!-- Oscilloscope Front Panel -->
+  <g transform="translate(50, 840)">
+    <rect x="0" y="0" width="270" height="130" rx="5" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+    <!-- CRT Display Screen -->
+    <rect x="12" y="10" width="155" height="110" rx="3" fill="#022c22" stroke="#059669" stroke-width="1.2"/>
+    <!-- Grid on CRT screen -->
+    <line x1="12" y1="65" x2="167" y2="65" stroke="#064e3b" stroke-width="1"/>
+    <line x1="89" y1="10" x2="89" y2="120" stroke="#064e3b" stroke-width="1"/>
+    <!-- Waveform traces on screen -->
+    <path d="M 15 95 L 60 95 L 60 30 L 120 30 L 120 95 L 165 95" stroke="#22c55e" stroke-width="2" fill="none"/>
+    <path d="M 15 80 L 60 80 Q 90 40 120 35 L 165 80" stroke="#f59e0b" stroke-width="1.5" fill="none" stroke-dasharray="3,2"/>
+
+    <!-- 4 Channel Jacks -->
+    <g transform="translate(180, 15)">
+      <circle cx="12" cy="12" r="6" fill="#dc2626"/>
+      <text x="24" y="16" font-family="Consolas" font-size="9px" font-weight="700" fill="#ffffff">CH A: Low In</text>
+      
+      <circle cx="12" cy="38" r="6" fill="#2563eb"/>
+      <text x="24" y="42" font-family="Consolas" font-size="9px" font-weight="700" fill="#ffffff">CH B: Schmitt</text>
+      
+      <circle cx="12" cy="64" r="6" fill="#d97706"/>
+      <text x="24" y="68" font-family="Consolas" font-size="9px" font-weight="700" fill="#ffffff">CH C: 555 RC</text>
+      
+      <circle cx="12" cy="90" r="6" fill="#16a34a"/>
+      <text x="24" y="94" font-family="Consolas" font-size="9px" font-weight="700" fill="#ffffff">CH D: Relay</text>
+    </g>
+  </g>
+
+  <!-- Oscilloscope Channel Descriptions -->
+  <g transform="translate(340, 840)">
+    <rect x="0" y="0" width="445" height="130" fill="#ffffff" stroke="#cbd5e1" rx="4"/>
+    <text x="14" y="20" class="t-sec">PROBE ATTACHMENT SETPOINTS</text>
+
+    <text x="14" y="40" class="t-desig" fill="#dc2626">CH A (Red):</text>
+    <text x="90" y="40" class="t-val">LM358 Pin 3 (Schmitt In) | Measures low probe dry/wet level</text>
+
+    <text x="14" y="62" class="t-desig" fill="#2563eb">CH B (Blue):</text>
+    <text x="90" y="62" class="t-val">LM358 Pin 1 (Schmitt Out) | Verifies 78 mV hysteresis snap-action</text>
+
+    <text x="14" y="84" class="t-desig" fill="#d97706">CH C (Amber):</text>
+    <text x="90" y="84" class="t-val">NE555 Pin 6/7 (Timing RC) | Observes 5.17s anti-slosh blanking ramp</text>
+
+    <text x="14" y="106" class="t-desig" fill="#16a34a">CH D (Green):</text>
+    <text x="90" y="106" class="t-val">NE555 Pin 3 (Relay Output) | Drives BC547B saturated switch</text>
+
+    <text x="14" y="122" font-family="'Segoe UI', sans-serif" font-size="9.5px" font-weight="700" fill="#047857">Timebase: 1.0 s/Div | Y-Scale: 2.0 V/Div | Trigger: CH B Edge</text>
+  </g>
+
+
+  <!-- ========================================================================= -->
+  <!-- BLOCK 8: TANK HYDRAULIC TRUTH TABLE -->
+  <!-- ========================================================================= -->
+  <rect x="815" y="790" width="715" height="195" class="panel-box" filter="url(#boxShadow)"/>
+  <text x="830" y="812" class="t-sec">8. SYSTEM OPERATIONAL TRUTH TABLE &amp; VERIFICATION</text>
+  <text x="830" y="826" class="t-note">Press F5 in Multisim, then toggle keys [L] and [H] to simulate filling/draining</text>
+
+  <g transform="translate(830, 840)">
+    <rect x="0" y="0" width="685" height="130" fill="#ffffff" stroke="#cbd5e1" rx="4"/>
+    
+    <!-- Table Header -->
+    <rect x="0" y="0" width="685" height="24" fill="#1e3a8a"/>
+    <text x="10" y="16" font-family="'Segoe UI', sans-serif" font-size="9.5px" font-weight="700" fill="#ffffff">STATE</text>
+    <text x="90" y="16" font-family="'Segoe UI', sans-serif" font-size="9.5px" font-weight="700" fill="#ffffff">TANK CONDITION</text>
+    <text x="230" y="16" font-family="'Segoe UI', sans-serif" font-size="9.5px" font-weight="700" fill="#ffffff">S_LOW [L]</text>
+    <text x="310" y="16" font-family="'Segoe UI', sans-serif" font-size="9.5px" font-weight="700" fill="#ffffff">S_HIGH [H]</text>
+    <text x="400" y="16" font-family="'Segoe UI', sans-serif" font-size="9.5px" font-weight="700" fill="#ffffff">LM358 PIN 1</text>
+    <text x="490" y="16" font-family="'Segoe UI', sans-serif" font-size="9.5px" font-weight="700" fill="#ffffff">555 PIN 3</text>
+    <text x="575" y="16" font-family="'Segoe UI', sans-serif" font-size="9.5px" font-weight="700" fill="#ffffff">RELAY &amp; PUMP</text>
+
+    <!-- Row 1 -->
+    <text x="10" y="42" class="t-desig">State 1</text>
+    <text x="90" y="42" class="t-val">Tank Empty</text>
+    <text x="230" y="42" class="t-val">OPEN (Dry)</text>
+    <text x="310" y="42" class="t-val">OPEN (Dry)</text>
+    <text x="400" y="42" class="t-val">LOW (~0.05V)</text>
+    <text x="490" y="42" class="t-val">HIGH (~3.6V)</text>
+    <text x="575" y="42" font-family="'Segoe UI', sans-serif" font-size="10px" font-weight="800" fill="#16a34a">ON (Pump Runs)</text>
+
+    <!-- Row 2 -->
+    <text x="10" y="65" class="t-desig">State 2</text>
+    <text x="90" y="65" class="t-val">Tank Filling</text>
+    <text x="230" y="65" class="t-val">CLOSED (Wet)</text>
+    <text x="310" y="65" class="t-val">OPEN (Dry)</text>
+    <text x="400" y="65" class="t-val">HIGH (~3.8V)</text>
+    <text x="490" y="65" class="t-val">HIGH (Latched)</text>
+    <text x="575" y="65" font-family="'Segoe UI', sans-serif" font-size="10px" font-weight="800" fill="#16a34a">ON (Latched)</text>
+
+    <!-- Row 3 -->
+    <text x="10" y="88" class="t-desig">State 3</text>
+    <text x="90" y="88" class="t-val">Tank Full</text>
+    <text x="230" y="88" class="t-val">CLOSED (Wet)</text>
+    <text x="310" y="88" class="t-val">CLOSED (Wet)</text>
+    <text x="400" y="88" class="t-val">HIGH (~3.8V)</text>
+    <text x="490" y="88" class="t-val">LOW (~0.1V)</text>
+    <text x="575" y="88" font-family="'Segoe UI', sans-serif" font-size="10px" font-weight="800" fill="#dc2626">OFF (Cuts Out)</text>
+
+    <!-- Row 4 -->
+    <text x="10" y="111" class="t-desig">State 4</text>
+    <text x="90" y="111" class="t-val">Tank Draining</text>
+    <text x="230" y="111" class="t-val">CLOSED (Wet)</text>
+    <text x="310" y="111" class="t-val">OPEN (Dry)</text>
+    <text x="400" y="111" class="t-val">HIGH (~3.8V)</text>
+    <text x="490" y="111" class="t-val">LOW (Latched)</text>
+    <text x="575" y="111" font-family="'Segoe UI', sans-serif" font-size="10px" font-weight="800" fill="#dc2626">OFF (Latched)</text>
+  </g>
+
+</svg>
