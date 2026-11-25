@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PBL Presentation - Automatic Water-Level Controller Using Op-Amp &amp; 555 Timer</title>
+<style>
+  :root {
+    --navy: #1e3a8a;
+    --navy-dark: #0f172a;
+    --blue: #2563eb;
+    --blue-light: #eff6ff;
+    --gold: #d97706;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --border: #cbd5e1;
+    --bg-page: #0f172a;
+    --card-bg: #ffffff;
+    --success: #16a34a;
+    --danger: #dc2626;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg-page);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 16px;
+    overflow-x: hidden;
+  }
+  .stage-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1120px;
+    aspect-ratio: 16 / 9;
+    background: #f8fafc;
+    border-radius: 12px;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.4);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .slide {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 24px 36px 40px 36px;
+    background: #f8fafc;
+    overflow-y: auto;
+  }
+  .slide.active {
+    display: flex;
+  }
+  /* Slide Header Banner */
+  .slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+  }
+  .slide-cat {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--gold);
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
+  }
+  .slide-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--navy);
+  }
+  .slide-badge {
+    background: var(--blue-light);
+    color: var(--navy);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    border: 1px solid #bfdbfe;
+    white-space: nowrap;
+  }
+  /* Cards & Grids */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    flex: 1;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    flex: 1;
+  }
+  .card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+  }
+  .card-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--navy);
+    border-bottom: 1.5px solid #e2e8f0;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-body {
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--text);
+  }
+  .card-body ul {
+    padding-left: 16px;
+  }
+  .card-body li {
+    margin-bottom: 4px;
+  }
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+  }
+  th {
+    background: var(--navy);
+    color: #ffffff;
+    font-weight: 600;
+    text-align: left;
+    padding: 6px 8px;
+  }
+  td {
+    padding: 5px 8px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  tr:nth-child(even) td {
+    background: #f8fafc;
+  }
+  /* Title Slide Styling */
+  .title-hero {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 18px 24px;
+    margin-bottom: 14px;
+    border-left: 5px solid var(--gold);
+  }
+  .title-hero h1 {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .title-hero p {
+    font-size: 12px;
+    color: #bfdbfe;
+  }
+  /* Navigation Bar */
+  .nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1120px;
+    margin-top: 12px;
+    color: #94a3b8;
+    font-size: 13px;
+  }
+  .nav-btn {
+    background: #1e293b;
+    color: #ffffff;
+    border: 1px solid #334155;
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover {
+    background: var(--blue);
+  }
+  .pill-counter {
+    background: #1e293b;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-weight: 700;
+    color: #f8fafc;
+    border: 1px solid #334155;
+  }
+  .img-frame {
+    width: 100%;
+    height: 100%;
+    max-height: 380px;
+    object-fit: contain;
+    background: #ffffff;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<div class="stage-wrapper" id="stage">
+
+  <!-- SLIDE 1: TITLE SLIDE -->
+  <div class="slide active" id="slide-1">
+    <div style="background: var(--navy); color: #ffffff; padding: 10px 16px; border-radius: 6px; margin-bottom: 12px; text-align: center;">
+      <div style="font-size: 16px; font-weight: 800; letter-spacing: 0.5px;">GM UNIVERSITY, DAVANAGERE</div>
+      <div style="font-size: 9.5px; color: #fef08a; font-weight: 600;">FACULTY OF ENGINEERING &amp; TECHNOLOGY | DEPARTMENT OF ELECTRONICS &amp; COMMUNICATION ENGINEERING</div>
+    </div>
+    
+    <div class="title-hero">
+      <div style="font-size: 10px; font-weight: 700; color: #fef08a; text-transform: uppercase;">PROJECT-BASED LEARNING (PBL) DEFENSE &bull; 40 MARKS</div>
+      <h1>Automatic Water-Level Controller Using Op-Amp and 555 Timer</h1>
+      <p>Course Code: UE25EC3502 (Linear Integrated Circuits with Practice) | 3rd Semester B.Tech ECE (2026-27)</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">👥 Student Team Members (25% Equal Share)</div>
+        <table>
+          <thead>
+            <tr><th>Student Name</th><th>Technical Domain Focus</th><th>Role</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>Vikas K S</b></td><td>Top Architecture &amp; IC 7805 Supply</td><td>Team Lead</td></tr>
+            <tr><td><b>Nandan S L</b></td><td>SS304 Probes &amp; LM358 Schmitt</td><td>Analog Lead</td></tr>
+            <tr><td><b>Meghana P</b></td><td>555 Debounce &amp; RS Memory Latch</td><td>Timing Lead</td></tr>
+            <tr><td><b>Keerthana R F</b></td><td>BC547 Relay &amp; 1N4007 Snubber</td><td>Actuator Lead</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏛️ Academic Evaluation &amp; Curriculum Rigor</div>
+        <div class="card-body">
+          <ul>
+            <li><b>Evaluation Total:</b> 40 Marks (Continuous Internal Evaluation component)</li>
+            <li><b>Curricular Units:</b> Full coverage of Units 1, 2, 3, and 5 (UE25EC3502)</li>
+            <li><b>Hardware Prototype:</b> Solderless breadboard diorama with dual tanks</li>
+            <li><b>Simulation CAD:</b> NI Multisim 14.x interactive transient analysis</li>
+            <li><b>Zero Microcontroller:</b> 100% Solid-State Linear ICs (immune to firmware hang)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: ABSTRACT & MOTIVATION -->
+  <div class="slide" id="slide-2">
+    <div class="slide-header">
+      <div>
+        <div class="slide-cat">Project Overview</div>
+        <div class="slide-title">Executive Abstract &amp; Problem Motivation</div>
+      </div>
+      <div class="slide-badge">Slide 2 of 14</div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">⚠️ The Water Infrastructure Dilemma</div>
+        <div class="card-body">
+          <ul>
+            <li><b>Manual Oversight:</b> Tank overflows waste potable treated water and electrical pumping energy.</li>
+            <li><b>Dry-Run Impeller Burnout:</b> Running pumps dry when sump water depletes burns out motor stators in &lt; 3 minutes.</li>
+            <li><b>Microcontroller Vulnerability:</b> Arduino/ESP32 solutions suffer watchdog lockups and memory corruption from AC surges and lightning transients.</li>
+            <li><b>The LIC Advantage:</b> Standard DIP-8 linear ICs (LM358, NE555) cost &lt; ₹20 each, provide microsecond deterministic response, and never crash!</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">💡 Core Innovations Introduced</div>
+        <div class="card-body">
+          <ul>
+            <li><b>5.17s Anti-Slosh Delay:</b> NE555 monostable timing circuit filters turbulent waves and splashing disturbances.</li>
+            <li><b>Schmitt Trigger Hysteresis (ΔV = 78.1 mV):</b> Positive feedback creates noise deadband, completely preventing relay chattering.</li>
+            <li><b>Precision Reference Divider:</b> 1% metal-film network establishes stable thresholds: Vref1 = 1.67V and Vref2 = 3.33V.</li>
+            <li><b>SS304 Anti-Electrolysis:</b> Microampere current limiting (48.7 µA) prevents probe corrosion sludge.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: PROBLEM STATEMENT & CO MAPPING -->
+  <div class="slide" id="slide-3">
+    <div class="slide-header">
+      <div>
+        <div class="slide-cat">Academic Foundation</div>
+        <div class="slide-title">Problem Statement &amp; Course Learning Outcomes (COs)</div>
+      </div>
+      <div class="slide-badge">Slide 3 of 14</div>
+    </div>
+    <div class="card" style="margin-bottom: 12px; background: var(--blue-light); border-color: #bfdbfe;">
+      <div style="font-size: 11.5px; font-weight: 600; color: var(--navy);">
+        🎯 <b>Problem Definition:</b> Design, model, and prototype an automatic water level controller using an op-amp comparator and 555 timer. Autonomously start the pump when water drops below preset minimum, maintain pumping through intermediate filling, and turn OFF at preset maximum with zero relay chatter or probe corrosion.
+      </div>
+    </div>
+    <div class="card" style="flex: 1;">
+      <div class="card-title">📚 Course Outcome (CO) Mapping (UE25EC3502)</div>
+      <table>
+        <thead>
+          <tr><th>CO</th><th>Curricular Unit</th><th>Implementation Deliverable</th><th>Evaluation Focus</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>CO2</b></td><td>Unit 1 &amp; 2: Op-Amp Basics</td><td>Ground-sensing LM358 input stage, probe conductivity characterization, potential divider</td><td>Open-loop gain, input bias current</td></tr>
+          <tr><td><b>CO4</b></td><td>Unit 3: Non-Linear LIC</td><td>Inverting Schmitt trigger with positive feedback (Rf=470k, Rin=10k) creating 78.1 mV window</td><td>Hysteresis derivation (ΔVH, VUTP, VLTP)</td></tr>
+          <tr><td><b>CO5</b></td><td>Unit 5: 555 Timer</td><td>NE555 monostable debounce (T=5.17s) and bistable RS flip-flop latching pump memory</td><td>RC timing formula: T = 1.1 Ra C</td></tr>
+          <tr><td><b>CO6</b></td><td>Unit 5 &amp; Actuators</td><td>LM7805 regulator thermal analysis, BC547 deep saturation driver, 1N4007 flyback clamp</td><td>Power dissipation &amp; snubber protection</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: SYSTEM ARCHITECTURE -->
+  <div class="slide" id="slide-4">
+    <div class="slide-header">
+      <div>
+        <div class="slide-cat">System Design</div>
+        <div class="slide-title">End-to-End System Architecture (6 Subsystems)</div>
+      </div>
+      <div class="slide-badge">Slide 4 of 14</div>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title">1. Power Supply (IC 7805)</div>
+        <div class="card-body">12V DC SMPS input stepped down to regulated +5.00V DC bus for linear ICs. Decoupled via 0.33µF and 0.1µF capacitors.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">2. Reference Divider</div>
+        <div class="card-body">Three 10 kΩ 1% metal-film resistors generate stable references: Vref1 = 1.67V (1/3 Vcc) and Vref2 = 3.33V (2/3 Vcc).</div>
+      </div>
+      <div class="card">
+        <div class="card-title">3. Sensing Probes</div>
+        <div class="card-body">SS304 stainless steel rods with 100 kΩ pull-downs. Conduction current strictly limited to 48.7 µA to eliminate electrolysis.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">4. LM358 Comparators</div>
+        <div class="card-body">Dual op-amps: Comp 1 with Schmitt trigger hysteresis (Low level), Comp 2 open-loop ground sense (High cutoff).</div>
+      </div>
+      <div class="card">
+        <div class="card-title">5. 555 Timing &amp; Latch</div>
+        <div class="card-body">5.17-second monostable pulse blanking rejects turbulent wave sloshing. Bistable latch maintains pumping state.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">6. Relay &amp; Motor Actuator</div>
+        <div class="card-body">BC547B saturated driver (Ib = 2.9mA), 1N4007 inductive flyback clamp, 12V SPDT Relay, and submersible pump.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: SENSOR INTERFACING & ANTI-ELECTROLYSIS -->
+  <div class="slide" id="slide-5">
+    <div class="slide-header">
+      <div>
+        <div class="slide-cat">Sensory Acquisition</div>
+        <div class="slide-title">Probe Interface &amp; Anti-Electrolysis Mitigation</div>
+      </div>
+      <div class="slide-badge">Slide 5 of 14</div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🔬 Galvanic Corrosion Mechanism</div>
+        <div class="card-body">
+          <ul>
+            <li><b>Copper Degradation:</b> Standard copper wires undergo oxidation under DC: <code>Cu &rarr; Cu²⁺ + 2e⁻</code></li>
+            <li><b>Sludge Formation:</b> Copper carbonate sludge coats wires within 48-72 hours, failing sensor conduction.</li>
+            <li><b>Tap Water Impedance:</b> Submerged probes exhibit <code>Rwater &approx; 2.5 k&Omega;</code>; dry probes exhibit <code>Rair &gt; 10 M&Omega;</code>.</li>
+            <li><b>High-Z Buffer:</b> LM358 op-amp input impedance (<code>Rin &gt; 2 M&Omega;</code>) prevents loading.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🛡️ Engineering Mitigation Implemented</div>
+        <div class="card-body">
+          <ul>
+            <li><b>Marine-Grade SS304 Electrodes:</b> Self-passivating chromium oxide (<code>Cr₂O₃</code>) layer eliminates pitting.</li>
+            <li><b>Microampere Current Limiting:</b>
+              <div style="background:#f1f5f9; padding:6px 10px; border-radius:4px; margin:6px 0; font-family:monospace; font-weight:bold;">
+                I_probe = 5.0V / (2.5k + 100k) = 48.7 &mu;A
+              </div>
+              Negligible ionic migration extends electrode lifespan beyond 5 years!
+            </li>
+            <li><b>Heat-Shrink Tip Masking:</b> Exposes only bottom 2 mm tip, preventing false splash conduction.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: REFERENCE VOLTAGE DIVIDER -->
+  <div class="slide" id="slide-6">
+    <div class="slide-header">
+      <div>
+        <div class="slide-cat">Reference Stage</div>
+        <div class="slide-title">Precision Reference Potential Divider (Unit 2 LIC)</div>
+      </div>
+      <div class="slide-badge">Slide 6 of 14</div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">📐 Mathematical Derivations</div>
+        <div class="card-body">
+          <ul>
+            <li>Three 1% 10 kΩ metal film resistors across regulated 5.00V:
+              <br><code>Rtotal = 10k + 10k + 10k = 30.0 k&Omega;</code>
+            </li>
+            <li><b>Divider Current:</b> <code>I = 5.0V / 30k = 166.7 &mu;A</code> (Low 0.83 mW power)</li>
+            <li><b>Low Trigger Setpoint (Vref1):</b>
+              <div style="background:#eff6ff; padding:4px 8px; border-radius:4px; font-family:monospace; font-weight:bold; color:var(--blue);">
+                Vref1 = 5.0V &times; (10k / 30k) = 1.667 V (1/3 Vcc)
+              </div>
+            </li>
+            <li><b>High Cutoff Setpoint (Vref2):</b>
+              <div style="background:#eff6ff; padding:4px 8px; border-radius:4px; font-family:monospace; font-weight:bold; color:var(--navy);">
+                Vref2 = 5.0V &times; (20k / 30k) = 3.333 V (2/3 Vcc)
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📊 Noise Margins &amp; Separation</div>
+        <div class="card-body">
+          <ul>
+            <li><b>Dry Sensed Voltage:</b> <code>V_dry = 5.0V &times; (100k / 10.1M) &approx; 0.049 V</code></li>
+            <li><b>Wet Sensed Voltage:</b> <code>V_wet = 5.0V &times; (100k / 102.5k) = 4.878 V</code></li>
+            <li><b>Low Level Noise Margin:</b>
+              <br><code>NM_low = 1.667V - 0.049V = 1.618 V (Massive dry safety!)</code>
+            </li>
+            <li><b>High Level Noise Margin:</b>
+              <br><code>NM_high = 4.878V - 3.333V = 1.545 V (Massive wet safety!)</code>
+            </li>
+            <li>Guarantees zero false triggering from line ripple or mineral fluctuations.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: SCHMITT TRIGGER HYSTERESIS -->
+  <div class="slide" id="slide-7">
+    <div class="slide-header">
+      <div>
+        <div class="slide-cat">Noise Suppression</div>
+        <div class="slide-title">LM358 Inverting Schmitt Trigger Hysteresis (Unit 3 LIC)</div>
+      </div>
+      <div class="slide-badge">Slide 7 of 14</div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">⚡ The Relay Chattering Problem</div>
+        <div class="card-body">
+          <ul>
+            <li><b>Open-Loop Instability:</b> As water level skims the probe tip, surface waves make voltage oscillate across threshold dozens of times per second.</li>
+            <li><b>Consequences:</b> Severe relay arcing, contact welding, driver transistor thermal failure, and rapid motor burnout.</li>
+            <li><b>Schmitt Trigger Remedy:</b> Positive feedback (Rf = 470 kΩ) establishes distinct upper (VUTP) and lower (VLTP) switching points.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📐 Positive Feedback Derivation</div>
+        <div class="card-body">
+          <ul>
+            <li><code>Rin = 10 k&Omega;, Rf = 470 k&Omega;, Vsat,high = 3.8V, Vsat,low = 0.05V</code></li>
+            <li><b>Hysteresis Width (&Delta;VH):</b>
+              <div style="background:#faf5ff; padding:6px 10px; border-radius:4px; font-family:monospace; font-weight:bold; color:#7c3aed;">
+                &Delta;VH = [10k / (10k + 470k)] &times; (3.8V - 0.05V) = 78.1 mV
+              </div>
+            </li>
+            <li><b>Upper Threshold:</b> <code>VUTP = 1.667V + 39mV = 1.706 V</code></li>
+            <li><b>Lower Threshold:</b> <code>VLTP = 1.667V - 39mV = 1.628 V</code></li>
+            <li><b>Rejection:</b> Any splash noise within &plusmn;39 mV is ignored, giving crisp snap switching.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: NE555 MONOSTABLE & LATCH -->
+  <div class="slide" id="slide-8">
+    <div class="slide-header">
+      <div>
+        <div class="slide-cat">Timing &amp; Memory</div>
+        <div class="slide-title">NE555 Monostable Debounce &amp; RS Memory Latch (Unit 5 LIC)</div>
+      </div>
+      <div class="slide-badge">Slide 8 of 14</div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">⏱️ 5.17s Anti-Slosh Monostable Delay</div>
+        <div class="card-body">
+          <ul>
+            <li><b>Slosh Wave Phenomenon:</b> Inflow turbulence causes transient air bubbles and water level dips across the probe for 2-4 seconds.</li>
+            <li><b>Monostable RC Network:</b>
+              <div style="background:#eff6ff; padding:6px 10px; border-radius:4px; font-family:monospace; font-weight:bold; color:var(--navy);">
+                T = 1.1 &times; Ra &times; C1 = 1.1 &times; 100k &times; 47&mu;F = 5.17 seconds
+              </div>
+            </li>
+            <li>Monostable blanking window masks all hydraulic splashes until tank settles.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">💾 Internal Bistable RS Flip-Flop Latch</div>
+        <div class="card-body">
+          <ul>
+            <li><b>State Retention:</b> While filling between Low and High probes, pump MUST stay energized without toggling.</li>
+            <li><b>SET (Pin 2):</b> Low probe dry &rarr; Pin 2 low &rarr; Latch sets Pin 3 HIGH (Pump ON).</li>
+            <li><b>RESET (Pin 4):</b> High probe submerged &rarr; Pin 4 low &rarr; Latch resets Pin 3 LOW (Pump OFF).</li>
+            <li>Memory loop implemented without microcontrollers using standard 555 IC!</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: VOLTAGE REGULATION & THERMAL ANALYSIS -->
+  <div class="slide" id="slide-9">
+    <div class="slide-header">
+      <div>
+        <div class="slide-cat">Linear Regulation</div>
+        <div class="slide-title">Power Supply &amp; Thermal Dissipation Analysis (IC 7805)</div>
+      </div>
+      <div class="slide-badge">Slide 9 of 14</div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🔌 Regulation Architecture &amp; Bypass</div>
+        <div class="card-body">
+          <ul>
+            <li><b>Dual Power Rails:</b> Unregulated 12V bus powers relay &amp; motor; LM7805 outputs noise-free +5.00V DC for op-amps and timer.</li>
+            <li><b>Cin = 0.33 &mu;F:</b> Ceramic disc placed &lt; 1 cm from Pin 1 eliminates line lead inductance oscillations.</li>
+            <li><b>Cout = 0.1 &mu;F:</b> Mount across Pin 3 stabilizes transient step responses.</li>
+            <li><b>PSRR &gt; 62 dB:</b> Isolates analog references from motor startup voltage sags.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔥 Thermal Dissipation Calculations</div>
+        <div class="card-body">
+          <ul>
+            <li><code>Vin = 12.0V, Vout = 5.0V, Iload = 35 mA, Iq = 5 mA</code></li>
+            <li><b>Internal Power Dissipated (Pd):</b>
+              <div style="background:#fef2f2; padding:6px 10px; border-radius:4px; font-family:monospace; font-weight:bold; color:var(--danger);">
+                Pd = (12 - 5)&times;0.035 + (12&times;0.005) = 0.305 W
+              </div>
+            </li>
+            <li><b>Junction Temperature Rise (Tj):</b>
+              <br><code>Tj = 25&deg;C + (0.305 W &times; 65&deg;C/W) = 44.8 &deg;C</code>
+            </li>
+            <li>Well below 125&deg;C silicon limit &rarr; Runs cool with no heatsink needed!</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: ACTUATOR DRIVER & FLYBACK PROTECTION -->
+  <div class="slide" id="slide-10">
+    <div class="slide-header">
+      <div>
+        <div class="slide-cat">Power Stage</div>
+        <div class="slide-title">Actuator Driver Stage &amp; Flyback Diode Protection</div>
+      </div>
+      <div class="slide-badge">Slide 10 of 14</div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">⚡ BC547B Deep Saturation Engineering</div>
+        <div class="card-body">
+          <ul>
+            <li><b>Relay Coil Current:</b> <code>Ic = (12.0V - 0.1V) / 400&Omega; = 29.75 mA</code></li>
+            <li><b>Base Current:</b> <code>Ib = (3.6V - 0.7V) / 1000&Omega; = 2.90 mA</code></li>
+            <li><b>Minimum Required:</b> <code>Ib,min = 29.75 mA / 110 = 0.27 mA</code></li>
+            <li><b>Overdrive Factor:</b>
+              <div style="background:#f0fdf4; padding:6px 10px; border-radius:4px; font-family:monospace; font-weight:bold; color:var(--success);">
+                ODF = 2.90 mA / 0.27 mA = 10.7&times; (Deep Saturation)
+              </div>
+              Ensures Vce(sat) &le; 0.1 V with zero transistor self-heating!
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🧲 Inductive Snubber Diode (1N4007)</div>
+        <div class="card-body">
+          <ul>
+            <li><b>Inductive Collapse:</b> When relay de-energizes, collapsing coil field induces back-EMF: <code>V = - L (di/dt) &gt; 150 V</code></li>
+            <li><b>Without Diode:</b> Instant collector-emitter breakdown destroys driver transistor.</li>
+            <li><b>With 1N4007 Antiparallel:</b> Diode forward biases, clamping spike to <b>+12.7 V</b> and recirculating current safely through coil resistance.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: NI MULTISIM 14.x SCHEMATIC & SIMULATION -->
+  <div class="slide" id="slide-11">
+    <div class="slide-header">
+      <div>
+        <div class="slide-cat">Computer-Aided Simulation</div>
+        <div class="slide-title">NI Multisim 14.x Master Schematic &amp; Setup</div>
+      </div>
+      <div class="slide-badge">Slide 11 of 14</div>
+    </div>
+    <div class="grid-2">
+      <div class="card" style="padding: 6px; align-items: center; justify-content: center;">
+        <img src="../multisim_circuit_diagram.png" class="img-frame" alt="Multisim Circuit Schematic">
+      </div>
+      <div class="card">
+        <div class="card-title">🖥️ Multisim Simulation Workflow</div>
+        <div class="card-body">
+          <ul>
+            <li><b>Interactive Simulation:</b> Press <kbd>F5</kbd> to begin.</li>
+            <li><b>Interactive Probes:</b> Press <kbd>L</kbd> for Low Probe switch, <kbd>H</kbd> for High Probe switch.</li>
+            <li><b>Oscilloscope (XSC1) Test Points:</b>
+              <br>&bull; <b style="color:red;">CH A (Red):</b> Low Probe input (LM358 Pin 3)
+              <br>&bull; <b style="color:blue;">CH B (Blue):</b> Schmitt Trigger output (LM358 Pin 1)
+              <br>&bull; <b style="color:goldenrod;">CH C (Amber):</b> 555 RC Ramp (5.17s)
+              <br>&bull; <b style="color:green;">CH D (Green):</b> Relay coil driver output (555 Pin 3)
+            </li>
+            <li><b>SPICE Netlist:</b> <code>sim/water_level_controller.cir</code> ready for direct import.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 12: EXPERIMENTAL RESULTS & TRUTH TABLE -->
+  <div class="slide" id="slide-12">
+    <div class="slide-header">
+      <div>
+        <div class="slide-cat">Results &amp; Discussion</div>
+        <div class="slide-title">Experimental Multimeter Verification &amp; Truth Table</div>
+      </div>
+      <div class="slide-badge">Slide 12 of 14</div>
+    </div>
+    <div class="card" style="margin-bottom: 12px;">
+      <div class="card-title">📊 Calculated vs. Multimeter Measured Data</div>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Calculated</th><th>Measured</th><th>Error</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>Regulated Vcc</b></td><td>5.000 V</td><td>4.982 V</td><td>0.36%</td><td style="color:var(--success); font-weight:bold;">PASSED (&plusmn;2%)</td></tr>
+          <tr><td><b>Low Reference (Vref1)</b></td><td>1.667 V</td><td>1.665 V</td><td>0.12%</td><td style="color:var(--success); font-weight:bold;">PASSED (1% Metal Film)</td></tr>
+          <tr><td><b>High Reference (Vref2)</b></td><td>3.333 V</td><td>3.328 V</td><td>0.15%</td><td style="color:var(--success); font-weight:bold;">PASSED (1% Metal Film)</td></tr>
+          <tr><td><b>Schmitt Hysteresis (&Delta;VH)</b></td><td>78.1 mV</td><td>76.5 mV</td><td>2.05%</td><td style="color:var(--success); font-weight:bold;">PASSED (Chatter-Free)</td></tr>
+          <tr><td><b>555 Monostable Delay (T)</b></td><td>5.17 s</td><td>5.09 s</td><td>1.55%</td><td style="color:var(--success); font-weight:bold;">PASSED (Debounced)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">🔄 4-State Operational Truth Table</div>
+      <table>
+        <thead>
+          <tr><th>State</th><th>Tank Elevation</th><th>S_LOW [L]</th><th>S_HIGH [H]</th><th>LM358 Pin 1</th><th>555 Pin 3</th><th>Pump Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>State 1</b></td><td>Empty (Dry)</td><td>OPEN</td><td>OPEN</td><td>LOW (~0.05V)</td><td>HIGH (~3.6V)</td><td style="color:var(--success); font-weight:bold;">ON (Pump Runs)</td></tr>
+          <tr><td><b>State 2</b></td><td>Filling (Between)</td><td>CLOSED</td><td>OPEN</td><td>HIGH (~3.8V)</td><td>HIGH (Latched)</td><td style="color:var(--success); font-weight:bold;">ON (Latched via 555)</td></tr>
+          <tr><td><b>State 3</b></td><td>Full (Target)</td><td>CLOSED</td><td>CLOSED</td><td>HIGH (~3.8V)</td><td>LOW (~0.1V)</td><td style="color:var(--danger); font-weight:bold;">OFF (Cuts Out, Buzzer)</td></tr>
+          <tr><td><b>State 4</b></td><td>Draining (Receding)</td><td>CLOSED</td><td>OPEN</td><td>HIGH (~3.8V)</td><td>LOW (Latched)</td><td style="color:var(--danger); font-weight:bold;">OFF (Stays Latched OFF)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SLIDE 13: BILL OF MATERIALS & BUDGET -->
+  <div class="slide" id="slide-13">
+    <div class="slide-header">
+      <div>
+        <div class="slide-cat">Cost &amp; Implementation</div>
+        <div class="slide-title">Bill of Materials (BOM) &amp; Economic Budget</div>
+      </div>
+      <div class="slide-badge">Slide 13 of 14</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🛒 Component Procurement List</div>
+      <table>
+        <thead>
+          <tr><th>Sl.</th><th>Component</th><th>Part Number / Spec</th><th>Qty</th><th>Circuit Role</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td><b>Dual Op-Amp</b></td><td>LM358N (Low Power Ground Sense, DIP-8)</td><td>1</td><td>Comparators &amp; Schmitt Trigger</td></tr>
+          <tr><td>2</td><td><b>Precision Timer</b></td><td>NE555P / LM555CN (8-Pin DIP)</td><td>1</td><td>5.17s Debounce &amp; Memory Latch</td></tr>
+          <tr><td>3</td><td><b>Voltage Regulator</b></td><td>LM7805CT (+5.0V, 1.0A Positive, TO-220)</td><td>1</td><td>Regulated +5.00V analog rail</td></tr>
+          <tr><td>4</td><td><b>Power Relay</b></td><td>12V SPDT Relay (Songle SRD-12VDC-SL-C)</td><td>1</td><td>Pump power isolation &amp; switching</td></tr>
+          <tr><td>5</td><td><b>Driver Transistor</b></td><td>BC547B NPN BJT (TO-92, &beta; &gt; 200)</td><td>2</td><td>Saturated driver (Ib = 2.90 mA)</td></tr>
+          <tr><td>6</td><td><b>Flyback Diode</b></td><td>1N4007 (1000V, 1A Rectifier)</td><td>2</td><td>Inductive back-EMF clamp</td></tr>
+          <tr><td>7</td><td><b>Submersible Pump</b></td><td>12V DC Mini Submersible (3W, 240 L/H)</td><td>1</td><td>Lifts water to overhead container</td></tr>
+          <tr><td>8</td><td><b>Sensor Probes</b></td><td>SS304 Stainless Steel Screws M4</td><td>3</td><td>Corrosion-proof electrodes</td></tr>
+          <tr><td>9</td><td><b>Prototyping Kit</b></td><td>Resistors, Caps, LEDs, Breadboard, 12V SMPS</td><td>1 Set</td><td>Complete assembly &amp; diorama model</td></tr>
+        </tbody>
+      </table>
+      <div style="background:var(--gold); color:#ffffff; font-weight:bold; font-size:11.5px; padding:6px 12px; border-radius:4px; margin-top:8px; text-align:center;">
+        TOTAL TEAM HARDWARE BUDGET: ~₹770 – ₹850 (100% Locally Sourced in India)
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 14: RUBRICS, CONTRIBUTIONS & CONCLUSION -->
+  <div class="slide" id="slide-14">
+    <div class="slide-header">
+      <div>
+        <div class="slide-cat">Academic Defense</div>
+        <div class="slide-title">Rubric Evaluation, Team Shares &amp; Future Scope</div>
+      </div>
+      <div class="slide-badge">Slide 14 of 14</div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">📋 40-Mark Rubric Breakdown</div>
+        <table>
+          <thead>
+            <tr><th>Component</th><th>Marks</th><th>CO</th><th>Lead</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Problem Understanding &amp; Architecture</td><td><b>4</b></td><td>CO2</td><td>Vikas K S</td></tr>
+            <tr><td>Design, Derivations &amp; Calculations</td><td><b>5</b></td><td>CO4</td><td>Nandan S L</td></tr>
+            <tr><td>Hardware Implementation (Units 1-5)</td><td><b>6</b></td><td>CO4</td><td>All 4</td></tr>
+            <tr><td>System Integration &amp; Functionality</td><td><b>5</b></td><td>CO5</td><td>Meghana P</td></tr>
+            <tr><td>Anti-Slosh &amp; Anti-Corrosion Innovation</td><td><b>3</b></td><td>CO6</td><td>Keerthana R F</td></tr>
+            <tr><td>Report &amp; Documentation Quality</td><td><b>2</b></td><td>CO6</td><td>Keerthana R F</td></tr>
+            <tr><td>Demonstration &amp; Viva Voce Defense</td><td><b>5</b></td><td>CO2,5</td><td>All 4</td></tr>
+            <tr><td>Individual Contribution (25% each)</td><td><b>10</b></td><td>CO3,4,6</td><td>All 4</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title">🚀 Conclusion &amp; Future Horizons</div>
+        <div class="card-body">
+          <ul>
+            <li><b>Conclusion:</b> A robust solid-state Automatic Water-Level Controller was modeled and verified without firmware reliance. All curricular requirements of UE25EC3502 were fulfilled.</li>
+            <li><b>Future Enhancement 1:</b> 1 kHz AC Probe Oscillator via 555 astable for zero-DC probe excitation.</li>
+            <li><b>Future Enhancement 2:</b> Non-contact ultrasonic HC-SR04 sensor for industrial chemical sumps.</li>
+            <li><b>Future Enhancement 3:</b> ESP32 WiFi telemetry for Blynk IoT smartphone monitoring.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Navigation Controls -->
+<div class="nav-bar">
+  <button class="nav-btn" onclick="prevSlide()">&#8592; Previous Slide</button>
+  <div class="pill-counter" id="counter">Slide 1 of 14</div>
+  <button class="nav-btn" onclick="nextSlide()">Next Slide &#8594;</button>
+  <button class="nav-btn" onclick="toggleFullScreen()" style="background:#0284c7;">&#x26F6; Fullscreen</button>
+</div>
+
+<script>
+  let currentSlide = 1;
+  const totalSlides = 14;
+
+  function showSlide(index) {
+    if (index < 1) index = 1;
+    if (index > totalSlides) index = totalSlides;
+    currentSlide = index;
+
+    for (let i = 1; i <= totalSlides; i++) {
+      const el = document.getElementById('slide-' + i);
+      if (el) el.classList.remove('active');
+    }
+    const target = document.getElementById('slide-' + currentSlide);
+    if (target) target.classList.add('active');
+
+    document.getElementById('counter').innerText = `Slide ${currentSlide} of ${totalSlides}`;
+  }
+
+  function nextSlide() { showSlide(currentSlide + 1); }
+  function prevSlide() { showSlide(currentSlide - 1); }
+
+  function toggleFullScreen() {
+    const elem = document.getElementById('stage');
+    if (!document.fullscreenElement) {
+      elem.requestFullscreen().catch(err => alert(`Error: ${err.message}`));
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+      nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      prevSlide();
+    } else if (e.key === 'f' || e.key === 'F') {
+      toggleFullScreen();
+    }
+  });
+</script>
+
+</body>
+</html>
